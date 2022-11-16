@@ -38,3 +38,5 @@ amx-items
 org-roam.db
 /anaconda-mode/
 .DS_Store
+
+.extension
