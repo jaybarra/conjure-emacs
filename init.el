@@ -183,6 +183,7 @@ _v_ verify setup      _f_ check            _s_ select
 (require 'conjure-lisp)
 (require 'conjure-magit)
 (require 'conjure-org)
+(require 'conjure-svelte)
 (require 'conjure-ts)
 
 (conjure-require-packages '(lsp-mode lsp-java dap-mode))
