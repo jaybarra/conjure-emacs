@@ -1,11 +1,6 @@
-;;; init-ui.el --- ui settings
+;;; conjure-ui.el --- Conjure UI settings
 ;;; Commentary:
 ;;; Code:
-
-(conjure-require-packages '(all-the-icons
-                            all-the-icons-dired
-                            all-the-icons-ibuffer
-                            pulsar))
 
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
@@ -15,15 +10,13 @@
 (tooltip-mode -1)      ; Disable tooltips
 (blink-cursor-mode -1) ; no blinky cursor
 
-(setq-default cursor-type 'box)
-
 (column-number-mode)
 (size-indication-mode)
 (global-display-line-numbers-mode t)
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(setq inhibit-startup-message t ; disable startup
+(setq inhibit-startup-message t
       visible-bell t
       use-dialog-box nil
       ring-bell-function 'ignore)
@@ -53,9 +46,6 @@
                                   (height . 50)
                                   (width . 240)))))
 
-(when conjure-theme
-  (load-theme conjure-theme t))
-
 (add-hook 'dired-mode-hook (lambda ()
                              (all-the-icons-dired-mode)
                              (diminish 'all-the-icons-dired-mode)))
@@ -63,27 +53,17 @@
 (add-hook 'ibuffer-mode-hook (lambda ()
                                (all-the-icons-ibuffer-mode)))
 
-(require 'pulsar)
-(setq pulsar-pulse t
-      pulsar-delay 0.055
-      pulsar-iterations 10)
-(add-hook 'next-error-hook #'pulsar-pulse-line)
-
-(when (fboundp 'ace-window)
-  ;; pulsar doesn't detect the override because of ordering so we have to set it ourselves
-  (setq pulsar-pulse-functions (add-to-list 'pulsar-pulse-functions 'ace-window)))
-
-(pulsar-global-mode 1)
+(pulsar-global-mode +1)
 
 ;; improve `hl-line' highlighting
-(require 'lin)
-(lin-global-mode 1)
+(lin-global-mode +1)
 
-(set-face-attribute 'default nil :font "Iosevka Comfy" :height 130)
 (setq goto-address-url-face 'link
       goto-address-url-mouse-face 'highlight
       goto-address-mail-face 'link
       goto-address-mail-mouse-face 'highlight)
 
-(provide 'init-ui)
-;;; init-ui.el ends here
+(set-face-attribute 'default nil :family "Source Code Pro" :weight 'normal :width 'normal)
+
+(provide 'conjure-ui)
+;;; conjure-ui.el ends here

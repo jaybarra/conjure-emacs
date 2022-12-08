@@ -1,80 +1,82 @@
-;;; init-packages.el --- core packages
+;;; conjure-packages.el --- Conjure Emacs Core Packages and Package Management
 ;;; Commentary:
 ;;; Code:
 
-;; Initialize Package Sources
 (require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
+(package-initialize)
 
-(defvar conjure-ui-packages
+(defvar conjure-packages
   '(ace-window
-    ef-themes))
-
-(defvar conjure-nav-packages
-  '(avy
-    imenu-anywhere
-    projectile))
-
-(defvar conjure-editor-packages
-  '(anzu
+    ag
+    all-the-icons
+    all-the-icons-dired
+    all-the-icons-ibuffer
+    anzu
+    avy
+    browse-kill-ring
+    cape
+    consult
+    consult-ag
+    consult-projectile
+    consult-org-roam
+    corfu
     crux
     diff-hl
-    easy-kill
-    editorconfig
-    expand-region
-    hl-todo
-    lin
-    move-text
-    nlinum
-    operate-on-number
-    smartparens
-    volatile-highlights
-    wgrep
-    zop-to-char))
-
-(defvar conjure-utility-packages
-  '(ag
-    browse-kill-ring
-    discover-my-major
     diminish
-    epl
+    discover-my-major
+    easy-kill
+    ef-themes
+    embark
+    embark-consult
+    exec-path-from-shell
+    expand-region
     flycheck
     gist
     git-timemachine
-    git-modes
     guru-mode
     helpful
+    hl-todo
+    hydra
+    kind-icon
+    lin
     magit
+    marginalia
+    operate-on-number
+    orderless
+    org-roam
+    projectile
+    pulsar
+    rainbow-delimiters
+    savehist
+    smartparens
     smartrep
-    super-save
-    undo-tree
-    which-key))
-
-(defvar conjure-packages
-  (append conjure-ui-packages
-          conjure-nav-packages
-          conjure-editor-packages
-          conjure-utility-packages)
-  "List of core packages to make sure are present.")
+    vertico
+    vertico-posframe
+    volatile-highlights
+    wgrep
+    wgrep-ag
+    which-key
+    zop-to-char))
 
 (defun conjure-packages-installed-p ()
-  "Check if core packages are installed."
+  "Check if packages are installed."
   (cl-every #'package-installed-p conjure-packages))
 
 (defun conjure-require-package (package)
-  "Ensure PACKAGE is installed."
+  "Install PACKAGE."
   (unless (memq package conjure-packages)
     (add-to-list 'conjure-packages package))
   (unless (package-installed-p package)
     (package-install package)))
 
 (defun conjure-require-packages (packages)
-  "Ensure PACKAGES are installed."
+  "Install PACKAGES."
   (mapc #'conjure-require-package packages))
 
 (defun conjure-install-packages ()
-  "Install all of the core packages."
+  "Install all core packages."
   (unless (conjure-packages-installed-p)
     (message "%s" "Conjure is updating the package database...")
     (package-refresh-contents)
@@ -177,5 +179,5 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
             (conjure-auto-install extension package mode))))
       conjure-auto-install-alist)
 
-(provide 'init-packages)
-;;; init-packages.el ends here
+(provide 'conjure-packages)
+;;; conjure-packages.el ends here

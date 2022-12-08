@@ -1,15 +1,10 @@
-;;; init-custom.el --- custom properties
+;;; conjure-custom.el --- Conjure configuration and toggles
 ;;; Commentary:
 ;;; Code:
 (defgroup conjure nil
   "Emacs Conjure configuration."
   :prefix "conjure-"
   :group 'convenience)
-
-(defcustom conjure-flyspell t
-  "Non-nil values enable flyspell support."
-  :type 'boolean
-  :group 'conjure)
 
 (defcustom conjure-super-keybindings t
   "Non-nil values enable super-key."
@@ -37,11 +32,5 @@ Will only occur if `conjure-whitespace' is also enabled."
   :type 'boolean
   :group 'conjure)
 
-(defcustom conjure-theme 'ef-cherie
-  "When set specifies default theme of Conjure.
-Use `counsel-load-theme' to switch themes."
-  :type 'symbol
-  :group 'conjure)
-
-(provide 'init-custom)
-;;; init-custom.el ends here
+(provide 'conjure-custom)
+;;; conjure-custom.el ends here

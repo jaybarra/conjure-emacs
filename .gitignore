@@ -1,42 +1,21 @@
-# transient files
-smex-items
-recentf
-*.*~
-projectile-bookmarks.eld
-.cider-repl-history
-*.log
-.lsp-session*
-bookmarks
-savefile
+*~
+.#*
+\#*\#
 
-# directories
-auto-save-list
 elpa
-transient
-eshell
-backup
-.cache
-
-# backends
-eclipse.jdt.ls/
-
-custom-vars.el
-
-company-statistics-cache.el
-projectile.cache
-projects
-tutorial
-workspace
-
-pomm
-elfeed
-url
-.dap-*
-
-*.sqlite
-amx-items
-org-roam.db
-/anaconda-mode/
 .DS_Store
 
-.extension
+.cache
+history
+.lsp-session-v1
+custom-vars.el
+org-roam.db
+transient
+projectile.cache
+projectile-bookmarks.eld
+
+workspace/
+eclipse.jdt.ls/
+eshell/
+recentf
+/.dap-breakpoints

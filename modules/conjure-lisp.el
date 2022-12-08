@@ -1,13 +1,10 @@
-;;; init-lisp.el -- Lisp languages setup
+;;; conjure-lisp.el --- Lisp Languages Initialization
 ;;; Commentary:
 ;;; Code:
-(require 'init-programming)
 (conjure-require-packages '(rainbow-delimiters))
 
-(define-key read-expression-map (kbd "TAB") 'completion-at-point)
-
 (defun conjure-lisp-coding-defaults ()
-  "Defaults for `lisp-mode' editing."
+  "Sensible defaults for `lisp-mode'."
   (smartparens-strict-mode +1)
   (rainbow-delimiters-mode +1))
 
@@ -15,9 +12,6 @@
 
 (defun conjure-interactive-lisp-coding-defaults ()
   "Defaults for interactive Lisp (REPL) buffers."
-  (message "[conjure] For a more... civilized age")
-
-  (smartparens-strict-mode +1)
   (rainbow-delimiters-mode +1)
   (whitespace-mode -1))
 
@@ -26,5 +20,5 @@
 (add-hook 'lisp-data-mode-hook (lambda ()
                                  (run-hooks 'conjure-lisp-coding-hook)))
 
-(provide 'init-lisp)
-;;; init-lisp.el ends here
+(provide 'conjure-lisp)
+;;; conjure-lisp.el ends here

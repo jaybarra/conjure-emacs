@@ -1,4 +1,4 @@
-;;; init.el --- Conjure Emacs Initialization File
+;;; init.el --- Conjure Emacs Initialization
 ;;; Commentary:
 ;;; Code:
 (defconst emacs-start-time (current-time))
@@ -23,12 +23,6 @@
 (defvar conjure-savefile-dir (expand-file-name "savefile" user-emacs-directory)
   "Folder for storing generated history files.")
 
-(defvar conjure-org-dir (expand-file-name "org" (file-truename "~"))
-  "Folder for storing org notes.")
-
-(defvar conjure-org-roam-dir (expand-file-name "roam" conjure-org-dir)
-  "Folder for storing org-roam notes.")
-
 (unless (file-exists-p conjure-savefile-dir)
   (make-directory conjure-savefile-dir))
 
@@ -41,7 +35,7 @@
         (add-to-list 'load-path name)
         (conjure-add-subfolders-to-load-path name)))))
 
-(message "[conjure] Emacs is coming online...")
+(message "[Conjure] Emacs is coming online...")
 
 (setq load-prefer-newer t)
 
@@ -53,72 +47,160 @@
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
 
-(message "[conjure] Invoking the Deep Magic...")
-;; vvvvvv Do not change order vvvvvv
-(require 'init-packages)
-(require 'init-custom)
-(require 'init-ui)
-(require 'init-common)
-(require 'conjure-mode)
-(require 'init-editor)
-(require 'init-keybindings)
-;; ^^^^^ Do not change order ^^^^^
+(message "[Conjure] Invoking the Deep Magic...")
+(require 'conjure-packages)
+(require 'conjure-custom)
+(require 'conjure-ui)
+(require 'conjure-editor)
+(require 'conjure-global-keybindings)
 
 (when *is-a-mac*
-  (require 'init-macos))
+  (require 'conjure-macos))
 
-(when *is-linux*
-  (require 'init-linux))
+(require 'vertico)
+(setq enable-recursive-minibuffers t)
+(setq vertico-cycle t
+      vertico-count 15)
 
-(message "[conjure] Configuring packages...")
-;; Enable or disable as needed
-(require 'init-c)
-(require 'init-clojure)
-(require 'init-company)
-(require 'init-emacs-lisp)
-(require 'init-go)
-(require 'init-graphql)
-(require 'init-ivy)
-(require 'init-java)
-(require 'init-js)
-(require 'init-lsp)
-(require 'init-org)
-(require 'init-python)
-(require 'init-ruby)
-(require 'init-rust)
-(require 'init-terraform)
-(require 'init-web)
-(require 'init-xml)
-(require 'init-yaml)
+(vertico-mode)
 
-;; One-offs that don't have their own setups yet
-(conjure-require-packages '(darkroom
-                            dashboard
-                            elfeed
-                            lorem-ipsum
-                            restclient
-                            uuidgen))
+;; (require 'vertico-posframe)
+;; (vertico-posframe-mode nil)
 
-(require 'darkroom)
-(define-key global-map [f12] 'darkroom-mode)
+(setq completion-styles '(orderless basic)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion))))
 
-(require 'dashboard)
-(setq dashboard-center-content t
-      dashboard-banner-logo-title "Conjure Emacs"
-      dashboard-startup-banner (expand-file-name  "images/witch_hat.png" conjure-core-dir)
-      dashboard-items '((recents . 5)
-                        (bookmarks . 5)
-                        (projects . 5)
-                        (agenda . 5)))
-(dashboard-setup-startup-hook)
+(require 'marginalia)
+(setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+(marginalia-mode)
 
-;; TODO this should be determined by the system
-(setq datetime-timezone 'US/Eastern)
+(savehist-mode)
+
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
+
+(with-eval-after-load 'corfu
+  (setq corfu-cycle t
+	corfu-auto t
+        corfu-auto-prefix 2
+	corfu-auto-delay 0.0
+        corfu-quit-at-boundary 'separator
+        corfu-preview-current 'insert
+	corfu-preselect-first nil)
+  
+  (define-key corfu-map (kbd "M-SPC") 'corfu-insert-separator)
+  (define-key corfu-map (kbd "TAB") 'corfu-next)
+  (define-key corfu-map [tab] 'corfu-next)
+  (define-key corfu-map (kbd "S-TAB") 'corfu-previous)
+  (define-key corfu-map [backtab] 'corfu-previous)
+  (define-key corfu-map (kbd "S-<return>") 'corfu-insert)
+
+  (require 'kind-icon)
+  (setq kind-icon-default-face 'corfu-default)
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+
+  (add-hook 'eshell-mode-hook (lambda ()
+				(setq-local corfu-quit-at-boundary t
+					    corfu-quit-no-match t
+					    corfu-auto nil)
+				(corfu-mode))))
+
+(global-corfu-mode)
+(corfu-history-mode)
+
+(require 'tempel)
+(defun tempel-setup-capf ()
+  "Add tempel Capf to `completion-at-point-functions'."
+  (setq-local completion-at-point-functions (cons #'tempel-expand completion-at-point-functions)))
+
+(add-hook 'prog-mode-hook 'tempel-setup-capf)
+(add-hook 'text-mode-hook 'tempel-setup-capf)
+
+(global-set-key (kbd "M-+") 'tempel-insert)
+(define-key tempel-map [remap keyboard-escape-quit] 'tempel-done)
+(define-key tempel-map (kbd "TAB") 'tempel-next)
+(define-key tempel-map [tab] 'tempel-next)
+(define-key corfu-map (kbd "C-M-i") 'tempel-expand)
+
+(require 'lsp-mode)
+(setq lsp-completion-provider :none
+      lsp-headerline-breadcrumb-icons-enable nil)
+(defun conjure-lsp-mode-defaults ()
+  "Sensible `lsp' configuration."
+  (setf (alist-get 'style (alist-get 'lsp-capf completion-category-defaults))
+	'(orderless)))
+
+(add-hook 'lsp-completion-mode-hook 'conjure-lsp-mode-defaults)
+
+(require 'cape)
+(add-to-list 'completion-at-point-functions #'cape-file)
+(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+(advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(setq flycheck-display-errors-delay 0.4)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+(global-set-key (kbd "C-c f") 'conjure-hydra-flycheck/body)
+
+(defhydra conjure-hydra-flycheck (:color blue)
+  "
+^Flycheck^            ^Errors^             ^Checker^
+^--------^------------^------^-------------^-------^---
+_q_ quit              _<_ previous         _?_ describe
+_M_ manual            _>_ next             _d_ disable
+_v_ verify setup      _f_ check            _s_ select
+^^                    _l_ list
+^^
+"
+  ("q" nil)
+  ("M" flycheck-manual)
+  ("v" flycheck-verify-setup)
+
+  ("<" flycheck-previous-error :color pink)
+  (">" flycheck-next-error :color pink)
+  ("f" flycheck-buffer)
+  ("l" flycheck-list-errors)
+  
+  ("?" flycheck-describe-checker)
+  ("d" flycheck-disable-checker)
+  ("s" flycheck-select-checker))
+
+(with-eval-after-load 'magit
+  (setq git-commit-fill-column 72
+	git-commit-summary-max-length 50))
+
+(global-set-key (kbd "C-x g") 'magit-status)
+
+(projectile-mode)
+
+(require 'conjure-clojure)
+(require 'conjure-emacs-lisp)
+(require 'conjure-lisp)
+(require 'conjure-magit)
+(require 'conjure-org)
+(require 'conjure-ts)
+
+(conjure-require-packages '(lsp-mode lsp-java dap-mode))
+
+(require 'dap-mode)
+(with-eval-after-load 'lsp-mode
+  (setq lsp-treemacs-symbols-sort-function '(lsp-treemacs-sort-by-kind lsp-treemacs-sort-by-name))
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (yas-global-mode)
+  (dap-auto-configure-mode))
+
+(add-hook 'java-mode-hook 'lsp-deferred)
+
+(ef-themes-load-random 'dark)
 
 (require 'server)
-(unless (server-running-p) (server-start))
+(unless (server-running-p)
+  (server-start))
 
-;; Restore GC to normal
-(setq gc-cons-threshold (* 2 1024 1024))
-
+(provide 'init)
 ;;; init.el ends here

@@ -1,32 +1,30 @@
-;;; init-clojure.el --- clojure-mode initialization
+;;; conjure-clojure.el --- Clojure(script) Initialization
 ;;; Commentary:
 ;;; Code:
-(require 'init-lisp)
-(conjure-require-packages '(clojure-mode cider flycheck-clj-kondo))
-(require 'flycheck-clj-kondo)
+(conjure-require-packages '(clojure-mode cider))
 
+(require 'conjure-lisp)
 (require 'clojure-mode)
 
-(with-eval-after-load 'clojure-mode
-  (defun conjure-clojure-mode-defaults ()
-    "Setup defaults for `clojure-mode'."
-    (subword-mode +1)
-    (run-hooks 'conjure-lisp-coding-hook))
+(defun conjure-clojure-mode-defaults ()
+  "Setup sensible defaults for `clojure-mode'."
+  (subword-mode +1)
+  (run-hooks 'conjure-lisp-coding-hook))
 
-  (setq conjure-clojure-mode-hook 'conjure-clojure-mode-defaults)
+(setq conjure-clojure-node-hook 'conjure-clojure-mode-defaults)
 
-  (add-hook 'clojure-mode-hook
-            (lambda ()
-              (run-hooks 'conjure-clojure-mode-hook))))
+(add-hook 'clojure-mode-hook (lambda () (run-hooks 'conjure-clojure-mode-hook)))
 
 (with-eval-after-load 'cider
   (setq nrepl-log-messages nil
         nrepl-hide-special-buffers t
         cider-repl-display-help-banner nil
+	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
-        cider-repl-buffer-size-limit 100000
-        cider-print-options '(("print-length" 100))
-        cider-print-fn `puget)
+	cider-repl-buffer-size-limit 100000
+	;;cider-use-overlays t
+	cider-print-fn `puget
+	cider-print-options '(("print-length" 100)))
 
   (add-hook 'cider-mode-hook 'eldoc-mode)
 
@@ -59,5 +57,5 @@
   (let-routes 1)
   (context 2))
 
-(provide 'init-clojure)
-;;; init-clojure.el ends here
+(provide 'conjure-clojure)
+;;; conjure-clojure.el ends here
