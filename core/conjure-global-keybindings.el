@@ -49,11 +49,34 @@
 (global-set-key (kbd "C-x j") 'consult-recent-file)
 (global-set-key (kbd "C-c h") 'consult-history)
 
-;; Intellij style keybindings
+;; IntelliJ style keybindings
 (global-set-key (kbd "s-E") 'consult-projectile-recentf)
 (global-set-key (kbd "s-e") 'consult-find)
 
 ;; (define-key lsp-mode-map (kbd "s-F") 'consult-lsp-symbols)
+
+(define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
+(define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
+(define-key smartparens-mode-map (kbd "C-M-)") 'sp-backward-slurp-sexp)
+(define-key smartparens-mode-map (kbd "C-M-(") 'sp-backward-barf-sexp)
+
+(define-key smartparens-mode-map (kbd "C-M-k") 'sp-kill-sexp)
+(define-key smartparens-mode-map (kbd "M-<delete>") 'sp-unwrap-sexp)
+(define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
+(define-key smartparens-mode-map (kbd "M-D") 'sp-splice-sexp)
+
+(global-set-key (kbd "C-M-s") 'conjure-smartparens-hydra/body)
+(defhydra conjure-smartparens-hydra ()
+  "Smartparens"
+
+  ("d" sp-down-sexp "Down")
+  ("e" sp-up-sexp "Up")
+  ("u" sp-backward-up-sexp "Up")
+  ("a" sp-backward-down-sexp "Down")
+  ("f" sp-forward-sexp "Forward")
+  ("b" sp-backward-sexp "Backward")
+  ("k" sp-kill-sexp "Kill" :color blue)
+  ("q" nil "Quit" :color blue))
 
 (provide 'conjure-global-keybindings)
 ;;; conjure-global-keybindings.el ends here
