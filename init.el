@@ -83,13 +83,13 @@
 
 (with-eval-after-load 'corfu
   (setq corfu-cycle t
-	corfu-auto t
+        corfu-auto t
         corfu-auto-prefix 2
 	corfu-auto-delay 0.0
         corfu-quit-at-boundary 'separator
         corfu-preview-current 'insert
 	corfu-preselect-first nil)
-  
+
   (define-key corfu-map (kbd "M-SPC") 'corfu-insert-separator)
   (define-key corfu-map (kbd "TAB") 'corfu-next)
   (define-key corfu-map [tab] 'corfu-next)
@@ -165,7 +165,7 @@ _v_ verify setup      _f_ check            _s_ select
   (">" flycheck-next-error :color pink)
   ("f" flycheck-buffer)
   ("l" flycheck-list-errors)
-  
+
   ("?" flycheck-describe-checker)
   ("d" flycheck-disable-checker)
   ("s" flycheck-select-checker))

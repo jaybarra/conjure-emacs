@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 (conjure-require-packages '(typescript-mode
-			    lsp-mode))
+                            lsp-mode))
 
 (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
 

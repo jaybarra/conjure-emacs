@@ -13,14 +13,14 @@
 
 (with-eval-after-load 'org
   (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (clojure . t)
-       (graphql . t)
-       (shell . t)
-       (ruby . t)
-       (python . t)
-       (restclient . t))))
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (clojure . t)
+     (graphql . t)
+     (shell . t)
+     (ruby . t)
+     (python . t)
+     (restclient . t))))
 
 (require 'org-roam)
 (setq org-roam-directory (expand-file-name "org/roam" (file-truename "~")))
@@ -30,8 +30,8 @@
 Takes ARG and optionally ARGS as pass-thrus."
   (interactive "P")
   (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
+	(org-roam-capture-templates (list (append (car org-roam-capture-templates)
+						  '(:immediate-finish t)))))
     (apply #'org-roam-node-insert args)))
 
 (defun conjure-org-roam-defaults ()
@@ -56,7 +56,7 @@ Takes ARG and optionally ARGS as pass-thrus."
 
 (setq conjure-org-roam-hook 'conjure-org-roam-defaults)
 (add-hook 'after-init-hook (lambda ()
-                             (run-hooks 'conjure-org-roam-hook)))
+			     (run-hooks 'conjure-org-roam-hook)))
 
 (provide 'conjure-org)
 ;;; conjure-org.el ends here

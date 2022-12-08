@@ -19,3 +19,7 @@ eclipse.jdt.ls/
 eshell/
 recentf
 /.dap-breakpoints
+/.extension/
+/anaconda-mode/
+/projects
+/savefile/

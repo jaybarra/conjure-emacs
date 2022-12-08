@@ -1,7 +1,6 @@
 ;;; conjure-magit.el --- magit configuration
 ;;; Commentary:
 ;;; Code:
-
 (conjure-require-packages '(magit))
 
 (with-eval-after-load 'magit

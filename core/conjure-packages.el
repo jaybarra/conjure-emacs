@@ -13,6 +13,7 @@
     all-the-icons
     all-the-icons-dired
     all-the-icons-ibuffer
+    apheleia
     anzu
     avy
     browse-kill-ring
@@ -52,6 +53,7 @@
     savehist
     smartparens
     smartrep
+    tempel
     vertico
     vertico-posframe
     volatile-highlights
