@@ -71,6 +71,10 @@
       completion-category-defaults nil
       completion-category-overrides '((file (styles partial-completion))))
 
+(require 'affe)
+(setq affe-regexp-compiler #'orderless-pattern-compiler
+      affe-highlight-function #'orderless-highlight-matches)
+
 (require 'marginalia)
 (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
 (marginalia-mode)
@@ -142,33 +146,33 @@
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
-(setq flycheck-display-errors-delay 0.4)
-(add-hook 'after-init-hook #'global-flycheck-mode)
+;;(setq flycheck-display-errors-delay 0.4)
+;;(add-hook 'after-init-hook #'global-flycheck-mode)
 
-(global-set-key (kbd "C-c f") 'conjure-hydra-flycheck/body)
+;;(global-set-key (kbd "C-c f") 'conjure-hydra-flycheck/body)
 
-(defhydra conjure-hydra-flycheck (:color blue)
-  "
-^Flycheck^            ^Errors^             ^Checker^
-^--------^------------^------^-------------^-------^---
-_q_ quit              _<_ previous         _?_ describe
-_M_ manual            _>_ next             _d_ disable
-_v_ verify setup      _f_ check            _s_ select
-^^                    _l_ list
-^^
-"
-  ("q" nil)
-  ("M" flycheck-manual)
-  ("v" flycheck-verify-setup)
+;; (defhydra conjure-hydra-flycheck (:color blue)
+;;   "
+;; ^Flycheck^            ^Errors^             ^Checker^
+;; ^--------^------------^------^-------------^-------^---
+;; _q_ quit              _<_ previous         _?_ describe
+;; _M_ manual            _>_ next             _d_ disable
+;; _v_ verify setup      _f_ check            _s_ select
+;; ^^                    _l_ list
+;; ^^
+;; "
+;;   ("q" nil)
+;;   ("M" flycheck-manual)
+;;   ("v" flycheck-verify-setup)
 
-  ("<" flycheck-previous-error :color pink)
-  (">" flycheck-next-error :color pink)
-  ("f" flycheck-buffer)
-  ("l" flycheck-list-errors)
+;;   ("<" flycheck-previous-error :color pink)
+;;   (">" flycheck-next-error :color pink)
+;;   ("f" flycheck-buffer)
+;;   ("l" flycheck-list-errors)
 
-  ("?" flycheck-describe-checker)
-  ("d" flycheck-disable-checker)
-  ("s" flycheck-select-checker))
+;;   ("?" flycheck-describe-checker)
+;;   ("d" flycheck-disable-checker)
+;;   ("s" flycheck-select-checker))
 
 (with-eval-after-load 'magit
   (setq git-commit-fill-column 72
@@ -184,18 +188,22 @@ _v_ verify setup      _f_ check            _s_ select
 (require 'conjure-magit)
 (require 'conjure-org)
 (require 'conjure-svelte)
+(require 'conjure-c)
 (require 'conjure-ts)
+(require 'conjure-js)
+(require 'conjure-python)
+(require 'conjure-ruby)
 
 (conjure-require-packages '(lsp-mode lsp-java dap-mode))
 
 (require 'dap-mode)
-(with-eval-after-load 'lsp-mode
-  (setq lsp-treemacs-symbols-sort-function '(lsp-treemacs-sort-by-kind lsp-treemacs-sort-by-name))
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (yas-global-mode)
-  (dap-auto-configure-mode))
+;; (with-eval-after-load 'lsp-mode
+;;   (setq lsp-treemacs-symbols-sort-function '(lsp-treemacs-sort-by-kind lsp-treemacs-sort-by-name))
+;;   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+;;   (yas-global-mode)
+;;   (dap-auto-configure-mode))
 
-(add-hook 'java-mode-hook 'lsp-deferred)
+;;(add-hook 'java-mode-hook 'lsp-deferred)
 
 (ef-themes-load-random 'dark)
 

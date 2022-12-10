@@ -11,7 +11,7 @@
   (subword-mode +1)
   (run-hooks 'conjure-lisp-coding-hook))
 
-(setq conjure-clojure-node-hook 'conjure-clojure-mode-defaults)
+(setq conjure-clojure-mode-hook 'conjure-clojure-mode-defaults)
 
 (add-hook 'clojure-mode-hook (lambda () (run-hooks 'conjure-clojure-mode-hook)))
 
@@ -22,8 +22,7 @@
 	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
 	cider-repl-buffer-size-limit 100000
-	;;cider-use-overlays t
-	cider-print-fn `puget
+        cider-print-fn `puget
 	cider-print-options '(("print-length" 100)))
 
   (add-hook 'cider-mode-hook 'eldoc-mode)
@@ -32,6 +31,7 @@
     "Setup defaults for when `cider' loads."
     (subword-mode +1)
     (run-hooks 'conjure-interactive-lisp-coding-hook))
+  
 
   (setq conjure-cider-repl-mode-hook 'conjure-cider-repl-mode-defaults)
 

@@ -39,8 +39,6 @@
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
 (global-set-key (kbd "C-s-f") 'consult-ag)
 (global-set-key (kbd "C-s") 'consult-line)
-(global-set-key (kbd "M-g g") 'consult-goto-line)
-(global-set-key (kbd "M-g M-g") 'consult-goto-line)
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "C-x r j") 'consult-register)
 (global-set-key (kbd "C-x r l") 'consult-bookmark)
@@ -48,12 +46,21 @@
 (global-set-key (kbd "C-x c i") 'consult-imenu)
 (global-set-key (kbd "C-x j") 'consult-recent-file)
 (global-set-key (kbd "C-c h") 'consult-history)
+(global-set-key (kbd "M-g g") 'consult-goto-line)
+(global-set-key (kbd "M-g M-g") 'consult-goto-line)
+(global-set-key (kbd "M-g m") 'consult-mark)
+(global-set-key (kbd "M-g i") 'consult-imenu)
 
 ;; IntelliJ style keybindings
 (global-set-key (kbd "s-E") 'consult-projectile-recentf)
-(global-set-key (kbd "s-e") 'consult-find)
+(global-set-key (kbd "s-e") 'consult-projectile-find-file)
 
-;; (define-key lsp-mode-map (kbd "s-F") 'consult-lsp-symbols)
+(with-eval-after-load 'lsp-mode
+ (define-key lsp-mode-map (kbd "M-<return>") 'lsp-execute-code-action)
+ (define-key lsp-mode-map (kbd "s-b") 'lsp-goto-implementation)
+ ;;(define-key lsp-mode-map (kbd "s-f") find-symbol)
+ ;;(define-key lsp-mode-map (kbd "s-F")
+   )
 
 (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)

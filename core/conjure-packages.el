@@ -9,6 +9,7 @@
 
 (defvar conjure-packages
   '(ace-window
+    affe
     ag
     all-the-icons
     all-the-icons-dired
@@ -33,7 +34,7 @@
     embark-consult
     exec-path-from-shell
     expand-region
-    flycheck
+    ;;flycheck
     gist
     git-timemachine
     guru-mode

@@ -23,6 +23,13 @@
 (diminish 'which-key-mode)
 
 (apheleia-global-mode)
+(winner-mode 1)
+
+(require 'dired-x)
+(setq dired-listing-switches "-lahF"
+      dired-dwim-target t
+      dired-deletion-confirmer 'y-or-n-p
+      dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|*\\.o\\`\\|*\\.log\\`")
 
 (require 'recentf)
 (add-to-list 'recentf-exclude "\\roam.*\\'")
