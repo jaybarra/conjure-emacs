@@ -34,7 +34,7 @@
     embark-consult
     exec-path-from-shell
     expand-region
-    ;;flycheck
+    flycheck
     gist
     git-timemachine
     guru-mode
@@ -43,6 +43,7 @@
     hydra
     kind-icon
     lin
+    lsp-mode
     magit
     marginalia
     operate-on-number
@@ -61,6 +62,8 @@
     wgrep
     wgrep-ag
     which-key
+    yasnippet
+    yasnippet-snippets
     zop-to-char))
 
 (defun conjure-packages-installed-p ()

@@ -64,12 +64,17 @@
 
 (vertico-mode)
 
-;; (require 'vertico-posframe)
-;; (vertico-posframe-mode nil)
+(require 'vertico-posframe)
+(setq vertico-multiform-commands
+      '((consult-projectile-switch-project posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
+	(consult-projectile-find-file posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
+	(consult-projectile-recentf posframe (vertico-posframe-handler . posframe-poshandler-frame-center))))
+(vertico-multiform-mode 1)
 
+(require 'orderless)
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
-      completion-category-overrides '((file (styles partial-completion))))
+      completion-category-overrides '((file (styles . (partial-completion)))))
 
 (require 'affe)
 (setq affe-regexp-compiler #'orderless-pattern-compiler
@@ -128,9 +133,6 @@
 (define-key tempel-map [tab] 'tempel-next)
 (define-key corfu-map (kbd "C-M-i") 'tempel-expand)
 
-(require 'lsp-mode)
-(setq lsp-completion-provider :none
-      lsp-headerline-breadcrumb-icons-enable nil)
 (defun conjure-lsp-mode-defaults ()
   "Sensible `lsp' configuration."
   (setf (alist-get 'style (alist-get 'lsp-capf completion-category-defaults))
@@ -146,33 +148,32 @@
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
-;;(setq flycheck-display-errors-delay 0.4)
-;;(add-hook 'after-init-hook #'global-flycheck-mode)
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
-;;(global-set-key (kbd "C-c f") 'conjure-hydra-flycheck/body)
+(global-set-key (kbd "C-c f") 'conjure-hydra-flycheck/body)
 
-;; (defhydra conjure-hydra-flycheck (:color blue)
-;;   "
-;; ^Flycheck^            ^Errors^             ^Checker^
-;; ^--------^------------^------^-------------^-------^---
-;; _q_ quit              _<_ previous         _?_ describe
-;; _M_ manual            _>_ next             _d_ disable
-;; _v_ verify setup      _f_ check            _s_ select
-;; ^^                    _l_ list
-;; ^^
-;; "
-;;   ("q" nil)
-;;   ("M" flycheck-manual)
-;;   ("v" flycheck-verify-setup)
+(defhydra conjure-hydra-flycheck (:color blue)
+  "
+^Flycheck^            ^Errors^             ^Checker^
+^--------^------------^------^-------------^-------^---
+_q_ quit              _<_ previous         _?_ describe
+_M_ manual            _>_ next             _d_ disable
+_v_ verify setup      _f_ check            _s_ select
+^^                    _l_ list
+^^
+"
+  ("q" nil)
+  ("M" flycheck-manual)
+  ("v" flycheck-verify-setup)
 
-;;   ("<" flycheck-previous-error :color pink)
-;;   (">" flycheck-next-error :color pink)
-;;   ("f" flycheck-buffer)
-;;   ("l" flycheck-list-errors)
+  ("<" flycheck-previous-error :color pink)
+  (">" flycheck-next-error :color pink)
+  ("f" flycheck-buffer)
+  ("l" flycheck-list-errors)
 
-;;   ("?" flycheck-describe-checker)
-;;   ("d" flycheck-disable-checker)
-;;   ("s" flycheck-select-checker))
+  ("?" flycheck-describe-checker)
+  ("d" flycheck-disable-checker)
+  ("s" flycheck-select-checker))
 
 (with-eval-after-load 'magit
   (setq git-commit-fill-column 72
@@ -193,19 +194,17 @@
 (require 'conjure-js)
 (require 'conjure-python)
 (require 'conjure-ruby)
+(require 'conjure-yaml)
 
 (conjure-require-packages '(lsp-mode lsp-java dap-mode))
 
 (require 'dap-mode)
-;; (with-eval-after-load 'lsp-mode
-;;   (setq lsp-treemacs-symbols-sort-function '(lsp-treemacs-sort-by-kind lsp-treemacs-sort-by-name))
-;;   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-;;   (yas-global-mode)
-;;   (dap-auto-configure-mode))
+(with-eval-after-load 'lsp-mode
+  (setq lsp-treemacs-symbols-sort-function '(lsp-treemacs-sort-by-kind lsp-treemacs-sort-by-name))
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (dap-auto-configure-mode))
 
-;;(add-hook 'java-mode-hook 'lsp-deferred)
-
-(ef-themes-load-random 'dark)
+(add-hook 'java-mode-hook 'lsp-deferred)
 
 (require 'server)
 (unless (server-running-p)

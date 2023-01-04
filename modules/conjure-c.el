@@ -5,7 +5,6 @@
 
 ;;; Code:
 (conjure-require-packages '(lsp-mode
-			    flycheck
 			    dap-mode
 			    lsp-java))
 
@@ -16,11 +15,10 @@
 	c-basic-offset 4)
   (c-set-offset 'substatement-open 0))
 
-(setq conjure-c-mode-coommon-hook 'conjure-c-mode-common-defaults)
+(setq conjure-c-mode-common-hook 'conjure-c-mode-common-defaults)
 
 (add-hook 'c-mode-common-hook (lambda () (run-hooks 'conjure-c-mode-common-hook)))
 
-;; LSP is better for Java than eglot
 (add-hook 'java-mode-hook 'lsp-deferred)
 (add-hook 'lsp-mode-hook 'lsp-lens-mode)
 

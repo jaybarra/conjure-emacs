@@ -8,6 +8,7 @@
 (scroll-bar-mode -1)   ; Disable visible scroll-bar
 (tool-bar-mode -1)     ; Disable the toolbar
 (tooltip-mode -1)      ; Disable tooltips
+(menu-bar-mode -1)     ; Disable menu-bar
 (blink-cursor-mode -1) ; no blinky cursor
 
 (column-number-mode)
@@ -64,6 +65,8 @@
       goto-address-mail-mouse-face 'highlight)
 
 (set-face-attribute 'default nil :family "Source Code Pro" :weight 'normal :width 'normal)
+
+(ef-themes-load-random 'dark)
 
 (provide 'conjure-ui)
 ;;; conjure-ui.el ends here

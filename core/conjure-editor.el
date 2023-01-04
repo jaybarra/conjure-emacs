@@ -4,6 +4,8 @@
 
 (setq require-final-newline t)
 
+(define-coding-system-alias 'UTF-8 'utf-8)
+
 (global-auto-revert-mode +1)
 
 (show-smartparens-global-mode +1)
@@ -22,8 +24,11 @@
 (which-key-mode)
 (diminish 'which-key-mode)
 
-(apheleia-global-mode)
+(apheleia-global-mode 1)
 (winner-mode 1)
+
+(require 'yasnippet)
+(yas-global-mode 1)
 
 (require 'dired-x)
 (setq dired-listing-switches "-lahF"
@@ -55,6 +60,11 @@
 (add-hook 'ag-mode-hook 'wgrep-ag-setup)
 
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+
+(setq lsp-headerline-breadcrumb-icons-enable nil
+      lsp-modeline-code-actions-enable t
+      lsp-lens-enable nil
+      lsp-completion-provider :none)
 
 (provide 'conjure-editor)
 ;;; conjure-editor.el ends here

@@ -1,7 +1,8 @@
 ;;; conjure-clojure.el --- Clojure(script) Initialization
 ;;; Commentary:
 ;;; Code:
-(conjure-require-packages '(clojure-mode cider))
+(conjure-require-packages '(clojure-mode
+			    cider))
 
 (require 'conjure-lisp)
 (require 'clojure-mode)
@@ -15,6 +16,9 @@
 
 (add-hook 'clojure-mode-hook (lambda () (run-hooks 'conjure-clojure-mode-hook)))
 
+(require 'smartparens-config)
+(sp-local-pair '(clojure-mode) "'" "'" :actions nil)
+
 (with-eval-after-load 'cider
   (setq nrepl-log-messages nil
         nrepl-hide-special-buffers t
@@ -22,7 +26,8 @@
 	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
 	cider-repl-buffer-size-limit 100000
-        cider-print-fn `puget
+        ;;cider-print-fn 'puget
+	cider-print-fn 'fipp
 	cider-print-options '(("print-length" 100)))
 
   (add-hook 'cider-mode-hook 'eldoc-mode)
@@ -32,10 +37,7 @@
     (subword-mode +1)
     (run-hooks 'conjure-interactive-lisp-coding-hook))
   
-
   (setq conjure-cider-repl-mode-hook 'conjure-cider-repl-mode-defaults)
-
-  (define-key clojure-mode-map (kbd "C-c C-a") 'cider-format-buffer)
 
   (add-hook 'cider-repl-mode-hook
             (lambda ()

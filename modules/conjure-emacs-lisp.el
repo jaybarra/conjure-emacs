@@ -18,13 +18,17 @@
   "Don't check doc style in Emacs Lisp test files."
   (let ((file-name (buffer-file-name)))
     (when (and file-name (string-match-p ".*-tests?\\.el\\'" file-name))
-      ;;(setq-local flycheck-checkers '(emacs-lisp))
-      )))
+      (setq-local flycheck-checkers '(emacs-lisp)))))
 
+(require 'smartparens-config)
 (defun conjure-emacs-lisp-mode-defaults ()
   "Sensible defaults for `emacs-lisp-mode'."
   (run-hooks 'conjure-lisp-coding-hook)
   (eldoc-mode +1)
+
+  (smartparens-strict-mode +1)
+  (sp-local-pair '(emacs-lisp-mode) "'" "'" :actions nil)
+
   (conjure-recompile-elc-on-save)
   (conjure-conditional-emacs-lisp-checker)
   (prettify-symbols-mode +1)

@@ -1,13 +1,11 @@
 ;;; conjure-python.el --- Python configuration
 ;;; Commentary:
 ;;; Code:
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-	       '((python-mode) "/Users/jbarra/Library/Python/3.10/bin/jedi-language-server")))
+(conjure-require-packages '(lsp-mode))
+(setq python-shell-interpreter "/usr/local/bin/python3"
+      lsp-pyls-server-command "/Users/jbarra/Library/Python/3.10/bin/pylsp")
 
-(setq python-shell-interpreter "/usr/local/bin/python3")
-
-(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'python-mode-hook 'lsp-deferred)
 
 (provide 'conjure-python)
 ;;; conjure-python.el ends here

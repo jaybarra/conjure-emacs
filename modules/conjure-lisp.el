@@ -3,8 +3,9 @@
 ;;; Code:
 (conjure-require-packages '(rainbow-delimiters))
 
+(require 'smartparens-config)
 (defun conjure-lisp-coding-defaults ()
-  "Sensible defaults for `lisp-mode'."
+  "Sensible defaults for Lisp languages."
   (smartparens-strict-mode +1)
   (rainbow-delimiters-mode +1))
 

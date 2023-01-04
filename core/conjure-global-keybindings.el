@@ -1,4 +1,4 @@
-;;; conjure-global-keybindings.el --- Conjure keybindings
+;;; conjure-global-keybindings.el --- Conjure Global Keybindings
 ;;; Commentary:
 ;;; Code:
 
@@ -21,8 +21,9 @@
 (global-set-key [remap mark-sexp] 'easy-mark)
 
 (global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C--") 'er/contract-region)
 
-(global-set-key (kbd "C-:") 'avy-goto-char)
+(global-set-key (kbd "C-;") 'avy-goto-char)
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
@@ -57,10 +58,7 @@
 
 (with-eval-after-load 'lsp-mode
  (define-key lsp-mode-map (kbd "M-<return>") 'lsp-execute-code-action)
- (define-key lsp-mode-map (kbd "s-b") 'lsp-goto-implementation)
- ;;(define-key lsp-mode-map (kbd "s-f") find-symbol)
- ;;(define-key lsp-mode-map (kbd "s-F")
-   )
+ (define-key lsp-mode-map (kbd "s-b") 'lsp-goto-implementation))
 
 (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
