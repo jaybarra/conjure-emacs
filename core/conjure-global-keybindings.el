@@ -56,10 +56,6 @@
 (global-set-key (kbd "s-E") 'consult-projectile-recentf)
 (global-set-key (kbd "s-e") 'consult-projectile-find-file)
 
-(with-eval-after-load 'lsp-mode
- (define-key lsp-mode-map (kbd "M-<return>") 'lsp-execute-code-action)
- (define-key lsp-mode-map (kbd "s-b") 'lsp-goto-implementation))
-
 (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
 (define-key smartparens-mode-map (kbd "C-M-)") 'sp-backward-slurp-sexp)
@@ -69,6 +65,8 @@
 (define-key smartparens-mode-map (kbd "M-<delete>") 'sp-unwrap-sexp)
 (define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
 (define-key smartparens-mode-map (kbd "M-D") 'sp-splice-sexp)
+
+(global-set-key (kbd "C-x g") 'magit-status)
 
 (global-set-key (kbd "C-M-s") 'conjure-smartparens-hydra/body)
 (defhydra conjure-smartparens-hydra ()

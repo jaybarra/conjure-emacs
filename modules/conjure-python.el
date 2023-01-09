@@ -1,11 +1,9 @@
 ;;; conjure-python.el --- Python configuration
 ;;; Commentary:
 ;;; Code:
-(conjure-require-packages '(lsp-mode))
-(setq python-shell-interpreter "/usr/local/bin/python3"
-      lsp-pyls-server-command "/Users/jbarra/Library/Python/3.10/bin/pylsp")
+(setq python-shell-interpreter "/usr/local/bin/python3")
 
-(add-hook 'python-mode-hook 'lsp-deferred)
+(add-hook 'python-mode-hook 'eglot-ensure)
 
 (provide 'conjure-python)
 ;;; conjure-python.el ends here

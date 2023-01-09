@@ -1,9 +1,7 @@
 ;;; conjure-ruby.el --- Ruby configuration
 ;;; Commentary:
 ;;; Code:
-(conjure-require-packages '(lsp-mode))
-
-(add-hook 'ruby-mode-hook 'lsp-deferred)
+(add-hook 'ruby-mode-hook 'eglot-ensure)
 
 (provide 'conjure-ruby)
 ;;; conjure-ruby.el ends here

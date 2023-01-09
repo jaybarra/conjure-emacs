@@ -15,8 +15,8 @@ apps are not started from a shell."
   (let ((path-from-shell (replace-regexp-in-string
 			  "[ \t\n]*$" "" (shell-command-to-string
 					  "$SHELL --login -c 'echo $PATH'"))))
-    (setenv "PATH" (concat path-from-shell ":/Users/jbarra/.local/npm/bin"))
-    (setq exec-path (append exec-path (split-string path-from-shell path-separator) '("/Users/jbarra/.local/npm/bin")))))
+    ;;(message "Handle custom PATH here")
+    ))
 
 (set-exec-path-from-shell-PATH)
 

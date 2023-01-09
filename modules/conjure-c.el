@@ -4,10 +4,6 @@
 ;; Handles cc-derived modes, Java, C, PHP...
 
 ;;; Code:
-(conjure-require-packages '(lsp-mode
-			    dap-mode
-			    lsp-java))
-
 (defun conjure-c-mode-common-defaults ()
   "Sensible defaults for `c-mode' buffers."
 
@@ -19,11 +15,7 @@
 
 (add-hook 'c-mode-common-hook (lambda () (run-hooks 'conjure-c-mode-common-hook)))
 
-(add-hook 'java-mode-hook 'lsp-deferred)
-(add-hook 'lsp-mode-hook 'lsp-lens-mode)
-
-(with-eval-after-load 'lsp-mode
-  (dap-auto-configure-mode))
-
+(add-hook 'java-mode-hook 'eglot-ensure)
+ 
 (provide 'conjure-c)
 ;;; conjure-c.el ends here

@@ -18,7 +18,8 @@
   "Don't check doc style in Emacs Lisp test files."
   (let ((file-name (buffer-file-name)))
     (when (and file-name (string-match-p ".*-tests?\\.el\\'" file-name))
-      (setq-local flycheck-checkers '(emacs-lisp)))))
+      ;;(message "flycheck goes here")
+      )))
 
 (require 'smartparens-config)
 (defun conjure-emacs-lisp-mode-defaults ()

@@ -133,13 +133,6 @@
 (define-key tempel-map [tab] 'tempel-next)
 (define-key corfu-map (kbd "C-M-i") 'tempel-expand)
 
-(defun conjure-lsp-mode-defaults ()
-  "Sensible `lsp' configuration."
-  (setf (alist-get 'style (alist-get 'lsp-capf completion-category-defaults))
-	'(orderless)))
-
-(add-hook 'lsp-completion-mode-hook 'conjure-lsp-mode-defaults)
-
 (require 'cape)
 (add-to-list 'completion-at-point-functions #'cape-file)
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -148,40 +141,14 @@
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
-(global-set-key (kbd "C-c f") 'conjure-hydra-flycheck/body)
-
-(defhydra conjure-hydra-flycheck (:color blue)
-  "
-^Flycheck^            ^Errors^             ^Checker^
-^--------^------------^------^-------------^-------^---
-_q_ quit              _<_ previous         _?_ describe
-_M_ manual            _>_ next             _d_ disable
-_v_ verify setup      _f_ check            _s_ select
-^^                    _l_ list
-^^
-"
-  ("q" nil)
-  ("M" flycheck-manual)
-  ("v" flycheck-verify-setup)
-
-  ("<" flycheck-previous-error :color pink)
-  (">" flycheck-next-error :color pink)
-  ("f" flycheck-buffer)
-  ("l" flycheck-list-errors)
-
-  ("?" flycheck-describe-checker)
-  ("d" flycheck-disable-checker)
-  ("s" flycheck-select-checker))
-
 (with-eval-after-load 'magit
   (setq git-commit-fill-column 72
 	git-commit-summary-max-length 50))
 
-(global-set-key (kbd "C-x g") 'magit-status)
-
 (projectile-mode)
+
+(setq display-buffer-base-action '(display-buffer-below-selected))
+(edwina-mode 1)
 
 (require 'conjure-clojure)
 (require 'conjure-emacs-lisp)
@@ -195,16 +162,6 @@ _v_ verify setup      _f_ check            _s_ select
 (require 'conjure-python)
 (require 'conjure-ruby)
 (require 'conjure-yaml)
-
-(conjure-require-packages '(lsp-mode lsp-java dap-mode))
-
-(require 'dap-mode)
-(with-eval-after-load 'lsp-mode
-  (setq lsp-treemacs-symbols-sort-function '(lsp-treemacs-sort-by-kind lsp-treemacs-sort-by-name))
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (dap-auto-configure-mode))
-
-(add-hook 'java-mode-hook 'lsp-deferred)
 
 (require 'server)
 (unless (server-running-p)

@@ -61,10 +61,5 @@
 
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 
-(setq lsp-headerline-breadcrumb-icons-enable nil
-      lsp-modeline-code-actions-enable t
-      lsp-lens-enable nil
-      lsp-completion-provider :none)
-
 (provide 'conjure-editor)
 ;;; conjure-editor.el ends here

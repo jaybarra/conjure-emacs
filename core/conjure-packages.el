@@ -29,12 +29,13 @@
     diminish
     discover-my-major
     easy-kill
+    edwina
     ef-themes
+    eglot
     embark
     embark-consult
     exec-path-from-shell
     expand-region
-    flycheck
     gist
     git-timemachine
     guru-mode
@@ -43,7 +44,6 @@
     hydra
     kind-icon
     lin
-    lsp-mode
     magit
     marginalia
     operate-on-number
