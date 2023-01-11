@@ -4,7 +4,7 @@
 
 (defun display-ansi-colors ()
   "Colorize buffer containining ANSI color strings."
-  (interactive)
+  (interactive "r")
   (ansi-color-apply-on-region (point-min) (point-max)))
 
 (defun conjure-pretty-print-xml-region (begin end)
@@ -17,5 +17,5 @@
       (backward-char) (insert "\n"))
     (indent-region begin end)))
 
-(provide 'init-common)
-;;; init-common.el ends here
+(provide 'conjure-common)
+;;; conjure-common.el ends here

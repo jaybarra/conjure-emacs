@@ -49,6 +49,7 @@
 
 (message "[Conjure] Invoking the Deep Magic...")
 (require 'conjure-packages)
+(require 'conjure-common)
 (require 'conjure-custom)
 (require 'conjure-ui)
 (require 'conjure-editor)
@@ -150,6 +151,7 @@
 (setq display-buffer-base-action '(display-buffer-below-selected))
 (edwina-mode 1)
 
+(require 'conjure-datatypes)
 (require 'conjure-clojure)
 (require 'conjure-emacs-lisp)
 (require 'conjure-lisp)
