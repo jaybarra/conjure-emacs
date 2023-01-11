@@ -25,4 +25,4 @@ Run the following and restart Emacs.
     
 ### Prerequisites
 
-* [MesloLGS NF Fonts](https://github.com/romkatv/powerlevel10k/blob/master/font.md)
+* [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro)
