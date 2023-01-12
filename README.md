@@ -3,8 +3,7 @@
 Conjure is an Emacs distribution that takes inspiration from a number of excellent
 Emacs configurations. 
 
-
-+ [Prelude](https://raw.githubusercontent.com/bbatsov/prelude)
++ [Prelude](https://github.com/bbatsov/prelude)
 + [Emacs From Scratch](https://github.com/daviwil/emacs-from-scratch)
 
 ## Installation
@@ -25,7 +24,7 @@ Run the following and restart Emacs.
     
 ### Prerequisites
 
-[conjure-ui](./core/conjure-ui.el) uses [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro) as the preferred font.
+[Conjure](./core/conjure-ui.el) uses [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro) as the preferred font.
 
 ### Language Server Protocol (LSP)
 
