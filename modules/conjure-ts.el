@@ -7,7 +7,7 @@
 
 (setq typescript-indent-level 2)
 
-(add-hook 'typescript-mode-hook 'eglot-ensure)
+(add-hook 'typescript-mode-hook #'eglot-ensure)
 
 (provide 'conjure-ts)
 ;;; conjure-ts.el ends here

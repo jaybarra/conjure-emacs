@@ -89,7 +89,7 @@
 
 (setq minibuffer-prompt-properties
       '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 (with-eval-after-load 'corfu
   (setq corfu-cycle t
@@ -125,8 +125,8 @@
   "Add tempel Capf to `completion-at-point-functions'."
   (setq-local completion-at-point-functions (cons #'tempel-expand completion-at-point-functions)))
 
-(add-hook 'prog-mode-hook 'tempel-setup-capf)
-(add-hook 'text-mode-hook 'tempel-setup-capf)
+(add-hook 'prog-mode-hook #'tempel-setup-capf)
+(add-hook 'text-mode-hook #'tempel-setup-capf)
 
 (global-set-key (kbd "M-+") 'tempel-insert)
 (define-key tempel-map [remap keyboard-escape-quit] 'tempel-done)

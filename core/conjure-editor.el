@@ -59,10 +59,10 @@
                  (window-parameters (mode-line-format . none))))
 
 (require 'embark-consult)
-(add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
+(add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode)
 
-(add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+(add-hook 'dired-mode-hook #'diff-hl-dired-mode)
+(add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
 
 (require 'ag)
 (setq ag-highlight-search t
@@ -70,7 +70,7 @@
                              '(".git" ".build" "log" "node_modules")))
 
 (autoload 'wgrep-ag-setup "wgrep-ag")
-(add-hook 'ag-mode-hook 'wgrep-ag-setup)
+(add-hook 'ag-mode-hook #'wgrep-ag-setup)
 
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 
