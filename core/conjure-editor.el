@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'diminish)
 (setq require-final-newline t)
 
 (define-coding-system-alias 'UTF-8 'utf-8)
@@ -29,6 +30,18 @@
 
 (require 'yasnippet)
 (yas-global-mode 1)
+(diminish 'yas-minor-mode)
+
+;; dired - reuse current buffer by pressing 'a'
+(put 'dired-find-alternate-file 'disabled nil)
+
+;; always delete and copy recursively
+(setq dired-recursive-deletes 'always)
+(setq dired-recursive-copies 'always)
+
+;; if there is a dired buffer displayed in the next window, use its
+;; current subdir, instead of the current subdir of this dired buffer
+(setq dired-dwim-target t)
 
 (require 'dired-x)
 (setq dired-listing-switches "-lahF"
@@ -60,6 +73,23 @@
 (add-hook 'ag-mode-hook 'wgrep-ag-setup)
 
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+
+;; Compilation from Emacs
+(defun conjure-colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook #'conjure-colorize-compilation-buffer)
+
+;; use settings from .editorconfig file when present
+(require 'editorconfig)
+(editorconfig-mode 1)
+(diminish 'editorconfig-mode)
 
 (provide 'conjure-editor)
 ;;; conjure-editor.el ends here

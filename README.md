@@ -39,3 +39,5 @@ It is suggested to install the following LSPs on your system:
   * `brew install yaml-language-server`
 * [JDTLS](https://github.com/eclipse/eclipse.jdt.ls) for Java (requires java 17+)
   * `brew install jdtls`
+* [Solargraph](https://solargraph.org/) for Ruby
+  * `gem install solargraph`
