@@ -163,6 +163,7 @@
 (require 'conjure-js)
 (require 'conjure-python)
 (require 'conjure-ruby)
+(require 'conjure-web)
 (require 'conjure-yaml)
 
 (require 'server)

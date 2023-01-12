@@ -59,6 +59,7 @@
     vertico
     vertico-posframe
     volatile-highlights
+    web-mode
     wgrep
     wgrep-ag
     which-key
