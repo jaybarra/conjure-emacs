@@ -1,7 +1,6 @@
 # Emacs Conjure
 
-Conjure is an Emacs distribution that takes inspiration from a number of excellent
-Emacs configurations. 
+Conjure is an Emacs distribution that takes inspiration from a number of excellent Emacs configurations. 
 
 + [Prelude](https://github.com/bbatsov/prelude)
 + [Emacs From Scratch](https://github.com/daviwil/emacs-from-scratch)
@@ -10,15 +9,14 @@ Emacs configurations.
 
 [Download Emacs](https://www.gnu.org/software/emacs/download.html) from one of listed locations.
 
-Cloen this repo to `~/.emacs.d`
+Clone this repo to `~/.emacs.d`
 
 	cd ~
 	git clone https://github.com/jaybarra/.emacs.d
 
 Once downloaded, run Emacs. On first run it will attempt to install packages.
 
-Some packages need additional interactive steps to configure. Specifically
-any that require fonts and icons.
+Some packages need additional interactive steps to configure. Specifically any that require fonts and icons.
 
 Run the following and restart Emacs.
 	
@@ -31,7 +29,7 @@ Run the following and restart Emacs.
 
 ## Extras
 
-Emacs is powerful by itself but can use external applications to extend its capabilities.
+Emacs is powerful by itself, but it can leverage external applications to extend its capabilities.
 
 ### Language Server Protocol (LSP)
 
