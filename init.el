@@ -91,48 +91,34 @@
       '(read-only t cursor-intangible t face minibuffer-prompt))
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-(with-eval-after-load 'corfu
-  (setq corfu-cycle t
-        corfu-auto t
-        corfu-auto-prefix 2
-	corfu-auto-delay 0.0
-        corfu-quit-at-boundary 'separator
-        corfu-preview-current 'insert
-	corfu-preselect-first nil)
+(require 'corfu)
+(setq corfu-cycle t
+      corfu-auto t
+      corfu-auto-prefix 2
+      corfu-auto-delay 0.0
+      corfu-quit-at-boundary 'separator
+      corfu-preview-current 'insert
+      corfu-preselect-first nil)
 
-  (define-key corfu-map (kbd "M-SPC") 'corfu-insert-separator)
-  (define-key corfu-map (kbd "TAB") 'corfu-next)
-  (define-key corfu-map [tab] 'corfu-next)
-  (define-key corfu-map (kbd "S-TAB") 'corfu-previous)
-  (define-key corfu-map [backtab] 'corfu-previous)
-  (define-key corfu-map (kbd "S-<return>") 'corfu-insert)
+(define-key corfu-map (kbd "M-SPC") 'corfu-insert-separator)
+(define-key corfu-map (kbd "TAB") 'corfu-next)
+(define-key corfu-map [tab] 'corfu-next)
+(define-key corfu-map (kbd "S-TAB") 'corfu-previous)
+(define-key corfu-map [backtab] 'corfu-previous)
+(define-key corfu-map (kbd "S-<return>") 'corfu-insert)
 
-  (require 'kind-icon)
-  (setq kind-icon-default-face 'corfu-default)
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+(require 'kind-icon)
+(setq kind-icon-default-face 'corfu-default)
+(add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
-  (add-hook 'eshell-mode-hook (lambda ()
-				(setq-local corfu-quit-at-boundary t
-					    corfu-quit-no-match t
-					    corfu-auto nil)
-				(corfu-mode))))
+(add-hook 'eshell-mode-hook (lambda ()
+			      (setq-local corfu-quit-at-boundary t
+					  corfu-quit-no-match t
+					  corfu-auto nil)
+			      (corfu-mode)))
 
 (global-corfu-mode)
 (corfu-history-mode)
-
-(require 'tempel)
-(defun tempel-setup-capf ()
-  "Add tempel Capf to `completion-at-point-functions'."
-  (setq-local completion-at-point-functions (cons #'tempel-expand completion-at-point-functions)))
-
-(add-hook 'prog-mode-hook #'tempel-setup-capf)
-(add-hook 'text-mode-hook #'tempel-setup-capf)
-
-(global-set-key (kbd "M-+") 'tempel-insert)
-(define-key tempel-map [remap keyboard-escape-quit] 'tempel-done)
-(define-key tempel-map (kbd "TAB") 'tempel-next)
-(define-key tempel-map [tab] 'tempel-next)
-(define-key corfu-map (kbd "C-M-i") 'tempel-expand)
 
 (require 'cape)
 (add-to-list 'completion-at-point-functions #'cape-file)

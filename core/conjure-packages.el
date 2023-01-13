@@ -56,7 +56,6 @@
     savehist
     smartparens
     smartrep
-    tempel
     vertico
     vertico-posframe
     volatile-highlights
