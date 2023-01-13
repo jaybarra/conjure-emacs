@@ -5,7 +5,7 @@
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 
-(scroll-bar-mode -1)   ; Disable visible scroll-bar
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))   ; Disable visible scroll-bar
 (tool-bar-mode -1)     ; Disable the toolbar
 (tooltip-mode -1)      ; Disable tooltips
 (menu-bar-mode -1)     ; Disable menu-bar
