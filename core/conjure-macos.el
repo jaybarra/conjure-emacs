@@ -20,8 +20,8 @@
                                   ((shift) . 5)
                                   ((control))))
 
-;; don't bother hiding the menu-bar for Mac
-(menu-bar-mode +1)
+;; don't bother hiding the menu-bar for Mac unless running in terminal
+(when (display-graphic-p) (menu-bar-mode +1))
 
 (when (fboundp 'set-fontset-font)
   (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend))

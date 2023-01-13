@@ -2,11 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
+(when (display-graphic-p)
+    (progn
+      ; Disable visible scroll-bar and toolbar
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)))
 
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))   ; Disable visible scroll-bar
-(tool-bar-mode -1)     ; Disable the toolbar
 (tooltip-mode -1)      ; Disable tooltips
 (menu-bar-mode -1)     ; Disable menu-bar
 (blink-cursor-mode -1) ; no blinky cursor

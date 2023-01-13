@@ -8,7 +8,9 @@ Emacs configurations.
 
 ## Installation
 
-To install, clone this repo to `~/.emacs.d`
+[Download Emacs](https://www.gnu.org/software/emacs/download.html) from one of listed locations.
+
+Cloen this repo to `~/.emacs.d`
 
 	cd ~
 	git clone https://github.com/jaybarra/.emacs.d
@@ -26,7 +28,14 @@ Run the following and restart Emacs.
 
 [Conjure](./core/conjure-ui.el) uses [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro) as the preferred font.
 
+
+## Extras
+
+Emacs is powerful by itself but can use external applications to extend its capabilities.
+
 ### Language Server Protocol (LSP)
+
+To enable a more IDE like experience Emacs supports Language Servers.
 
 Conjure uses eglot as its LSP interface which relies on external applications.
 Feel free to switch out `eglot` for `lsp` by replacing `ensure-eglot` with `lsp-deferred` in throughout the configurations or for unhandled languages. You will also need to add `lsp` to the list of [conjure-package](./core/conjure-packages.el)
@@ -41,3 +50,4 @@ It is suggested to install the following LSPs on your system:
   * `brew install jdtls`
 * [Solargraph](https://solargraph.org/) for Ruby
   * `gem install solargraph`
+
