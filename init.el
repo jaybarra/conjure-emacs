@@ -149,12 +149,6 @@
 (require 'conjure-web)
 (require 'conjure-yaml)
 
-(require 'tempel)
-(defun tempel-setup-capf()
-  (setq-local completion-at-point-functions (cons #'tempel-expand completion-at-point-functions)))
-(add-hook 'prog-mode-hook 'tempel-setup-capf)
-(add-hook 'text-mode-hook 'tempel-setup-capf)
-
 (require 'server)
 (unless (server-running-p)
   (server-start))
