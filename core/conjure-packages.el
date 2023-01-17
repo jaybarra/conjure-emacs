@@ -30,7 +30,6 @@
     discover-my-major
     easy-kill
     editorconfig
-    edwina
     ef-themes
     eglot
     embark

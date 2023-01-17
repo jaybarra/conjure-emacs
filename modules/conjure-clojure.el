@@ -43,9 +43,9 @@
             (lambda ()
               (run-hooks 'conjure-cider-repl-mode-hook))))
 
-;; handle Compojure formatting as specified
-;; https://github.com/weavejester/compojure/wiki/Emacs-indentation
 (define-clojure-indent
+  ;; Compojure
+  ;; https://github.com/weavejester/compojure/wiki/Emacs-indentation
   (defroutes 'defun)
   (GET 2)
   (POST 2)
@@ -57,7 +57,11 @@
   (PATCH 2)
   (rfn 2)
   (let-routes 1)
-  (context 2))
+  (context 2)
+
+  ;; Midje testing framework
+  (fact 1)
+  (facts 1))
 
 (provide 'conjure-clojure)
 ;;; conjure-clojure.el ends here

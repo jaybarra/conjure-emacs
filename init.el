@@ -134,9 +134,6 @@
 
 (projectile-mode)
 
-(setq display-buffer-base-action '(display-buffer-below-selected))
-(edwina-mode 1)
-
 (require 'conjure-datatypes)
 (require 'conjure-clojure)
 (require 'conjure-emacs-lisp)
@@ -151,6 +148,12 @@
 (require 'conjure-ruby)
 (require 'conjure-web)
 (require 'conjure-yaml)
+
+(require 'tempel)
+(defun tempel-setup-capf()
+  (setq-local completion-at-point-functions (cons #'tempel-expand completion-at-point-functions)))
+(add-hook 'prog-mode-hook 'tempel-setup-capf)
+(add-hook 'text-mode-hook 'tempel-setup-capf)
 
 (require 'server)
 (unless (server-running-p)
