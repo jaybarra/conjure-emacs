@@ -69,7 +69,11 @@
 (setq vertico-multiform-commands
       '((consult-projectile-switch-project posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
 	(consult-projectile-find-file posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
-	(consult-projectile-recentf posframe (vertico-posframe-handler . posframe-poshandler-frame-center))))
+        (consult-projectile-recentf posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
+	(consult-recent-file posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
+	(org-roam-node-find posframe (vertico-posframe-handler . posframe-poshandle-frame-center))
+	(org-roam-node-insert posframe (vertico-posframe-handler . posframe-poshandle-frame-center))
+	(org-roam-insert-node-immediate posframe (vertico-posframe-handler . posframe-poshandle-frame-center))))
 (vertico-multiform-mode 1)
 
 (require 'orderless)

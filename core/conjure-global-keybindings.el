@@ -55,6 +55,7 @@
 ;; IntelliJ style keybindings
 (global-set-key (kbd "s-E") 'consult-projectile-recentf)
 (global-set-key (kbd "s-e") 'consult-projectile-find-file)
+(global-set-key (kbd "C-s-e") 'consult-recent-file)
 
 (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
