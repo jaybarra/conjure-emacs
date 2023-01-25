@@ -32,6 +32,7 @@
     editorconfig
     ef-themes
     eglot
+    ein
     embark
     embark-consult
     exec-path-from-shell
