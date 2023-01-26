@@ -52,7 +52,12 @@ Takes ARG and optionally ARGS as pass-thrus."
   (setq org-roam-ui-open-on-start nil)
 
   (org-roam-db-autosync-mode)
+  (setq org-id-extra-files (directory-files-recursively org-roam-directory "\\.org$"))
+
   (message "[Conjure] org-roam powering up..."))
+
+(setq org-id-track-globally t)
+
 
 (setq conjure-org-roam-hook 'conjure-org-roam-defaults)
 (add-hook 'after-init-hook (lambda ()
