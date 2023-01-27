@@ -26,3 +26,7 @@ recentf
 /.org-id-locations
 /bookmarks
 /eglot-eclipse-jdt-cache/
+/forge-database.sqlite
+/request/
+/share/
+/tutorial/
