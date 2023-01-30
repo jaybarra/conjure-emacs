@@ -153,6 +153,8 @@
 (require 'conjure-web)
 (require 'conjure-yaml)
 
+(add-hook 'prog-mode-hook (lambda () (dap-mode +1)))
+
 (require 'server)
 (unless (server-running-p)
   (server-start))
