@@ -111,8 +111,12 @@
 (define-key corfu-map [backtab] 'corfu-previous)
 (define-key corfu-map (kbd "S-<return>") 'corfu-insert)
 
+
 (require 'kind-icon)
 (setq kind-icon-default-face 'corfu-default)
+(require 'svg-lib)
+(unless (image-type-available-p 'svg) (setq kind-icon-use-icons nil))
+
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
 (add-hook 'eshell-mode-hook (lambda ()

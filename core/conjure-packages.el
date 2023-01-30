@@ -25,6 +25,7 @@
     consult-org-roam
     corfu
     crux
+    dap-mode
     diff-hl
     diminish
     discover-my-major
