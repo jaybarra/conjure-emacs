@@ -58,6 +58,15 @@
                  nil
                  (window-parameters (mode-line-format . none))))
 
+(require 'consult)
+(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
+(setq register-preview-delay 0.5
+      register-preview-function #'consult-register-format)
+(advice-add #'register-preview :override #'consult-register-window)
+
+(setq xref-show-xrefs-function #'consult-xref
+      xref-show-definitions-function #'consult-xref)
+
 (require 'embark-consult)
 (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode)
 
@@ -67,7 +76,7 @@
 (require 'ag)
 (setq ag-highlight-search t
       ag-ignore-list (append ag-ignore-list
-                             '(".git" ".build" "log" "node_modules")))
+                             '(".git" ".cpcache" ".build" "log" "node_modules")))
 
 (autoload 'wgrep-ag-setup "wgrep-ag")
 (add-hook 'ag-mode-hook #'wgrep-ag-setup)

@@ -21,6 +21,7 @@
     cape
     consult
     consult-ag
+    consult-eglot
     consult-projectile
     consult-org-roam
     corfu
@@ -54,6 +55,7 @@
     projectile
     pulsar
     rainbow-delimiters
+    rg
     savehist
     smartparens
     smartrep

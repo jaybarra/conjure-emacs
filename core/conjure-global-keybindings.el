@@ -38,7 +38,13 @@
 (global-set-key (kbd "M-.") 'embark-dwim)
 
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
-(global-set-key (kbd "C-s-f") 'consult-ag)
+
+;; prefer ripgrep to ag
+(cond ((stringp (executable-find "rg")) (global-set-key (kbd "C-s-f") 'consult-ripgrep))
+      ((stringp (executable-find "ag")) (global-set-key (kbd "C-s-f") 'consult-ag))
+      ;; default
+      (global-set-key (kbd "C-s-f") 'consult-grep))
+
 (global-set-key (kbd "C-s") 'consult-line)
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "C-x r j") 'consult-register)
