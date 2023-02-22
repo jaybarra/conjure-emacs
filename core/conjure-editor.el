@@ -78,9 +78,6 @@
       ag-ignore-list (append ag-ignore-list
                              '(".git" ".cpcache" ".build" "log" "node_modules")))
 
-(autoload 'wgrep-ag-setup "wgrep-ag")
-(add-hook 'ag-mode-hook #'wgrep-ag-setup)
-
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 
 ;; Compilation from Emacs

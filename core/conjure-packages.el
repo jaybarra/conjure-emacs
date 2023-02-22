@@ -64,7 +64,6 @@
     volatile-highlights
     web-mode
     wgrep
-    wgrep-ag
     which-key
     yasnippet
     yasnippet-snippets

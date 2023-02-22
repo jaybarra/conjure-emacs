@@ -51,12 +51,13 @@
 (require 'conjure-packages)
 (require 'conjure-common)
 (require 'conjure-custom)
-(require 'conjure-ui)
 (require 'conjure-editor)
-(require 'conjure-global-keybindings)
 
 (when *is-a-mac*
   (require 'conjure-macos))
+
+(require 'conjure-ui)
+(require 'conjure-global-keybindings)
 
 (require 'vertico)
 (setq enable-recursive-minibuffers t)

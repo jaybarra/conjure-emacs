@@ -40,10 +40,9 @@
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
 
 ;; prefer ripgrep to ag
-(cond ((stringp (executable-find "rg")) (global-set-key (kbd "C-s-f") 'consult-ripgrep))
-      ((stringp (executable-find "ag")) (global-set-key (kbd "C-s-f") 'consult-ag))
-      ;; default
-      (global-set-key (kbd "C-s-f") 'consult-grep))
+(cond ((executable-find "rg") (global-set-key (kbd "C-s-f") 'consult-ripgrep))
+      ((executable-find "ag") (global-set-key (kbd "C-s-f") 'consult-ag))
+      (t (global-set-key (kbd "C-s-f") 'consult-grep)))
 
 (global-set-key (kbd "C-s") 'consult-line)
 (global-set-key (kbd "C-x b") 'consult-buffer)
