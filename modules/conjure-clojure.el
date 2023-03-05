@@ -25,7 +25,7 @@
         cider-repl-display-help-banner nil
 	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
-	cider-repl-buffer-size-limit 100000
+	cider-repl-buffer-size-limit 10000
         ;;cider-print-fn 'puget
 	cider-print-fn 'fipp
 	cider-print-options '(("print-length" 100)))

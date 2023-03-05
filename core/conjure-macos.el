@@ -1,13 +1,13 @@
-;;; conjure-macos.el --- macos specific functions
+;;; conjure-macos.el --- Mac specific configs
 ;;; Commentary:
 ;;; Code:
 (conjure-require-packages '(exec-path-from-shell))
 
 (require 'exec-path-from-shell)
 
-
 (dolist (var '("GEM_ROOT" "GEM_HOME" "GEM_PATH"))
   (add-to-list 'exec-path-from-shell-variables var))
+
 (exec-path-from-shell-initialize)
 
 ;; Allow GPG to decrypt gpg file

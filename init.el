@@ -112,7 +112,6 @@
 (define-key corfu-map [backtab] 'corfu-previous)
 (define-key corfu-map (kbd "S-<return>") 'corfu-insert)
 
-
 (require 'kind-icon)
 (setq kind-icon-default-face 'corfu-default)
 (require 'svg-lib)
@@ -143,18 +142,21 @@
 
 (projectile-mode)
 
-(require 'conjure-datatypes)
+(require 'conjure-c)
 (require 'conjure-clojure)
+(require 'conjure-datatypes)
+(require 'conjure-elixir)
 (require 'conjure-emacs-lisp)
+(require 'conjure-js)
 (require 'conjure-lisp)
 (require 'conjure-magit)
 (require 'conjure-org)
-(require 'conjure-svelte)
-(require 'conjure-c)
-(require 'conjure-ts)
-(require 'conjure-js)
 (require 'conjure-python)
 (require 'conjure-ruby)
+(require 'conjure-rust)
+(require 'conjure-svelte)
+(require 'conjure-terraform)
+(require 'conjure-ts)
 (require 'conjure-web)
 (require 'conjure-yaml)
 

@@ -25,7 +25,9 @@
 (which-key-mode)
 (diminish 'which-key-mode)
 
-(apheleia-global-mode 1)
+(when conjure-format-on-save (apheleia-global-mode 1))
+(diminish 'apheleia-mode)
+
 (winner-mode 1)
 
 (require 'yasnippet)
@@ -60,7 +62,7 @@
 
 (require 'consult)
 (add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
-(setq register-preview-delay 0.5
+(setq register-preview-delay 0.2
       register-preview-function #'consult-register-format)
 (advice-add #'register-preview :override #'consult-register-window)
 

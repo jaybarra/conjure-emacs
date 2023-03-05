@@ -25,8 +25,8 @@
 
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
-                   (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
+		   (abbreviate-file-name (buffer-file-name))
+             	 "%b"))))
 
 ;; Make scrolling less stuttered
 (setq auto-window-vscroll nil)
@@ -39,21 +39,21 @@
 (if (display-graphic-p)
     (progn
       (setq initial-frame-alist `((left . 80)
-                                  (top . 50)
-                                  (height . 50)
-                                  (width . 240)))
+				  (top . 50)
+				  (height . 50)
+				  (width . 240)))
 
       (setq default-frame-alist `((left . 80)
-                                  (top . 50)
-                                  (height . 50)
-                                  (width . 240)))))
+		  (top . 50)
+		  (height . 50)
+		  (width . 240)))))
 
 (add-hook 'dired-mode-hook (lambda ()
-                             (all-the-icons-dired-mode)
-                             (diminish 'all-the-icons-dired-mode)))
+		 (all-the-icons-dired-mode)
+		 (diminish 'all-the-icons-dired-mode)))
 
 (add-hook 'ibuffer-mode-hook (lambda ()
-                               (all-the-icons-ibuffer-mode)))
+		   (all-the-icons-ibuffer-mode)))
 
 (pulsar-global-mode +1)
 
@@ -65,7 +65,40 @@
       goto-address-mail-face 'link
       goto-address-mail-mouse-face 'highlight)
 
-(set-face-attribute 'default nil :family "Source Code Pro" :weight 'normal :width 'normal)
+(defun font-exists-p (font)
+  "Checks if font exists."
+  (if (null (x-list-fonts font)) nil t))
+
+(defun set-default-font (font)
+  "Sets the default font for Conjure."
+  (when font
+    (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
+
+;; Check fonts in order, if they are present on the system
+;; TODO use a macro expansion to generate this
+(set-default-font
+ (cond ((font-exists-p "Fira Code") "Fira Code")
+       ((font-exists-p "Source Code Pro") "Source Code Pro")
+       ((font-exists-p "Cascadia Code") "Cascadia Code")
+       ((font-exists-p "Meslo") "Meslo")
+       ((font-exists-p "Iosevka") "Iosevka")))
+
+;; Enable the www ligature in every possible major mode
+(ligature-set-ligatures 't '("www"))
+
+;; Enable ligatures in programming modes
+(ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+		     ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
+		     "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+		     "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+		     "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+		     "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+		     "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+		     "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+		     "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+		     "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+
+(global-ligature-mode conjure-use-ligatures)
 
 (ef-themes-load-random 'dark)
 
