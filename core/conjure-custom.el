@@ -32,5 +32,10 @@ Will only occur if `conjure-whitespace' is also enabled."
   :type 'boolean
   :group 'conjure)
 
+(defcustom conjure-use-ligatures t
+  "Enable font ligatures if desired and supported by your font."
+  :type 'boolean
+  :group 'conjure)
+
 (provide 'conjure-custom)
 ;;; conjure-custom.el ends here

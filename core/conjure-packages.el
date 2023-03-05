@@ -46,6 +46,7 @@
     hl-todo
     hydra
     kind-icon
+    ligature
     lin
     magit
     marginalia
