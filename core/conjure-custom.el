@@ -33,7 +33,7 @@ Will only occur if `conjure-whitespace' is also enabled."
   :group 'conjure)
 
 (defcustom conjure-use-ligatures t
-  "Enable font ligatures if desired and supported by your font."
+  "Non-nil will enable font-ligatures if supported by the font."
   :type 'boolean
   :group 'conjure)
 
