@@ -14,28 +14,37 @@
 (global-set-key (kbd "M-%") 'anzu-query-replace)
 (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
 
-(browse-kill-ring-default-keybindings)
-(global-set-key (kbd "s-y") 'browse-kill-ring)
+(with-eval-after-load 'browse-kill-ring
+  (browse-kill-ring-default-keybindings)
+  (global-set-key (kbd "s-y") 'browse-kill-ring))
 
-(global-set-key [remap kill-ring-save] 'easy-kill)
-(global-set-key [remap mark-sexp] 'easy-mark)
+(with-eval-after-load 'easy-kill
+  (global-set-key [remap kill-ring-save] 'easy-kill))
 
-(global-set-key (kbd "C-=") 'er/expand-region)
-(global-set-key (kbd "C--") 'er/contract-region)
+(with-eval-after-load 'easy-mark
+  (global-set-key [remap mark-sexp] 'easy-mark))
 
-(global-set-key (kbd "C-;") 'avy-goto-char)
+(with-eval-after-load 'expand-region
+  (global-set-key (kbd "C-=") 'er/expand-region)
+  (global-set-key (kbd "C--") 'er/contract-region))
 
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(with-eval-after-load 'avy
+  (global-set-key (kbd "C-;") 'avy-goto-char))
 
-(require 'projectile)
-(when conjure-super-keybindings
-  (global-set-key(kbd "s-p") 'projectile-command-map))
-(global-set-key (kbd "C-c p") 'projectile-command-map)
-(define-key projectile-mode-map [remap projectile-switch-project] 'consult-projectile-switch-project)
-(define-key projectile-mode-map [remap projectile-find-file] 'consult-projectile-find-file)
+(with-eval-after-load 'ibuffer
+  (global-set-key (kbd "C-x C-b") 'ibuffer))
 
-(global-set-key (kbd "C-.") 'embark-act)
-(global-set-key (kbd "M-.") 'embark-dwim)
+(with-eval-after-load 'projectile
+  (when conjure-super-keybindings
+    (global-set-key(kbd "s-p") 'projectile-command-map))
+  
+  (global-set-key (kbd "C-c p") 'projectile-command-map)
+  (define-key projectile-mode-map [remap projectile-switch-project] 'consult-projectile-switch-project)
+  (define-key projectile-mode-map [remap projectile-find-file] 'consult-projectile-find-file))
+
+(with-eval-after-load 'embark
+  (global-set-key (kbd "C-.") 'embark-act)
+  (global-set-key (kbd "M-.") 'embark-dwim))
 
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
 
@@ -72,20 +81,14 @@
 (define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
 (define-key smartparens-mode-map (kbd "M-D") 'sp-splice-sexp)
 
-(global-set-key (kbd "C-x g") 'magit-status)
+;; flycheck style commands for flymake
+(with-eval-after-load 'flymake
+  (define-key prog-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
+  (define-key prog-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
+  (define-key prog-mode-map (kbd "C-c ! c") 'flymake-start))
 
-(global-set-key (kbd "C-M-s") 'conjure-smartparens-hydra/body)
-(defhydra conjure-smartparens-hydra ()
-  "Smartparens"
-
-  ("d" sp-down-sexp "Down")
-  ("e" sp-up-sexp "Up")
-  ("u" sp-backward-up-sexp "Up")
-  ("a" sp-backward-down-sexp "Down")
-  ("f" sp-forward-sexp "Forward")
-  ("b" sp-backward-sexp "Backward")
-  ("k" sp-kill-sexp "Kill" :color blue)
-  ("q" nil "Quit" :color blue))
+(with-eval-after-load 'magit
+  (global-set-key (kbd "C-x g") 'magit-status))
 
 (provide 'conjure-global-keybindings)
 ;;; conjure-global-keybindings.el ends here

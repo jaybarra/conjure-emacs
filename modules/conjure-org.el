@@ -1,6 +1,7 @@
 ;;; conjure-org.el --- Org Mode Initialization
 ;;; Commentary:
 ;;; Code:
+(require 'conjure-packages)
 (conjure-require-packages '(org
 			    org-roam
 			    org-roam-ui
@@ -8,6 +9,8 @@
 			    ob-restclient
 			    ox-reveal
 			    restclient))
+
+;;; ORG MODE;
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
@@ -22,46 +25,45 @@
      (python . t)
      (restclient . t))))
 
+;;; ORG-ROAM:
+
 (require 'org-roam)
-(setq org-roam-directory (expand-file-name "org/roam" (file-truename "~")))
+(setq org-roam-directory (expand-file-name "roam" (file-truename "~")))
 
 (defun org-roam-insert-node-immediate (arg &rest args)
   "Insert a node without prompting for additional information.
-Takes ARG and optionally ARGS as pass-thrus."
+fTakes ARG and optionally ARGS as pass-thrus."
   (interactive "P")
   (let ((args (cons arg args))
 	(org-roam-capture-templates (list (append (car org-roam-capture-templates)
 						  '(:immediate-finish t)))))
     (apply #'org-roam-node-insert args)))
 
-(defun conjure-org-roam-defaults ()
-  "Configure sensible defaults for `org-roam'."
-  (global-set-key (kbd "C-c m l") 'org-roam-buffer-toggle)
-  (global-set-key (kbd "C-c m f") 'org-roam-node-find)
-  (global-set-key (kbd "C-c m i") 'org-roam-node-insert)
-  (global-set-key (kbd "C-c m I") 'org-roam-insert-node-immediate)
-  (global-set-key (kbd "C-c m c") 'org-roam-capture)
-  (global-set-key (kbd "C-c m d d") 'org-roam-dailies-goto-today)
-  (global-set-key (kbd "C-c m d y") 'org-roam-dailies-goto-yesterday)
-  (global-set-key (kbd "C-c m d t") 'org-roam-dailies-goto-tomorrow)
-  (global-set-key (kbd "C-c m d b") 'org-roam-dailies-goto-previous-note)
-  (global-set-key (kbd "C-c m d c") 'org-roam-dailies-goto-date)
+(global-set-key (kbd "C-c n r") 'org-roam-buffer-toggle)
+(global-set-key (kbd "C-c n f") 'org-roam-node-find)
+(global-set-key (kbd "C-c n i") 'org-roam-node-insert)
+(global-set-key (kbd "C-c n I") 'org-roam-insert-node-immediate)
+(global-set-key (kbd "C-c n c") 'org-roam-capture)
+(global-set-key (kbd "C-c n d d") 'org-roam-dailies-goto-today)
+(global-set-key (kbd "C-c n d y") 'org-roam-dailies-goto-yesterday)
+(global-set-key (kbd "C-c n d t") 'org-roam-dailies-goto-tomorrow)
+(global-set-key (kbd "C-c n d b") 'org-roam-dailies-goto-previous-note)
+(global-set-key (kbd "C-c n d c") 'org-roam-dailies-goto-date)
 
-  (define-key org-mode-map (kbd "C-M-i") 'completion-at-point)
+(when (fboundp 'consult-org-roam-mode)
+  (global-set-key (kbd "C-c n f") 'consult-org-roam-file-find)
+  ;;(global-set-key (kbd "C-c n l b") 'consult-org-roam-backlinks)
+  ;;(global-set-key (kbd "C-c n l f") 'consult-org-roam-forward-links)
+  
+  (consult-org-roam-mode +1)
+  (diminish 'consult-org-roam-mode))
 
-  (setq org-roam-ui-open-on-start nil)
+(org-roam-db-autosync-mode)
 
-  (org-roam-db-autosync-mode)
-  (setq org-id-extra-files (directory-files-recursively org-roam-directory "\\.org$"))
+(require 'org-roam-ui)
+(setq org-roam-ui-open-on-start nil)
 
-  (message "[Conjure] org-roam powering up..."))
-
-(setq org-id-track-globally t)
-
-
-(setq conjure-org-roam-hook 'conjure-org-roam-defaults)
-(add-hook 'after-init-hook (lambda ()
-			     (run-hooks 'conjure-org-roam-hook)))
+(message "[Conjure] org-roam powering up...")
 
 (provide 'conjure-org)
 ;;; conjure-org.el ends here

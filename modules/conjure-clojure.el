@@ -2,22 +2,25 @@
 ;;; Commentary:
 ;;; Code:
 (conjure-require-packages '(clojure-mode
-			    cider))
+			    cider
+			    flymake-kondor))
 
 (require 'conjure-lisp)
 (require 'clojure-mode)
 
+(require 'smartparens-config)
+(sp-local-pair '(clojure-mode) "'" "'" :actions nil)
+
 (defun conjure-clojure-mode-defaults ()
-  "Setup sensible defaults for `clojure-mode'."
-  (subword-mode +1)
+  "Configure sensible defaults for `clojure-mode'."
+
+  ;;(flymake-kondor-setup)
+
   (run-hooks 'conjure-lisp-coding-hook))
 
 (setq conjure-clojure-mode-hook 'conjure-clojure-mode-defaults)
 
-(add-hook 'clojure-mode-hook (lambda () (run-hooks 'conjure-clojure-mode-hook)))
-
-(require 'smartparens-config)
-(sp-local-pair '(clojure-mode) "'" "'" :actions nil)
+(add-hook 'clojure-mode-hook (lambda() (run-hooks 'conjure-clojure-mode-hook)))
 
 (with-eval-after-load 'cider
   (setq nrepl-log-messages nil
@@ -26,7 +29,6 @@
 	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
 	cider-repl-buffer-size-limit 10000
-        ;;cider-print-fn 'puget
 	cider-print-fn 'fipp
 	cider-print-options '(("print-length" 100)))
 

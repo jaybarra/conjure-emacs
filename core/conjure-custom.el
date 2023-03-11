@@ -12,7 +12,7 @@
   :group 'conjure)
 
 (defcustom conjure-guru t
-  "Non-nil values enable 'guru-mode'."
+  "Non-nil values enable `guru-mode'."
   :type 'boolean
   :group 'conjure)
 
@@ -22,13 +22,16 @@
   :group 'conjure)
 
 (defcustom conjure-clean-whitespace-on-save t
-  "Cleanup whitespace from file before it's saved.
-Will only occur if `conjure-whitespace' is also enabled."
+  "Non-nil values will clean whitespace from file before it's saved."
   :type 'boolean
   :group 'conjure)
 
 (defcustom conjure-format-on-save t
-  "When set and supported in the current mode, the file will be formatted on save."
+  "Non-nil will attempt to format buffers on save, when supported.
+May require external formatters be present such as:
+- `black'
+- `prettier'
+- `ls-format'"
   :type 'boolean
   :group 'conjure)
 

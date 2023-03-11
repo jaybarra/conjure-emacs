@@ -2,11 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 (defconst emacs-start-time (current-time))
-(defconst *is-a-mac* (eq system-type 'darwin))
-(defconst *is-linux* (eq system-type 'gnu/linux))
-
-;; Bump GC during startup
-(setq gc-cons-threshold (* 50 1024 1024))
+(defconst osx-p (eq system-type 'darwin))
+(defconst linux-p (eq system-type 'gnu/linux))
 
 (defvar conjure-user
   (getenv (if (equal system-type 'windows-nt) "USERNAME" "USER")))
@@ -18,7 +15,7 @@
   "The home of Conjure's core functionality.")
 
 (defvar conjure-modules-dir (expand-file-name  "modules" conjure-dir)
-  "This directory houses all of the built-in Prelude modules.")
+  "This directory houses all of the built-in Conjure modules.")
 
 (defvar conjure-savefile-dir (expand-file-name "savefile" user-emacs-directory)
   "Folder for storing generated history files.")
@@ -43,22 +40,35 @@
 (add-to-list 'load-path conjure-core-dir)
 (add-to-list 'load-path conjure-modules-dir)
 
+(with-eval-after-load 'flymake
+  (setq elisp-flymake-byte-compile-load-path load-path))
+
 ;; Save customization variables to a separate file
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
 
 (message "[Conjure] Invoking the Deep Magic...")
+
 (require 'conjure-packages)
 (require 'conjure-common)
 (require 'conjure-custom)
-(require 'conjure-editor)
-
-(when *is-a-mac*
-  (require 'conjure-macos))
-
 (require 'conjure-ui)
+
+(require 'exec-path-from-shell)
+(when (or osx-p linux-p (daemonp))
+  (dolist (var '("GEM_ROOT" "GEM_HOME" "GEM_PATH"))
+    (add-to-list 'exec-path-from-shell-variables var))
+  (exec-path-from-shell-initialize))
+
+(require 'server)
+(unless (server-running-p) (server-start))
+
+(when osx-p (require 'conjure-macos))
+
+(require 'conjure-editor)
 (require 'conjure-global-keybindings)
 
+;; TODO move this all into appropriate subdirs
 (require 'vertico)
 (setq enable-recursive-minibuffers t)
 (setq vertico-cycle t
@@ -79,15 +89,15 @@
 
 (require 'orderless)
 (setq completion-styles '(orderless basic)
-      completion-category-defaults nil
-      completion-category-overrides '((file (styles . (partial-completion)))))
+      completion-category-overrides '((file (styles basic partial-completion))))
 
 (require 'affe)
-(setq affe-regexp-compiler #'orderless-pattern-compiler
-      affe-highlight-function #'orderless-highlight-matches)
+(defun affe-orderless-regexp-compiler (input _type _ignorecase)
+  (setq input (orderless-pattern-compiler input))
+  (cons input (lambda (str) (orderless--highlight input str))))
+(setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
 
 (require 'marginalia)
-(setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
 (marginalia-mode)
 
 (savehist-mode)
@@ -103,7 +113,7 @@
       corfu-auto-delay 0.0
       corfu-quit-at-boundary 'separator
       corfu-preview-current 'insert
-      corfu-preselect-first nil)
+      corfu-preselect 'valid)
 
 (define-key corfu-map (kbd "M-SPC") 'corfu-insert-separator)
 (define-key corfu-map (kbd "TAB") 'corfu-next)
@@ -114,6 +124,7 @@
 
 (require 'kind-icon)
 (setq kind-icon-default-face 'corfu-default)
+
 (require 'svg-lib)
 (unless (image-type-available-p 'svg) (setq kind-icon-use-icons nil))
 
@@ -134,22 +145,23 @@
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
 
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-
-(with-eval-after-load 'magit
-  (setq git-commit-fill-column 72
-	git-commit-summary-max-length 50))
 
 (projectile-mode)
 
+(require 'conjure-eglot)
+(require 'conjure-flymake)
+(require 'conjure-magit)
+
+(require 'conjure-programming)
+(require 'conjure-datatypes)
+
+;; Languages
 (require 'conjure-c)
 (require 'conjure-clojure)
-(require 'conjure-datatypes)
 (require 'conjure-elixir)
 (require 'conjure-emacs-lisp)
 (require 'conjure-js)
 (require 'conjure-lisp)
-(require 'conjure-magit)
 (require 'conjure-org)
 (require 'conjure-python)
 (require 'conjure-ruby)
@@ -159,12 +171,6 @@
 (require 'conjure-ts)
 (require 'conjure-web)
 (require 'conjure-yaml)
-
-(add-hook 'prog-mode-hook (lambda () (dap-mode +1)))
-
-(require 'server)
-(unless (server-running-p)
-  (server-start))
 
 (provide 'init)
 ;;; init.el ends here

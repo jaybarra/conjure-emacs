@@ -8,7 +8,8 @@
     "Sensible defaults for `ruby-mode'."
     (setq ruby-insert-encoding-magic-comment nil)
     (inf-ruby-minor-mode +1)
-    (subword-mode +1))
+    ;;(subword-mode +1)
+    )
 
   (setq conjure-ruby-mode-hook 'conjure-ruby-mode-defaults)
 

@@ -5,28 +5,26 @@
 (require 'diminish)
 (setq require-final-newline t)
 
-(define-coding-system-alias 'UTF-8 'utf-8)
-
 (global-auto-revert-mode +1)
 
-(show-smartparens-global-mode +1)
-(smartparens-global-mode)
-(diminish 'smartparens-mode)
-
+(require 'volatile-highlights)
 (volatile-highlights-mode t)
 (diminish 'volatile-highlights-mode)
 
+(require 'anzu)
 (global-anzu-mode)
 (diminish 'anzu-mode)
 
-(global-diff-hl-mode)
-(global-hl-todo-mode)
-
+(require 'which-key)
 (which-key-mode)
+(which-key-setup-minibuffer)
 (diminish 'which-key-mode)
 
-(when conjure-format-on-save (apheleia-global-mode 1))
+(require 'apheleia)
 (diminish 'apheleia-mode)
+(when conjure-format-on-save (apheleia-global-mode +1))
+(with-eval-after-load 'apheleia
+  (diminish 'apheleia-mode))
 
 (winner-mode 1)
 
@@ -37,6 +35,7 @@
 ;; dired - reuse current buffer by pressing 'a'
 (put 'dired-find-alternate-file 'disabled nil)
 
+(require 'dired-x)
 ;; always delete and copy recursively
 (setq dired-recursive-deletes 'always)
 (setq dired-recursive-copies 'always)
@@ -45,7 +44,6 @@
 ;; current subdir, instead of the current subdir of this dired buffer
 (setq dired-dwim-target t)
 
-(require 'dired-x)
 (setq dired-listing-switches "-lahF"
       dired-dwim-target t
       dired-deletion-confirmer 'y-or-n-p
@@ -61,19 +59,16 @@
                  (window-parameters (mode-line-format . none))))
 
 (require 'consult)
-(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
-(setq register-preview-delay 0.2
-      register-preview-function #'consult-register-format)
-(advice-add #'register-preview :override #'consult-register-window)
 
+(require 'consult-xref)
 (setq xref-show-xrefs-function #'consult-xref
       xref-show-definitions-function #'consult-xref)
 
 (require 'embark-consult)
 (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode)
 
+(require 'diff-hl-dired)
 (add-hook 'dired-mode-hook #'diff-hl-dired-mode)
-(add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
 
 (require 'ag)
 (setq ag-highlight-search t
@@ -82,22 +77,8 @@
 
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 
-;; Compilation from Emacs
-(defun conjure-colorize-compilation-buffer ()
-  "Colorize a compilation mode buffer."
-  (interactive)
-  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
-  (when (eq major-mode 'compilation-mode)
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region (point-min) (point-max)))))
-
-(require 'ansi-color)
-(add-hook 'compilation-filter-hook #'conjure-colorize-compilation-buffer)
-
-;; use settings from .editorconfig file when present
-(require 'editorconfig)
-(editorconfig-mode 1)
-(diminish 'editorconfig-mode)
+(with-eval-after-load 'subword
+  (diminish 'subword-mode))
 
 (provide 'conjure-editor)
 ;;; conjure-editor.el ends here

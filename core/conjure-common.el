@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'ansi-color)
 (defun display-ansi-colors ()
   "Colorize buffer containining ANSI color strings."
   (interactive "r")

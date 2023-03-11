@@ -28,6 +28,7 @@
   (eldoc-mode +1)
 
   (smartparens-strict-mode +1)
+  (diminish 'smartparens-mode)
   (sp-local-pair '(emacs-lisp-mode) "'" "'" :actions nil)
 
   (conjure-recompile-elc-on-save)
