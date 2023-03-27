@@ -1,7 +1,11 @@
 ;;; conjure-yaml.el --- YAML configuration
 ;;; Commentary:
 ;;; Code:
-(add-hook 'yaml-mode-hook 'eglot-ensure)
+(require 'conjure-packages)
+(conjure-require-packages '(yaml-mode))
+
+(when (executable-find "yaml-language-server")
+  (add-hook 'yaml-mode-hook 'eglot-ensure))
 
 (setq-default eglot-workspace-configuration
 	      '((yaml

@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 (require 'conjure-packages)
-
 (conjure-require-packages '(typescript-mode))
 
 (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
@@ -10,7 +9,7 @@
 (require 'typescript-mode)
 (setq typescript-indent-level 2)
 
-(add-hook 'typescript-mode-hook #'eglot-ensure)
+(add-hook 'typescript-mode-hook 'eglot-ensure)
 
 (require 'projectile)
 (projectile-register-project-type 'npm-spec '("package.json")
