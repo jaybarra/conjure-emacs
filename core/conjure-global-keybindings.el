@@ -93,5 +93,11 @@
 (with-eval-after-load 'magit
   (global-set-key (kbd "C-x g") 'magit-status))
 
+(require 'smartrep)
+(smartrep-define-key
+    global-map "C-x"
+  '(("{" . shrink-window-horizontally)
+    ("}" . enlarge-window-horizontally)))
+
 (provide 'conjure-global-keybindings)
 ;;; conjure-global-keybindings.el ends here
