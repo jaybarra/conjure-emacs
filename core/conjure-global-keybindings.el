@@ -82,10 +82,13 @@
 (define-key smartparens-mode-map (kbd "M-D") 'sp-splice-sexp)
 
 ;; flycheck style commands for flymake
-(with-eval-after-load 'flymake
-  (define-key prog-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
-  (define-key prog-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
-  (define-key prog-mode-map (kbd "C-c ! c") 'flymake-start))
+(define-key prog-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
+(define-key prog-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
+(define-key prog-mode-map (kbd "C-c ! c") 'flymake-start)
+
+(define-key text-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
+(define-key text-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
+(define-key text-mode-map (kbd "C-c ! c") 'flymake-start)
 
 (with-eval-after-load 'magit
   (global-set-key (kbd "C-x g") 'magit-status))

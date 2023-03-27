@@ -60,9 +60,6 @@
     (add-to-list 'exec-path-from-shell-variables var))
   (exec-path-from-shell-initialize))
 
-(require 'server)
-(unless (server-running-p) (server-start))
-
 (when osx-p (require 'conjure-macos))
 
 (require 'conjure-editor)
@@ -145,8 +142,8 @@
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
 
-
 (projectile-mode)
+(setq projectile-ignored-projects '("~/"))
 
 (require 'conjure-eglot)
 (require 'conjure-flymake)

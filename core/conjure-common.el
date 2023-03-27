@@ -3,7 +3,7 @@
 ;;; Code:
 
 (require 'ansi-color)
-(defun display-ansi-colors ()
+(defun conjure-colorize-buffer-ansi-colors ()
   "Colorize buffer containining ANSI color strings."
   (interactive "r")
   (ansi-color-apply-on-region (point-min) (point-max)))
