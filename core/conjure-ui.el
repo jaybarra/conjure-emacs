@@ -77,23 +77,25 @@
       goto-address-mail-mouse-face 'highlight)
 
 (defun font-exists-p (font)
-  "Check if FONT exists."
-  (if (null (x-list-fonts font)) nil t))
+  "Check if FONT exists (but only in x-window)."
+  (when (fboundp 'x-list-fonts)
+    (if (null (x-list-fonts font)) nil t)))
 
 (defun set-default-font (font)
   "Set the default FONT for Conjure."
   (when font
     (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
 
-;; Check fonts in order, if they are present on the system
-;; TODO use a macro expansion to generate this
-(set-default-font
- (cond ((font-exists-p "Fira Code Retina") "Fira Code Retina")
-       ((font-exists-p "Fira Code") "Fira Code")
-       ((font-exists-p "Cascadia Code") "Cascadia Code")
-       ((font-exists-p "Source Code Pro") "Source Code Pro")
-       ((font-exists-p "Iosevka") "Iosevka")
-       ((font-exists-p "Meslo") "Meslo")))
+(when (fboundp 'x-list-fonts)
+  ;; TODO use a macro expansion to generate this
+  (let ((selected-font (cond ((font-exists-p "Fira Code Retina") "Fira Code Retina")
+			     ((font-exists-p "Fira Code") "Fira Code")
+			     ((font-exists-p "Source Code Pro") "Source Code Pro")
+			     ((font-exists-p "Iosevka") "Iosevka")
+			     ((font-exists-p "Cascadia Code") "Cascadia Code")
+			     ((font-exists-p "Meslo") "Meslo"))))
+    (when (bound-and-true-p selected-font)
+      (set-default-font selected-font))))
 
 (require 'ligature)
 ;; Enable the www ligature in every possible major mode
