@@ -4,7 +4,12 @@
 ;; Handles cc-derived modes, Java, C, PHP...
 
 ;;; Code:
+(require 'conjure-packages)
 (conjure-require-packages '(eglot-java))
+
+(require 'eglot)
+(require 'eglot-java)
+(require 'cc-vars)
 
 (defun conjure-c-mode-common-defaults ()
   "Sensible defaults for `c-mode' buffers."
@@ -13,9 +18,13 @@
 	c-basic-offset 4)
   (c-set-offset 'substatement-open 0))
 
+(defvar conjure-c-mode-common-hook nil)
 (setq conjure-c-mode-common-hook 'conjure-c-mode-common-defaults)
 
 (add-hook 'c-mode-common-hook (lambda () (run-hooks 'conjure-c-mode-common-hook)))
+
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
 
 ;; special java configs
 (add-hook 'java-mode-hook 'eglot-java-mode)

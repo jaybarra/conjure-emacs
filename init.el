@@ -137,8 +137,10 @@
 (corfu-history-mode)
 
 (require 'cape)
+(add-to-list 'completion-at-point-functions #'cape-keyword)
 (add-to-list 'completion-at-point-functions #'cape-file)
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
 
