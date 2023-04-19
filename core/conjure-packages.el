@@ -61,7 +61,6 @@
     smartparens
     smartrep
     vertico
-    vertico-posframe
     volatile-highlights
     web-mode
     wgrep
@@ -124,6 +123,7 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
     ("\\.elixir\\'" elixir-mode elixir-mode)
     ("\\.erl\\'" erlang erlang-mode)
     ("\\.feature\\'" feature-mode feature-mode)
+    ("\\.geojson\\'" json-mode json-mode)
     ("\\.go\\'" go-mode go-mode)
     ("\\.graphql\\'" graphql-mode graphql-mode)
     ("\\.groovy\\'" groovy-mode groovy-mode)
@@ -131,6 +131,7 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
     ("\\.hs\\'" haskell-mode haskell-mode)
     ("\\.jl\\'" julia-mode julia-mode)
     ("\\.json\\'" json-mode json-mode)
+    ("\\.kml\\'" nxml-mode nxml-mode)
     ("\\.kt\\'" kotlin-mode kotlin-mode)
     ("\\.kv\\'" kivy-mode kivy-mode)
     ("\\.latex\\'" auctex LaTeX-mode)

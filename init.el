@@ -8,7 +8,7 @@
 (defvar conjure-user
   (getenv (if (equal system-type 'windows-nt) "USERNAME" "USER")))
 
-(defvar conjure-dir (file-name-directory load-file-name)
+(defvar conjure-dir (file-name-directory user-init-file)
   "The root dir of the Emacs Conjure distribution.")
 
 (defvar conjure-core-dir (expand-file-name "core" conjure-dir)
@@ -69,24 +69,23 @@
 (require 'vertico)
 (setq enable-recursive-minibuffers t)
 (setq vertico-cycle t
-      vertico-count 15)
+      vertico-count 18)
+
+(defun crm-indicator (args)
+  "Extend ARGS for a prompt indicator to `completing-read-multiple'."
+  (cons (format "[CRM%s] %s"
+                (replace-regexp-in-string
+                 "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                 crm-separator)
+                (car args))
+        (cdr args)))
+(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 (vertico-mode)
 
-(require 'vertico-posframe)
-(setq vertico-multiform-commands
-      '((consult-projectile-switch-project posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
-	(consult-projectile-find-file posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
-        (consult-projectile-recentf posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
-	(consult-recent-file posframe (vertico-posframe-handler . posframe-poshandler-frame-center))
-	(org-roam-node-find posframe (vertico-posframe-handler . posframe-poshandle-frame-center))
-	(org-roam-node-insert posframe (vertico-posframe-handler . posframe-poshandle-frame-center))
-	(org-roam-insert-node-immediate posframe (vertico-posframe-handler . posframe-poshandle-frame-center))))
-(vertico-multiform-mode 1)
-
 (require 'orderless)
 (setq completion-styles '(orderless basic)
-      completion-category-overrides '((file (styles basic partial-completion))))
+      completion-category-overrides '((file (styles . (partial-completion)))))
 
 (require 'affe)
 (defun affe-orderless-regexp-compiler (input _type _ignorecase)
@@ -95,6 +94,7 @@
 (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
 
 (require 'marginalia)
+(customize-set-variable 'marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
 (marginalia-mode)
 
 (savehist-mode)
@@ -120,11 +120,11 @@
 (define-key corfu-map (kbd "S-<return>") 'corfu-insert)
 
 (require 'kind-icon)
+
 (setq kind-icon-default-face 'corfu-default)
 
 (require 'svg-lib)
 (unless (image-type-available-p 'svg) (setq kind-icon-use-icons nil))
-
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
 (add-hook 'eshell-mode-hook (lambda ()
@@ -170,6 +170,10 @@
 (require 'conjure-ts)
 (require 'conjure-web)
 (require 'conjure-yaml)
+
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
 (provide 'init)
 ;;; init.el ends here

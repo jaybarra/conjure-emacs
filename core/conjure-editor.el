@@ -17,11 +17,13 @@
 
 (require 'which-key)
 (which-key-mode)
-(which-key-setup-minibuffer)
 (diminish 'which-key-mode)
+(setq which-key-add-column-padding 4
+      which-key-max-description-length 36)
 
 (require 'apheleia)
 (diminish 'apheleia-mode)
+
 (when conjure-format-on-save (apheleia-global-mode +1))
 (with-eval-after-load 'apheleia
   (diminish 'apheleia-mode))
@@ -37,8 +39,11 @@
 
 (require 'dired-x)
 ;; always delete and copy recursively
-(setq dired-recursive-deletes 'always)
-(setq dired-recursive-copies 'always)
+(setq dired-recursive-deletes 'always
+      dired-recursive-copies 'always
+      dired-kill-when-opening-new-dired-buffer t
+      dired-listing-switches "-ahlv"
+      dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
 
 ;; if there is a dired buffer displayed in the next window, use its
 ;; current subdir, instead of the current subdir of this dired buffer

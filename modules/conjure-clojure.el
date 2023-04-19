@@ -1,49 +1,52 @@
 ;;; conjure-clojure.el --- Clojure(script) Initialization
 ;;; Commentary:
 ;;; Code:
+(require 'conjure-packages)
+(require 'conjure-lisp)
+(require 'clojure-mode)
+
 (conjure-require-packages '(clojure-mode
 			    cider
 			    flymake-kondor))
-
-(require 'conjure-lisp)
-(require 'clojure-mode)
 
 (require 'smartparens-config)
 (sp-local-pair '(clojure-mode) "'" "'" :actions nil)
 
 (defun conjure-clojure-mode-defaults ()
   "Configure sensible defaults for `clojure-mode'."
-
-  ;;(flymake-kondor-setup)
-
   (run-hooks 'conjure-lisp-coding-hook))
 
+(defvar conjure-clojure-mode-hook nil)
 (setq conjure-clojure-mode-hook 'conjure-clojure-mode-defaults)
 
-(add-hook 'clojure-mode-hook (lambda() (run-hooks 'conjure-clojure-mode-hook)))
+(add-hook 'clojure-mode-hook (lambda () (run-hooks 'conjure-clojure-mode-hook)))
 
+(require 'cider)
 (with-eval-after-load 'cider
   (setq nrepl-log-messages nil
         nrepl-hide-special-buffers t
         cider-repl-display-help-banner nil
 	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
-	cider-repl-buffer-size-limit 10000
+	cider-repl-buffer-size-limit 8192
+	cider-test-show-report-on-success nil
+	cider-font-lock-max-length 4096
 	cider-print-fn 'fipp
 	cider-print-options '(("print-length" 100)))
 
   (add-hook 'cider-mode-hook 'eldoc-mode)
-
+  
   (defun conjure-cider-repl-mode-defaults ()
     "Setup defaults for when `cider' loads."
     (subword-mode +1)
+    (toggle-truncate-lines +1)
     (run-hooks 'conjure-interactive-lisp-coding-hook))
-  
+
+  (defvar conjure-cider-repl-mode-hook nil)
   (setq conjure-cider-repl-mode-hook 'conjure-cider-repl-mode-defaults)
 
   (add-hook 'cider-repl-mode-hook
-            (lambda ()
-              (run-hooks 'conjure-cider-repl-mode-hook))))
+            (lambda () (run-hooks 'conjure-cider-repl-mode-hook))))
 
 (define-clojure-indent
   ;; Compojure
@@ -64,6 +67,17 @@
   ;; Midje testing framework
   (fact 1)
   (facts 1))
+
+(defun clerk-show ()
+  (interactive)
+  (when-let
+      ((filename
+        (buffer-file-name)))
+    (save-buffer)
+    (cider-interactive-eval
+     (concat "(nextjournal.clerk/show! \"" filename "\")"))))
+
+(define-key clojure-mode-map (kbd "<M-return>") 'clerk-show)
 
 (provide 'conjure-clojure)
 ;;; conjure-clojure.el ends here

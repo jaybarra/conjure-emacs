@@ -84,7 +84,7 @@
 (defun set-default-font (font)
   "Set the default FONT for Conjure."
   (when font
-    (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
+    (set-face-attribute 'default nil :family font :height 120 :weight 'normal :width 'normal)))
 
 (when (fboundp 'x-list-fonts)
   ;; TODO use a macro expansion to generate this
