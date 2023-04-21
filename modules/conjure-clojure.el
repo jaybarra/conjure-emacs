@@ -39,7 +39,6 @@
   (defun conjure-cider-repl-mode-defaults ()
     "Setup defaults for when `cider' loads."
     (subword-mode +1)
-    (toggle-truncate-lines +1)
     (run-hooks 'conjure-interactive-lisp-coding-hook))
 
   (defvar conjure-cider-repl-mode-hook nil)
