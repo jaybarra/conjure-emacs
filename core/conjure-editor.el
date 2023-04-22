@@ -58,8 +58,8 @@
   "A predicate to decide whether to exclude FILE from recentf."
   (let ((file-dir (file-truename (file-name-directory file))))
     (cl-some (lambda (dir)
-	       (string-prefix-p dir file-dir))
-	     (mapcar 'file-truname (list conjure-savefile-dir package-user-dir)))))
+               (string-prefix-p dir file-dir))
+             (mapcar 'file-truname (list conjure-savefile-dir package-user-dir)))))
 
 (add-to-list 'recentf-exclude "\\roam.*\\'")
 (add-to-list 'recentf-exclude 'conjure-recentf-exclude-p)
@@ -92,7 +92,7 @@
   (when conjure-whitespace
     ;; keep the whitespace decent
     (add-hook 'before-save-hook 'conjure-cleanup-maybe nil t)
-    (whitespace-mode t)))
+    (whitespace-mode +1)))
 
 (add-hook 'text-mode-hook 'conjure-enable-flyspell)
 (add-hook 'text-mode-hook 'conjure-enable-whitespace)
@@ -116,9 +116,15 @@
 (setq bookmark-default-file (expand-file-name "bookmarks" conjure-savefile-dir)
       bookmark-save-flag 1)
 
+;; magit settings <-- this is important
+(require 'magit)
+(setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
+      git-commit-summary-max-length 50)
+
 ;; Projectile <-- this is an important one
 (require 'projectile)
 (setq projectile-cache-file (expand-file-name "projectile.cache" conjure-savefile-dir)
+      projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" conjure-savefile-dir)
       projectile-ignored-projects '("~/"))
 (projectile-mode t)
 
@@ -194,14 +200,14 @@ The body of the advice is in BODY."
                commands)))
 
 (advise-commands "indent" (yank yank-pop) after
-  "If current mode is one of `conjure-yank-indent-modes',
+                 "If current mode is one of `conjure-yank-indent-modes',
 indent yanked text (with prefix arg don't indent)."
-  (if (and (not (ad-get-arg 0))
-           (not (member major-mode conjure-indent-sensitive-modes))
-           (or (derived-mode-p 'prog-mode)
-               (member major-mode conjure-yank-indent-modes)))
-      (let ((transient-mark-mode nil))
-        (yank-advised-indent-function (region-beginning) (region-end)))))
+                 (if (and (not (ad-get-arg 0))
+                          (not (member major-mode conjure-indent-sensitive-modes))
+                          (or (derived-mode-p 'prog-mode)
+                              (member major-mode conjure-yank-indent-modes)))
+                     (let ((transient-mark-mode nil))
+                       (yank-advised-indent-function (region-beginning) (region-end)))))
 
 ;; abbrev config
 (add-hook 'text-mode-hook 'abbrev-mode)
@@ -222,7 +228,8 @@ indent yanked text (with prefix arg don't indent)."
 (require 'eshell)
 (setq eshell-directory-name (expand-file-name "eshell" conjure-savefile-dir))
 
-(setq semanticdb-default-save-directory (expand-file-name "semanticdb" conjure-savefile-dir))
+(setq semanticdb-default-save-directory
+      (expand-file-name "semanticdb" conjure-savefile-dir))
 
 (require 'compile)
 (setq compilation-ask-about-save nil
@@ -250,6 +257,7 @@ indent yanked text (with prefix arg don't indent)."
 ;; diff-hl
 (global-diff-hl-mode t)
 (add-hook 'dired-mode-hook #'diff-hl-dired-mode)
+(add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
 (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
 
 ;; operate-on-number

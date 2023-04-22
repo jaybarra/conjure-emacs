@@ -1,8 +1,8 @@
-;;; conjure-ts.el --- TypeScript configuration
+;;; conjure-typescript.el --- TypeScript configuration
 ;;; Commentary:
 ;;; Code:
-(require 'conjure-packages)
-(conjure-require-packages '(typescript-mode))
+(require 'conjure-programming)
+(conjure-require-packages '(eglot typescript-mode))
 
 (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
 
@@ -17,5 +17,5 @@
 				  :compile "npm install"
                                   :test "npm test"
 				  :test-suffix ".spec")
-(provide 'conjure-ts)
-;;; conjure-ts.el ends here
+(provide 'conjure-typescript)
+;;; conjure-typescript.el ends here

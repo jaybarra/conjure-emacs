@@ -1,34 +1,28 @@
 ;;; conjure-org.el --- Org Mode Initialization
 ;;; Commentary:
 ;;; Code:
-(require 'conjure-packages)
+
 (conjure-require-packages '(org
 			    org-roam
 			    org-roam-ui
-			    ob-graphql
-			    ob-restclient
-			    ox-reveal
-			    restclient))
+                            ob-restclient
+			    ox-reveal))
 
 ;;; ORG MODE;
-
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (with-eval-after-load 'org
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
-     (clojure . t)
-     (graphql . t)
      (shell . t)
-     (ruby . t)
-     (python . t)
-     (restclient . t))))
+     (python . t))))
 
 ;;; ORG-ROAM:
 
 (require 'org-roam)
-(setq org-roam-directory (expand-file-name "roam" (file-truename "~")))
+(setq org-roam-directory (expand-file-name "roam" (file-truename "~"))
+      org-roam-db-location (expand-file-name "org-roam.db" conjure-savefile-dir))
 
 (defun org-roam-insert-node-immediate (arg &rest args)
   "Insert a node without prompting for additional information.
@@ -54,7 +48,7 @@ fTakes ARG and optionally ARGS as pass-thrus."
   (global-set-key (kbd "C-c n f") 'consult-org-roam-file-find)
   ;;(global-set-key (kbd "C-c n l b") 'consult-org-roam-backlinks)
   ;;(global-set-key (kbd "C-c n l f") 'consult-org-roam-forward-links)
-  
+
   (consult-org-roam-mode +1)
   (diminish 'consult-org-roam-mode))
 
@@ -62,8 +56,6 @@ fTakes ARG and optionally ARGS as pass-thrus."
 
 (require 'org-roam-ui)
 (setq org-roam-ui-open-on-start nil)
-
-(message "[Conjure] org-roam powering up...")
 
 (provide 'conjure-org)
 ;;; conjure-org.el ends here

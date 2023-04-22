@@ -2,17 +2,30 @@
 ;;; Commentary:
 ;;; Code:
 
-;; utilities
-
+;; Narrowing frameworks (should use one)
+;; (require 'conjure-helm)
+;; (require 'conjure-ivy)
 (require 'conjure-vertico)
 
-;; Modules for common languages
+;; Utilities
+(require 'conjure-datatypes)
+(require 'conjure-org)
 
-(require 'conjure-c)
+;; Modules for common languages
 (require 'conjure-clojure)
+(require 'conjure-elixir)
 (require 'conjure-emacs-lisp)
 (require 'conjure-javascript)
 (require 'conjure-lisp)
+(require 'conjure-python)
+(require 'conjure-ruby)
+(require 'conjure-rust)
+(require 'conjure-svelte)
+(require 'conjure-terraform)
+(require 'conjure-typescript)
+(require 'conjure-vertico)
+(require 'conjure-web)
+(require 'conjure-yaml)
 
 (setq-default initial-scratch-message
 	      (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))

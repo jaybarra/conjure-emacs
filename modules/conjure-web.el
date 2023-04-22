@@ -2,6 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'conjure-programming)
+(conjure-require-packages '(web-mode))
 (require 'web-mode)
 
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
