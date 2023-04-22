@@ -2,18 +2,15 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'cl-lib)
 (require 'package)
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/") t)
 (package-initialize)
 
 (defvar conjure-packages
   '(ace-window
     affe
-    ag
-    all-the-icons
-    all-the-icons-dired
-    all-the-icons-ibuffer
     apheleia
     anzu
     avy
@@ -25,8 +22,6 @@
     consult-projectile
     consult-org-roam
     corfu
-    crux
-    dap-mode
     diff-hl
     diminish
     discover-my-major
@@ -34,22 +29,21 @@
     editorconfig
     ef-themes
     eglot
-    ein
     embark
     embark-consult
     exec-path-from-shell
     expand-region
+    ;;flycheck
     gist
     git-timemachine
     guru-mode
     helpful
     hl-todo
-    hydra
-    kind-icon
     ligature
     lin
     magit
     marginalia
+    nlinum
     operate-on-number
     orderless
     org-roam
@@ -57,16 +51,13 @@
     pulsar
     rainbow-delimiters
     rg
-    savehist
     smartparens
     smartrep
+    undo-tree
     vertico
     volatile-highlights
-    web-mode
-    wgrep
     which-key
-    yasnippet
-    yasnippet-snippets
+    xterm-color
     zop-to-char))
 
 (defun conjure-packages-installed-p ()

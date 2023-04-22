@@ -2,79 +2,47 @@
 ;;; Commentary:
 ;;; Code:
 
+;; Disable visible scroll-bar and toolbar when applicable
 (when (display-graphic-p)
-  ;; Disable visible scroll-bar and toolbar
   (tool-bar-mode -1)
   (scroll-bar-mode -1))
 
-(tooltip-mode -1) ; Disable tooltips
+;; always disable the menu-bar
 (menu-bar-mode -1)
+
+;; don't blink the cursor
 (blink-cursor-mode -1)
+
+;; disable the bell
+(setq ring-bell-function 'ignore)
+
+;; disable startup screen
+(setq inhibit-startup-message t)
+
+;; fixup scrolling
+(setq scroll-margin 0
+      scroll-conservatively 10000
+      scroll-preserve-screen-position 1)
+
+;; mode line settings
+(line-number-mode t)
 (column-number-mode)
 (size-indication-mode)
-(global-display-line-numbers-mode t)
 
+;; show line numbers
+(global-nlinum-mode t)
+
+;; allow y/n responses
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(setq inhibit-startup-message t
-      visible-bell t
-      use-dialog-box nil
-      ring-bell-function 'ignore)
-
+;; better frame titles
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
 		   (abbreviate-file-name (buffer-file-name))
-             	 "%b"))))
-
-;; Make scrolling less stuttered
-(setq auto-window-vscroll nil)
-(customize-set-variable 'fast-but-imprecise-scrolling t)
-(customize-set-variable 'scroll-conservatively 101)
-(customize-set-variable 'scroll-margin 0)
-(customize-set-variable 'scroll-preserve-screen-position t)
-
-;; window positioning
-(if (display-graphic-p)
-    (progn
-      (setq initial-frame-alist `((left . 80)
-				  (top . 50)
-				  (height . 50)
-				  (width . 240)))
-
-      (setq default-frame-alist `((left . 80)
-		  (top . 50)
-		  (height . 50)
-		  (width . 240)))))
-
-(require 'diminish)
-(require 'all-the-icons-dired)
-(add-hook 'dired-mode-hook (lambda ()
-		 (all-the-icons-dired-mode)
-		 (diminish 'all-the-icons-dired-mode)))
-
-(require 'all-the-icons-ibuffer)
-(add-hook 'ibuffer-mode-hook (lambda ()
-		   (all-the-icons-ibuffer-mode)))
-
-(require 'pulsar)
-(pulsar-global-mode +1)
-(when (fboundp 'ace-window)
-  ;; pulsar doesn't detect the override because of ordering so we have to set it ourselves
-  (add-to-list 'pulsar-pulse-functions 'ace-window))
-
-(add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
-(add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
-(add-hook 'next-error-hook #'pulsar-pulse-line)
-
-(require 'lin)
-;; improve `hl-line' highlighting
-(lin-global-mode +1)
-
-(require 'goto-addr)
-(setq goto-address-url-face 'link
-      goto-address-url-mouse-face 'highlight
-      goto-address-mail-face 'link
-      goto-address-mail-mouse-face 'highlight)
+		 "%b"))))
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook 'which-key-mode)
+  (which-key-mode))
 
 (defun font-exists-p (font)
   "Check if FONT exists (but only in x-window)."
@@ -84,7 +52,7 @@
 (defun set-default-font (font)
   "Set the default FONT for Conjure."
   (when font
-    (set-face-attribute 'default nil :family font :height 120 :weight 'normal :width 'normal)))
+    (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
 
 (when (fboundp 'x-list-fonts)
   ;; TODO use a macro expansion to generate this
@@ -120,4 +88,5 @@
 (ef-themes-load-random 'dark)
 
 (provide 'conjure-ui)
+
 ;;; conjure-ui.el ends here

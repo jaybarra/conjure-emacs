@@ -1,40 +1,52 @@
 ;;; conjure-programming.el --- Configurations for Programming with Conjure
 ;;; Commentary:
 ;;; Code:
-(conjure-require-packages '(editorconfig))
 
-(add-hook 'prog-mode-hook 'smartparens-mode)
-(add-hook 'prog-mode-hook 'guru-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(conjure-require-packages '(rainbow-delimiters))
 
-(with-eval-after-load 'guru-mode
-  (diminish 'guru-mode))
+(defun conjure-local-comment-auto-fill ()
+  (set (make-local-variable 'comment-auto-fill-only-comments) t))
 
-;; highlight diffs in VCS
-(global-diff-hl-mode)
+;; show the current function def in the modeline
+(require 'which-func)
+(which-function-mode 1)
 
+;; font-lock annotations like TODO
 (require 'hl-todo)
-(global-hl-todo-mode)
+(global-hl-todo-mode 1)
 
 ;; Less strict guru
 (setq guru-warn-only t)
 
-;; use settings from .editorconfig file when present
-(require 'editorconfig)
-(editorconfig-mode 1)
-(diminish 'editorconfig-mode)
+(defun conjure-prog-mode-defaults ()
+  "Default coding hook actions."
+  (when (and (executable-find ispell-program-name)
+             conjure-flyspell)
+    (flyspell-prog-mode))
 
-;; Colorize compilation buffers like JUnit output
-(defun conjure-colorize-compilation-buffer ()
-  "Colorize a compilation mode buffer."
-  (interactive)
-  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
-  (when (eq major-mode 'compilation-mode)
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region (point-min) (point-max)))))
+  (when conjure-guru
+    (guru-mode +1)
+    (diminish 'guru-mode))
 
-(require 'ansi-color)
-(add-hook 'compilation-filter-hook #'conjure-colorize-compilation-buffer)
+  (smartparens-mode +1)
+  (rainbow-delimiters-mode +1)
+  (conjure-enable-whitespace)
+  (conjure-local-comment-auto-fill))
+
+(setq conjure-prog-mode-hook 'conjure-prog-mode-defaults)
+
+(add-hook 'prog-mode-hook (lambda () (run-hooks 'conjure-prog-mode-hook)))
+(add-hook 'prog-mode-hook 'flymake-mode)
+
+;; flycheck style commands for flymake
+(define-key prog-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
+(define-key prog-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
+(define-key prog-mode-map (kbd "C-c ! c") 'flymake-start)
+
+(define-key text-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
+(define-key text-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
+(define-key text-mode-map (kbd "C-c ! c") 'flymake-start)
 
 (provide 'conjure-programming)
+
 ;;; conjure-programming.el ends here

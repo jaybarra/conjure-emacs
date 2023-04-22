@@ -1,6 +1,9 @@
-;;; init-emacs-lisp.el --- emacs-lisp mode initialization
+;;; conjure-emacs-lisp.el --- emacs-lisp mode initialization
 ;;; Commentary:
 ;;; Code:
+
+(require 'conjure-lisp)
+
 (conjure-require-packages '(elisp-slime-nav))
 
 (defun conjure-recompile-elc-on-save ()
@@ -14,13 +17,6 @@
             nil
             t))
 
-(defun conjure-conditional-emacs-lisp-checker ()
-  "Don't check doc style in Emacs Lisp test files."
-  (let ((file-name (buffer-file-name)))
-    (when (and file-name (string-match-p ".*-tests?\\.el\\'" file-name))
-      ;;(message "flycheck goes here")
-      )))
-
 (require 'smartparens-config)
 (defun conjure-emacs-lisp-mode-defaults ()
   "Sensible defaults for `emacs-lisp-mode'."
@@ -29,10 +25,8 @@
 
   (smartparens-strict-mode +1)
   (diminish 'smartparens-mode)
-  (sp-local-pair '(emacs-lisp-mode) "'" "'" :actions nil)
 
   (conjure-recompile-elc-on-save)
-  (conjure-conditional-emacs-lisp-checker)
   (prettify-symbols-mode +1)
   (checkdoc-minor-mode +1))
 

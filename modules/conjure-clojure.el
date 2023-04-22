@@ -1,15 +1,13 @@
 ;;; conjure-clojure.el --- Clojure(script) Initialization
 ;;; Commentary:
 ;;; Code:
-(require 'conjure-packages)
-(require 'conjure-lisp)
-(require 'clojure-mode)
 
-(conjure-require-packages '(clojure-mode
-			    cider
-			    flymake-kondor))
+(require 'conjure-lisp)
+
+(conjure-require-packages '(cider clojure-mode))
 
 (require 'smartparens-config)
+;; disable single quote pairing to allow for lists '()
 (sp-local-pair '(clojure-mode) "'" "'" :actions nil)
 
 (defun conjure-clojure-mode-defaults ()
@@ -35,7 +33,7 @@
 	cider-print-options '(("print-length" 100)))
 
   (add-hook 'cider-mode-hook 'eldoc-mode)
-  
+
   (defun conjure-cider-repl-mode-defaults ()
     "Setup defaults for when `cider' loads."
     (subword-mode +1)
@@ -68,6 +66,7 @@
   (facts 1))
 
 (defun clerk-show ()
+  "Start Clerk."
   (interactive)
   (when-let
       ((filename

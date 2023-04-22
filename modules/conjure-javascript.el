@@ -1,4 +1,4 @@
-;;; conjure-js.el --- JavaScript configuration
+;;; conjure-javascript.el --- JavaScript configuration
 ;;; Commentary:
 ;;; Code:
 (require 'conjure-packages)
@@ -10,5 +10,5 @@
 (add-hook 'js2-mode-hook 'eglot-ensure)
 (add-hook 'rjsx-mode-hook 'eglot-ensure)
 
-(provide 'conjure-js)
-;;; conjure-js.el ends here
+(provide 'conjure-javascript)
+;;; conjure-javascript.el ends here

@@ -1,34 +1,33 @@
 ;;; conjure-lisp.el --- Lisp Languages Initialization
 ;;; Commentary:
 ;;; Code:
-(conjure-require-packages '(rainbow-delimiters))
+
+(require 'conjure-programming)
 
 (setq debugger-bury-or-kill 'kill)
 
-(setq-default initial-scratch-message
-	      (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
-
 (require 'smartparens-config)
-(defun conjure-lisp-coding-defaults ()
-  "Sensible defaults for Lisp languages."
+;; disable single quote pairing to allow for lists '()
+(sp-local-pair '(emacs-lisp-mode lisp-data-mode) "'" "'" :actions nil)
 
-  (run-hooks 'conjure-prog-mode-defaults)
-  
-  (smartparens-strict-mode +1)
-  (diminish 'smartparens-mode)
-  (rainbow-delimiters-mode +1))
+(defun conjure-lisp-coding-defaults ()
+  "Sensible defaults for Lispy languages."
+  (smartparens-strict-mode +1))
 
 (setq conjure-lisp-coding-hook 'conjure-lisp-coding-defaults)
 
+;; REPL programming
 (defun conjure-interactive-lisp-coding-defaults ()
   "Defaults for interactive Lisp (REPL) buffers."
-  (rainbow-delimiters-mode +1)
+  (smartparens-strict-mode +1)
   (whitespace-mode -1))
 
-(setq conjure-interactive-lisp-coding-hook 'conjure-interactive-lisp-coding-defaults)
+(setq conjure-interactive-lisp-coding-hook
+      'conjure-interactive-lisp-coding-defaults)
 
-(add-hook 'lisp-data-mode-hook (lambda ()
-                                 (run-hooks 'conjure-lisp-coding-hook)))
+(add-hook 'lisp-data-mode-hook
+          (lambda () (run-hooks 'conjure-lisp-coding-hook)))
 
 (provide 'conjure-lisp)
+
 ;;; conjure-lisp.el ends here
