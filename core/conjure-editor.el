@@ -159,7 +159,14 @@
 
 ;; always delete and copy recursively
 (setq dired-recursive-deletes 'always
-      dired-recursive-copies 'always)
+      dired-recursive-copies 'always
+      ;; -a include dot files
+      ;; -l long format, required for dired
+      ;; -G colorize output
+      ;; -F display entry type with ending e.g / *, @, % |
+      dired-listing-switches (if osx-p
+                                 "-alFG"
+                               "-alFG --group-directories-first"))
 
 ;; if there is a dired buffer displayed in the next window, use its
 ;; current subdir, instead of the current subdir of this dired buffer
@@ -178,7 +185,6 @@
 ;; enhance kill-ring navigation
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
-
 
 (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
   "When called with no active region, do not activate mark."
