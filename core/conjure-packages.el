@@ -33,7 +33,6 @@
     embark-consult
     exec-path-from-shell
     expand-region
-    ;;flycheck
     gist
     git-timemachine
     guru-mode
@@ -53,6 +52,7 @@
     rg
     smartparens
     smartrep
+    super-save
     undo-tree
     vertico
     volatile-highlights

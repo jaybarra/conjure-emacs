@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'conjure-programming)
 (require 'conjure-lisp)
 
 (conjure-require-packages '(cider clojure-mode))
@@ -32,8 +33,6 @@
 	cider-print-fn 'fipp
 	cider-print-options '(("print-length" 100)))
 
-  (add-hook 'cider-mode-hook 'eldoc-mode)
-
   (defun conjure-cider-repl-mode-defaults ()
     "Setup defaults for when `cider' loads."
     (subword-mode +1)
@@ -42,6 +41,7 @@
   (defvar conjure-cider-repl-mode-hook nil)
   (setq conjure-cider-repl-mode-hook 'conjure-cider-repl-mode-defaults)
 
+  (add-hook 'cider-mode-hook 'eldoc-mode)
   (add-hook 'cider-repl-mode-hook
             (lambda () (run-hooks 'conjure-cider-repl-mode-hook))))
 

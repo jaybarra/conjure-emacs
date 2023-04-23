@@ -1,6 +1,9 @@
 ;;; conjure-ruby.el --- Ruby configuration
 ;;; Commentary:
 ;;; Code:
+
+(require 'conjure-programming)
+
 (conjure-require-packages '(inf-ruby))
 
 (with-eval-after-load 'ruby-mode

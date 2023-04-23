@@ -2,10 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'apheleia)
+(require 'conjure-programming)
 
-(add-hook 'rust-mode-hook 'eglot-ensure)
-(add-to-list 'apheleia-formatters '(rustfmt "rustfmt" "--quiet" "--edition" "2021" "--emit" "stdout"))
+(conjure-require-packages '(cargo rust-mode))
+
+(with-eval-after-load 'rust-mode
+  (add-hook 'rust-mode-hook 'cargo-minor-mode))
 
 (provide 'conjure-rust)
+
 ;;; conjure-rust.el ends here

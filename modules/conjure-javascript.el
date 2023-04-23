@@ -1,8 +1,10 @@
 ;;; conjure-javascript.el --- JavaScript configuration
 ;;; Commentary:
 ;;; Code:
-(require 'conjure-packages)
-(conjure-require-packages '(js2-mode rjsx-mode))
+
+(require 'conjure-programming)
+
+(conjure-require-packages '(eglot js2-mode rjsx-mode))
 
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . rjsx-mode))

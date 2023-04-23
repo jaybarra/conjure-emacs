@@ -65,6 +65,20 @@
 (add-to-list 'recentf-exclude 'conjure-recentf-exclude-p)
 (recentf-mode t)
 
+;; automatically save buffers on switching
+(require 'super-save)
+(add-to-list 'super-save-triggers 'ace-window)
+(super-save-mode +1)
+(diminish 'super-save-mode)
+
+(defadvice set-buffer-major-mode (after set-major-mode activate compile)
+  "Set buffer major mode according to `auto-mode-alist'."
+  (let* ((name (buffer-name buffer))
+         (mode (assoc-default name auto-mode-alist 'string-match)))
+    (when (and mode (consp mode))
+      (setq mode (car mode)))
+    (with-current-buffer buffer (if mode (funcall mode)))))
+
 ;; highlight the current line
 (global-hl-line-mode t)
 
@@ -186,7 +200,7 @@
 ;; automatically indenting yanked text if in programming-modes
 (defun yank-advised-indent-function (beg end)
   "Do indentation, as long as the region isn't too large."
-  (if (<= (- end beg) prelude-yank-indent-threshold)
+  (if (<= (- end beg) conjure-yank-indent-threshold)
       (indent-region beg end nil)))
 
 (defmacro advise-commands (advice-name commands class &rest body)
@@ -278,15 +292,17 @@ indent yanked text (with prefix arg don't indent)."
     ("'" . operate-on-number-at-point)))
 
 ;; pulse line when jumping locations
+(require 'pulsar)
 (pulsar-global-mode +1)
-
-;; (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
-;; (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
 (add-hook 'next-error-hook #'pulsar-pulse-line)
 
+;; editorconfig
 (require 'editorconfig)
 (editorconfig-mode t)
 (diminish 'editorconfig-mode)
+
+;; quick-navigation using avy
+(require 'avy)
 
 (provide 'conjure-editor)
 

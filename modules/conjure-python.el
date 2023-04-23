@@ -1,6 +1,9 @@
 ;;; conjure-python.el --- Python configuration
 ;;; Commentary:
 ;;; Code:
+
+(require 'conjure-programming)
+
 (conjure-require-packages '(anaconda-mode ein pipenv))
 
 (defun conjure-python-mode-defaults ()
@@ -9,11 +12,11 @@
   (subword-mode +1)
   (eldoc-mode +1)
   (anaconda-mode +1)
-  
+
   (setq python-shell-interpreter "jupyter"
         python-shell-interpreter-args "console --simple-prompt"
 	python-shell-prompt-detect-failure-warning nil)
-  
+
   (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter"))
 
 (add-hook 'python-mode-hook 'conjure-python-mode-defaults)

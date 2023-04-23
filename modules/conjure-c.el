@@ -4,7 +4,9 @@
 ;; Handles cc-derived modes, Java, C, PHP...
 
 ;;; Code:
-(require 'conjure-packages)
+
+(require 'conjure-programming)
+
 (conjure-require-packages '(eglot-java))
 
 (require 'eglot)
@@ -36,6 +38,7 @@
 	    (define-key eglot-java-mode-map (kbd "C-c l N") #'eglot-java-project-new)
 	    (define-key eglot-java-mode-map (kbd "C-c l T") #'eglot-java-project-build-task)
 	    (define-key eglot-java-mode-map (kbd "C-c l R") #'eglot-java-project-build-refresh)))
- 
+
 (provide 'conjure-c)
+
 ;;; conjure-c.el ends here

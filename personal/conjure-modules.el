@@ -16,6 +16,7 @@
 (require 'conjure-elixir)
 (require 'conjure-emacs-lisp)
 (require 'conjure-javascript)
+(require 'conjure-go)
 (require 'conjure-lisp)
 (require 'conjure-python)
 (require 'conjure-ruby)

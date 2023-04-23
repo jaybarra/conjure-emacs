@@ -47,6 +47,9 @@
 (define-key text-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
 (define-key text-mode-map (kbd "C-c ! c") 'flymake-start)
 
+(add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
+(add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
+
 (provide 'conjure-programming)
 
 ;;; conjure-programming.el ends here

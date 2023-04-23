@@ -1,14 +1,17 @@
 ;;; conjure-typescript.el --- TypeScript configuration
 ;;; Commentary:
 ;;; Code:
+
 (require 'conjure-programming)
-(conjure-require-packages '(eglot typescript-mode))
+
+(conjure-require-packages '(eglot prettier typescript-mode))
 
 (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
 
 (require 'typescript-mode)
 (setq typescript-indent-level 2)
 
+(add-hook 'typescript-mode-hook 'prettier-mode)
 (add-hook 'typescript-mode-hook 'eglot-ensure)
 
 (require 'projectile)
