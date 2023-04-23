@@ -22,6 +22,7 @@
   "Default coding hook actions."
   (when (and (executable-find ispell-program-name)
              conjure-flyspell)
+    ;; only spell-check inside comments
     (flyspell-prog-mode))
 
   (when conjure-guru

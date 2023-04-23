@@ -1,8 +1,10 @@
-;;; conjure-macos.el --- Mac specific configs
+;;; conjure-macos.el --- Mac specific settings
 ;;; Commentary:
 ;;; Code:
 (require 'conjure-packages)
 (conjure-require-packages '(exec-path-from-shell))
+
+(exec-path-from-shell-initialize)
 
 ;; Allow GPG to decrypt gpg file
 (setf epa-pinentry-mode 'loopback)
@@ -20,8 +22,11 @@
 (when (fboundp 'set-fontset-font)
   (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend))
 
+;; don't bother hiding the menu-bar
 (when (display-graphic-p) (menu-bar-mode +1))
 
 (message "[Conjure] Configuring MacOS specific settings...")
+
 (provide 'conjure-macos)
+
 ;;; conjure-macos.el ends here

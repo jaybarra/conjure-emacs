@@ -74,6 +74,10 @@
 
 (global-set-key (kbd "C-s") 'consult-line)
 
+(with-eval-after-load 'projectile
+  (define-key projectile-mode-map [remap projectile-switch-project] 'consult-projectile-switch-project)
+  (define-key projectile-mode-map [remap projectile-find-file] 'consult-projectile-find-file))
+
 ;; configure register formatting
 (setq register-preview-delay 0.5
       register-preview-function #'consult-register-format)

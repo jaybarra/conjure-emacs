@@ -2,14 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
-;; dont' use tabs
+;; don't' use tabs
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 8)
 
 ;; newlines at the end of files
 (setq require-final-newline t)
 
-;; store all backups and autosave files in tmp
+;; store all backups and auto-save files in tmp
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
@@ -25,7 +25,7 @@
 (require 'smartparens-config)
 (show-smartparens-global-mode t)
 
-;; now tidy up the modeline
+;; now tidy up the mode-line
 (require 'diminish)
 
 ;; give better names for buffers with the same name
@@ -59,7 +59,7 @@
   (let ((file-dir (file-truename (file-name-directory file))))
     (cl-some (lambda (dir)
                (string-prefix-p dir file-dir))
-             (mapcar 'file-truname (list conjure-savefile-dir package-user-dir)))))
+             (mapcar 'file-truename (list conjure-savefile-dir package-user-dir)))))
 
 (add-to-list 'recentf-exclude "\\roam.*\\'")
 (add-to-list 'recentf-exclude 'conjure-recentf-exclude-p)
@@ -89,6 +89,8 @@
 ;; on-the-fly spell-checking
 (require 'flyspell)
 (setq ispell-program-name "aspell"
+      ;; if using Aspell, use this instead
+      ispell-list-command "--list"
       ispell-extra-args '("--sug-mode=ultra"))
 
 (defun conjure-enable-flyspell ()

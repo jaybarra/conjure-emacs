@@ -30,13 +30,11 @@
 (with-eval-after-load 'projectile
   (when conjure-super-keybindings
     (global-set-key(kbd "s-p") 'projectile-command-map))
+  (global-set-key (kbd "C-c p") 'projectile-command-map))
 
-  (global-set-key (kbd "C-c p") 'projectile-command-map)
-  (define-key projectile-mode-map [remap projectile-switch-project] 'consult-projectile-switch-project)
-  (define-key projectile-mode-map [remap projectile-find-file] 'consult-projectile-find-file))
-
-(global-set-key (kbd "C-.") 'embark-act)
-(global-set-key (kbd "M-.") 'embark-dwim)
+(with-eval-after-load 'embark
+  (global-set-key (kbd "C-.") 'embark-act)
+  (global-set-key (kbd "M-.") 'embark-dwim))
 
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
 
