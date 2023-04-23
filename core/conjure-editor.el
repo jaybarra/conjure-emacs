@@ -106,7 +106,8 @@
   (when conjure-whitespace
     ;; keep the whitespace decent
     (add-hook 'before-save-hook 'conjure-cleanup-maybe nil t)
-    (whitespace-mode +1)))
+    (whitespace-mode +1)
+    (diminish 'whitespace-mode)))
 
 (add-hook 'text-mode-hook 'conjure-enable-flyspell)
 (add-hook 'text-mode-hook 'conjure-enable-whitespace)
@@ -141,6 +142,7 @@
       projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" conjure-savefile-dir)
       projectile-ignored-projects '("~/"))
 (projectile-mode t)
+(diminish 'projectile-mode)
 
 ;; enhance isearch & query-replace
 (require 'anzu)
