@@ -4,7 +4,7 @@
 ;; Uses a more minimalistic set of packages
 ;;; Code:
 
-(conjure-require-packages '(affe consult corfu marginalia orderless vertico))
+(conjure-require-packages '(affe consult corfu embark-consult marginalia orderless vertico))
 
 (require 'vertico)
 (setq vertico-cycle t
@@ -28,8 +28,8 @@
 
 (setq enable-recursive-minibuffers t)
 
-(require 'consult)
-
+(require 'embark-consult)
+(add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
 
 (require 'affe)
 (defun affe-orderless-regexp-compiler (input _type _ignorecase)
@@ -62,6 +62,10 @@
 (global-set-key (kbd "M-g m") 'consult-mark)
 (global-set-key (kbd "M-g i") 'consult-imenu)
 (global-set-key (kbd "M-g o") 'consult-outline)
+
+;; prefer ripgrep
+(cond ((executable-find "rg") (global-set-key (kbd "C-s-f") 'consult-ripgrep))
+      (t (global-set-key (kbd "C-s-f") 'consult-grep)))
 
 ;; IntelliJ style keybindings
 (global-set-key (kbd "s-E") 'consult-projectile-recentf)

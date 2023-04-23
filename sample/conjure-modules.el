@@ -18,6 +18,7 @@
 (require 'conjure-javascript)
 (require 'conjure-go)
 (require 'conjure-lisp)
+(require 'conjure-markdown)
 (require 'conjure-python)
 (require 'conjure-ruby)
 (require 'conjure-rust)

@@ -30,7 +30,6 @@
     ef-themes
     eglot
     embark
-    embark-consult
     exec-path-from-shell
     expand-region
     gist
@@ -129,7 +128,6 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
     ("\\.less\\'" less-css-mode less-css-mode)
     ("\\.log\\'" logview log-view-mode)
     ("\\.lua\\'" lua-mode lua-mode)
-    ("\\.markdown\\'" markdown-mode markdown-mode)
     ("\\.md\\'" markdown-mode markdown-mode)
     ("\\.ml\\'" tuareg tuareg-mode)
     ("\\.pp\\'" puppet-mode puppet-mode)
@@ -157,11 +155,6 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
     ("\\.yaml\\'" yaml-mode yaml-mode)
     ("\\.zig\\'" zig-mode zig-mode)
     ("Dockerfile\\'" dockerfile-mode dockerfile-mode)))
-
-;; markdown doesn't have autoloads, manually add them
-(when (package-installed-p 'markdown-mode)
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . gfm-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)))
 
 ;; nor adoc
 (when (package-installed-p 'adoc-mode)
