@@ -89,8 +89,6 @@
 ;; on-the-fly spell-checking
 (require 'flyspell)
 (setq ispell-program-name "aspell"
-      ;; if using Aspell, use this instead
-      ispell-list-command "--list"
       ispell-extra-args '("--sug-mode=ultra"))
 
 (defun conjure-enable-flyspell ()
@@ -142,7 +140,8 @@
 (require 'projectile)
 (setq projectile-cache-file (expand-file-name "projectile.cache" conjure-savefile-dir)
       projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" conjure-savefile-dir)
-      projectile-ignored-projects '("~/"))
+      projectile-ignored-projects '("~/")
+      projectile-create-missing-test-files t)
 (projectile-mode t)
 (diminish 'projectile-mode)
 
@@ -242,7 +241,7 @@ indent yanked text (with prefix arg don't indent)."
 
 ;; whitespace-mode config
 (require 'whitespace)
-(setq whitespace-line-column 80
+(setq whitespace-line-column 100
       whitespace-style '(face tabs empty trailing lines-tail))
 
 (add-hook 'text-mode (lambda ()

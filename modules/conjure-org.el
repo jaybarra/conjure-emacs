@@ -18,6 +18,12 @@
      (shell . t)
      (python . t))))
 
+;; ignore white space cleanup since it interferes with org-roam node insertions
+;; cleanup can still be run manually
+(add-hook 'org-mode-hook
+          (lambda ()
+            (setq-local conjure-cleanup-whitespace-on-save nil)))
+
 ;;; ORG-ROAM:
 
 (require 'org-roam)
