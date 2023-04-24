@@ -4,7 +4,16 @@
 ;; Uses a more minimalistic set of packages
 ;;; Code:
 
-(conjure-require-packages '(affe consult corfu embark-consult marginalia orderless vertico))
+(require 'conjure-packages)
+(conjure-require-packages '(affe
+                            consult
+                            consult-flyspell
+                            corfu
+                            embark-consult
+                            flyspell-correct
+                            kind-icon
+                            marginalia
+                            orderless vertico))
 
 (require 'vertico)
 (setq vertico-cycle t
@@ -27,6 +36,7 @@
       '(read-only t cursor-intangible t face minibuffer-prompt))
 
 (setq enable-recursive-minibuffers t)
+(setq consult-flyspell-select-function 'flyspell-correct-at-point)
 
 (require 'embark-consult)
 (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
@@ -121,6 +131,14 @@
 (define-key corfu-map (kbd "S-<return>") 'corfu-insert)
 
 (global-corfu-mode)
+
+(require 'kind-icon)
+(setq kind-icon-default-face 'corfu-default
+      ;; after updating to 29, try again to use non-nil
+      ;; currently broken in 28 for 28
+      kind-icon-use-icons nil)
+
+(add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
 (provide 'conjure-vertico)
 

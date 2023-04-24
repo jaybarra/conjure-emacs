@@ -30,7 +30,10 @@
 (size-indication-mode)
 
 ;; show line numbers
+;; nlinum is faster than linum (maybe)
+(require 'nlinum)
 (global-nlinum-mode t)
+(setq nlinum-format "%4d \u2502")
 
 ;; allow y/n responses
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -40,6 +43,8 @@
       '((:eval (if (buffer-file-name)
 		   (abbreviate-file-name (buffer-file-name))
 		 "%b"))))
+
+(require 'which-key)
 (if (daemonp)
     (add-hook 'server-after-make-frame-hook 'which-key-mode)
   (which-key-mode))

@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'conjure-packages)
 (conjure-require-packages '(rainbow-delimiters))
 
 (defun conjure-local-comment-auto-fill ()
@@ -16,6 +17,7 @@
 (global-hl-todo-mode 1)
 
 ;; Less strict guru
+(require 'guru-mode)
 (setq guru-warn-only t)
 
 (defun conjure-prog-mode-defaults ()
@@ -48,6 +50,7 @@
 (define-key text-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
 (define-key text-mode-map (kbd "C-c ! c") 'flymake-start)
 
+(require 'pulsar)
 (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
 (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
 

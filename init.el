@@ -47,6 +47,10 @@
 (add-to-list 'load-path conjure-vendor-dir)
 (conjure-add-subfolders-to-load-path conjure-vendor-dir)
 
+;; let flymake know where things are
+(with-eval-after-load 'flymake
+  (setq elisp-flymake-byte-compile-load-path load-path))
+
 ;; reduce the frequency of garbage collection by making it happen on
 ;; each 50MB of allocated data (the default is on every 0.76MB)
 (setq gc-cons-threshold 50000000)
