@@ -12,6 +12,7 @@
 (require 'conjure-org)
 
 ;; Modules for common languages
+(require 'conjure-c)
 (require 'conjure-clojure)
 (require 'conjure-elixir)
 (require 'conjure-emacs-lisp)

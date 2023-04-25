@@ -2,8 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; don't' use tabs
-(setq-default indent-tabs-mode nil)
 (setq-default tab-width 8)
 
 ;; newlines at the end of files
@@ -36,6 +34,7 @@
       uniquify-ignore-buffers-re "^\\*")
 
 ;; saveplace remembers where you were
+(require 'saveplace)
 (setq save-place-file (expand-file-name "saveplace" conjure-savefile-dir))
 (save-place-mode 1)
 

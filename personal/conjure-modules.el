@@ -3,7 +3,7 @@
 ;;; Code:
 
 ;; Narrowing frameworks (should use one)
-;; (require 'conjure-helm)
+;;(require 'conjure-helm)
 ;; (require 'conjure-ivy)
 (require 'conjure-vertico)
 
@@ -12,6 +12,7 @@
 (require 'conjure-org)
 
 ;; Modules for common languages
+(require 'conjure-c)
 (require 'conjure-clojure)
 (require 'conjure-elixir)
 (require 'conjure-emacs-lisp)
@@ -31,6 +32,8 @@
 
 (setq-default initial-scratch-message
 	      (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
+
+(setq conjure-flyspell nil)
 
 (provide 'conjure-modules)
 

@@ -52,6 +52,7 @@
     smartparens
     smartrep
     super-save
+    uuidgen
     undo-tree
     vertico
     volatile-highlights
