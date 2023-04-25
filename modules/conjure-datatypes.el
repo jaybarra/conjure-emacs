@@ -11,4 +11,5 @@
 (add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
 
 (provide 'conjure-datatypes)
+
 ;;; conjure-datatypes.el ends here

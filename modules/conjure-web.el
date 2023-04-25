@@ -3,7 +3,9 @@
 ;;; Code:
 
 (require 'conjure-programming)
+
 (conjure-require-packages '(web-mode))
+
 (require 'web-mode)
 
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -20,6 +22,7 @@
 
 (setq web-mode-enable-auto-pairing nil)
 
+(require 'smartparens)
 (sp-with-modes '(web-mode)
   (sp-local-pair "%" "%"
                  :unless '(sp-in-string-p)
@@ -39,4 +42,5 @@
                              (run-hooks 'conjure-web-mode-hook))))
 
 (provide 'conjure-web)
+
 ;;; conjure-web.el ends here

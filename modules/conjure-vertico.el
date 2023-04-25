@@ -42,10 +42,12 @@
 (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
 
 (require 'affe)
+(require 'orderless)
 (defun affe-orderless-regexp-compiler (input _type _ignorecase)
   (setq input (orderless-pattern-compiler input))
   (cons input (apply-partially #'orderless--highlight input)))
-(setq affe-regex-compiler #'affe-orderless-regex-compiler)
+
+(setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
 
 (setq completion-styles '(orderless basic)
       completion-category-overrides '((file (styles partial-completion))))
@@ -60,6 +62,7 @@
 (global-set-key (kbd "C-x M-:") 'consult-complex-command)
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "C-x j") 'consult-recent-file)
+(global-set-key (kbd "C-x f") 'affe-find)
 (global-set-key (kbd "C-x r l") 'consult-bookmark)
 (global-set-key (kbd "C-x r j") 'consult-register)
 (global-set-key (kbd "C-x m") 'consult-yasnippet)
@@ -96,10 +99,12 @@
 (consult-customize consult-theme :preview-key '(:debounce 0.2 any)
                    :preview-key '(:debounce 0.4 any))
 
-(setq consult-narrow-key "<")
+(setq consult-narrow-key "<"
+      consult-goto-line-numbers nil)
 
 (advice-add #'register-preview :override #'consult-register-window)
 
+(require 'xref)
 (setq xref-show-xrefs-function #'consult-xref
       xref-show-definitions-function #'consult-xref)
 
@@ -115,10 +120,10 @@
 
 ;; Corfu Auto-complete
 (require 'corfu)
-(setq corfu-cycle t
+(setq corfu-cycle nil
       corfu-auto t
       corfu-auto-prefix 2
-      corfu-auto-delay 0.0
+      corfu-auto-delay 0.2
       corfu-quit-at-boundary 'separator
       corfu-preview-current 'insert
       corfu-preselect 'valid)
