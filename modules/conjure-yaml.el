@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 (require 'conjure-packages)
+
 (conjure-require-packages '(yaml-mode))
 
 (when (executable-find "yaml-language-server")
@@ -31,4 +32,5 @@
 			"!Ref scalar"])))))
 
 (provide 'conjure-yaml)
+
 ;;; conjure-yaml.el ends here

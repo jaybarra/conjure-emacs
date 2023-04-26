@@ -3,7 +3,7 @@
 ;;; Code:
 
 ;; Narrowing frameworks (should use one)
-;;(require 'conjure-helm)
+;; (require 'conjure-helm)
 ;; (require 'conjure-ivy)
 (require 'conjure-vertico)
 
