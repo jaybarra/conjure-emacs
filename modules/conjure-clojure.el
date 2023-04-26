@@ -12,6 +12,10 @@
 
   (defun conjure-clojure-mode-defaults ()
     "Configure sensible defaults for `clojure-mode'."
+
+    ;; flymake and cider don't talk to each yet
+    (flymake-mode -1)
+
     (subword-mode +1)
     (run-hooks 'conjure-lisp-coding-hook))
 
@@ -61,10 +65,10 @@
 	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
 	cider-repl-buffer-size-limit 8192
-	cider-test-show-report-on-success nil
-	cider-font-lock-max-length 4096
+        cider-result-overlay-position 'at-eol
+        cider-font-lock-max-length 4096
 	cider-print-fn 'fipp
-	cider-print-options '(("print-length" 100)))
+        cider-print-options '(("print-length" 100)))
 
   (defun conjure-cider-repl-mode-defaults ()
     "Setup defaults for when `cider' loads."
