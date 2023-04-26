@@ -47,16 +47,16 @@
 (add-to-list 'load-path conjure-vendor-dir)
 (conjure-add-subfolders-to-load-path conjure-vendor-dir)
 
-;; let flymake know where things are
-(with-eval-after-load 'flymake
-  (setq elisp-flymake-byte-compile-load-path load-path))
-
 ;; reduce the frequency of garbage collection by making it happen on
 ;; each 50MB of allocated data (the default is on every 0.76MB)
 (setq gc-cons-threshold 50000000)
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
+
+(when (file-exists-p conjure-personal-dir)
+  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-dir)
+  (mapc 'load (delete conjure-modules-file (directory-files conjure-personal-dir 't "^[^#\.].*\\.el$"))))
 
 (message "[Conjure] Invoking the Deep Magic...")
 
@@ -70,7 +70,6 @@
 (when osx-p (require 'conjure-macos))
 
 (message "[Conjure] Loading Conjure's modules...")
-
 (if (file-exists-p conjure-modules-file)
     (load conjure-modules-file)
   (message "[Conjure] Missing personal modules file %s" conjure-modules-file)
@@ -81,10 +80,6 @@
 ;; Save customization variables to a separate file
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
-
-(when (file-exists-p conjure-personal-dir)
-  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-dir)
-  (mapc 'load (delete conjure-modules-file (directory-files conjure-personal-dir 't "^[^#\.].*\\.el$"))))
 
 (message "[Conjure] Conjure is ready to make magic!")
 
