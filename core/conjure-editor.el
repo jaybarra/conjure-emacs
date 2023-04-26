@@ -78,9 +78,6 @@
       (setq mode (car mode)))
     (with-current-buffer buffer (if mode (funcall mode)))))
 
-;; don't highlight the current line
-(global-hl-line-mode -1)
-
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 (diminish 'volatile-highlights-mode)
@@ -169,6 +166,17 @@
       dired-listing-switches (if osx-p
                                  "-alFG"
                                "-alFG --group-directories-first"))
+
+;; improved line highlighting for selected modes
+(require 'lin)
+(setq lin-face 'lin-green)
+(setq lin-mode-hooks
+      '(dired-mode-hook
+	ibuffer-mode-hook
+	log-view-mode-hook
+	magit-log-mode-hook
+	package-menu-mode-hook))
+(lin-global-mode +1)
 
 ;; if there is a dired buffer displayed in the next window, use its
 ;; current subdir, instead of the current subdir of this dired buffer
