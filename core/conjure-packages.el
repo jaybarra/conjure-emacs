@@ -42,9 +42,8 @@
     magit
     marginalia
     nlinum
+    nlinum-relative
     operate-on-number
-    orderless
-    org-roam
     projectile
     pulsar
     rainbow-delimiters

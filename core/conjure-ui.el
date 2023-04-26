@@ -32,8 +32,15 @@
 ;; show line numbers
 ;; nlinum is faster than linum (maybe)
 (require 'nlinum)
+(require 'nlinum-relative)
+
+(setq nlinum-format "%4d"
+      ;; optionally have a separator at the end
+      ;;nlinum-format "%4d \u2502"
+      nlinum-relative-redisplay-delay 0.1)
+
 (global-nlinum-mode t)
-(setq nlinum-format "%4d \u2502")
+(global-nlinum-relative-mode)
 
 ;; allow y/n responses
 (fset 'yes-or-no-p 'y-or-n-p)
