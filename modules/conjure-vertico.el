@@ -6,14 +6,19 @@
 
 (require 'conjure-packages)
 (conjure-require-packages '(affe
-                            consult
-                            consult-flyspell
-                            corfu
+			    consult
+			    consult-ag
+			    consult-eglot
+			    consult-flyspell
+			    consult-projectile
+			    consult-org-roam
+			    corfu
                             embark-consult
                             flyspell-correct
                             kind-icon
                             marginalia
-                            orderless vertico))
+                            orderless
+			    vertico))
 
 (require 'vertico)
 (setq vertico-cycle t
@@ -144,6 +149,14 @@
       kind-icon-use-icons nil)
 
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+
+(with-eval-after-load 'org-roam
+  (global-set-key (kbd "C-c n f") 'consult-org-roam-file-find)
+  ;;(global-set-key (kbd "C-c n l b") 'consult-org-roam-backlinks)
+  ;;(global-set-key (kbd "C-c n l f") 'consult-org-roam-forward-links)
+
+  (consult-org-roam-mode +1)
+  (diminish 'consult-org-roam-mode))
 
 (provide 'conjure-vertico)
 

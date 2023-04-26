@@ -2,6 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'conjure-packages)
+
 (conjure-require-packages '(org
 			    org-roam
 			    org-roam-ui
@@ -50,18 +52,11 @@ fTakes ARG and optionally ARGS as pass-thrus."
 (global-set-key (kbd "C-c n d b") 'org-roam-dailies-goto-previous-note)
 (global-set-key (kbd "C-c n d c") 'org-roam-dailies-goto-date)
 
-(when (fboundp 'consult-org-roam-mode)
-  (global-set-key (kbd "C-c n f") 'consult-org-roam-file-find)
-  ;;(global-set-key (kbd "C-c n l b") 'consult-org-roam-backlinks)
-  ;;(global-set-key (kbd "C-c n l f") 'consult-org-roam-forward-links)
-
-  (consult-org-roam-mode +1)
-  (diminish 'consult-org-roam-mode))
-
 (org-roam-db-autosync-mode)
 
 (require 'org-roam-ui)
 (setq org-roam-ui-open-on-start nil)
 
 (provide 'conjure-org)
+
 ;;; conjure-org.el ends here

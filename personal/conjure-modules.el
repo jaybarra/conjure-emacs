@@ -35,6 +35,8 @@
 
 (setq conjure-flyspell nil)
 
+(ef-themes-select 'ef-dark)
+
 (provide 'conjure-modules)
 
 ;;; conjure-modules.el ends here

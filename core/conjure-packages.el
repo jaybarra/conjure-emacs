@@ -16,19 +16,12 @@
     avy
     browse-kill-ring
     cape
-    consult
-    consult-ag
-    consult-eglot
-    consult-projectile
-    consult-org-roam
-    corfu
     diff-hl
     diminish
     discover-my-major
     easy-kill
     editorconfig
     ef-themes
-    eglot
     embark
     exec-path-from-shell
     expand-region
@@ -40,7 +33,6 @@
     ligature
     lin
     magit
-    marginalia
     nlinum
     nlinum-relative
     operate-on-number
@@ -53,7 +45,6 @@
     super-save
     uuidgen
     undo-tree
-    vertico
     volatile-highlights
     which-key
     xterm-color
