@@ -78,8 +78,8 @@
       (setq mode (car mode)))
     (with-current-buffer buffer (if mode (funcall mode)))))
 
-;; highlight the current line
-(global-hl-line-mode t)
+;; don't highlight the current line
+(global-hl-line-mode -1)
 
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
@@ -305,13 +305,15 @@ indent yanked text (with prefix arg don't indent)."
 ;; pulse line when jumping locations
 (require 'pulsar)
 (pulsar-global-mode +1)
-(add-hook 'next-error-hook #'pulsar-pulse-line)
+(when (fboundp 'ace-window)
+  ;; pulsar doesn't detect the override because of ordering so we have to set it ourselves
+  (add-to-list 'pulsar-pulse-functions 'ace-window))
+(add-hook 'next-error-hook 'pulsar-pulse-line)
 
 ;; editorconfig
 (require 'editorconfig)
 (editorconfig-mode t)
 (diminish 'editorconfig-mode)
-
 
 ;; hide embark completion buffers
 (add-to-list 'display-buffer-alist
