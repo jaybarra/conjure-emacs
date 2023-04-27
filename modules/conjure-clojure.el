@@ -5,6 +5,8 @@
 (require 'conjure-lisp)
 (conjure-require-packages '(cider clojure-mode))
 
+(require 'apheleia)
+
 (with-eval-after-load 'clojure-mode
   (require 'smartparens-config)
   ;; disable single quote pairing to allow for lists '()
@@ -16,6 +18,18 @@
     ;; flymake and cider don't talk to each yet
     (flymake-mode -1)
 
+    ;; add a formatter that doesn't rely on a REPL connection
+    ;; but generally prefer `cider-format-buffer' when possible
+    (push '(clojure-cljfmt . ("clj"
+			      "-Sdeps" (format "{:deps {cljfmt/cljfmt {:mvn/version \"RELEASE\"} } }")
+			      "-M" "-m" "cljfmt.main" "fix"
+			      filepath))
+	  apheleia-formatters)
+
+    (add-to-list 'apheleia-mode-alist
+		 '((clojure-mode . clojure-cljfmt)))
+
+    ;; run general lisp hooks
     (subword-mode +1)
     (run-hooks 'conjure-lisp-coding-hook))
 
