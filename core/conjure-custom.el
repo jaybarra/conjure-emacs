@@ -65,6 +65,11 @@ Requires `conjure-whitespace' to also be enabled."
   :type 'boolean
   :group 'conjure)
 
+(defcustom conjure-column-fill 100
+  "Value to use for column-fill of acceptable length of a line."
+  :type 'number
+  :group 'conjure)
+
 (provide 'conjure-custom)
 
 ;;; conjure-custom.el ends here
