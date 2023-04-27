@@ -4,10 +4,12 @@
 
 (require 'conjure-programming)
 
-(conjure-require-packages '(cargo rust-mode))
+(conjure-require-packages '(cargo eglot rust-mode))
 
 (with-eval-after-load 'rust-mode
   (add-hook 'rust-mode-hook 'cargo-minor-mode))
+
+(add-hook 'rust-mode-hook 'eglot-ensure)
 
 (provide 'conjure-rust)
 

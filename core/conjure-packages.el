@@ -16,6 +16,7 @@
     avy
     browse-kill-ring
     cape
+    darkroom
     diff-hl
     diminish
     discover-my-major

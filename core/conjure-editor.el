@@ -237,7 +237,7 @@ indent yanked text (with prefix arg don't indent)."
 
 ;; whitespace-mode config
 (require 'whitespace)
-(setq whitespace-line-column 100
+(setq whitespace-line-column conjure-column-fill
       whitespace-style '(face tabs empty trailing lines-tail))
 
 (add-hook 'text-mode (lambda ()
