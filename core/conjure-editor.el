@@ -167,17 +167,6 @@
                                  "-alFG"
                                "-alFG --group-directories-first"))
 
-;; improved line highlighting for selected modes
-(require 'lin)
-(setq lin-face 'lin-green)
-(setq lin-mode-hooks
-      '(dired-mode-hook
-	ibuffer-mode-hook
-	log-view-mode-hook
-	magit-log-mode-hook
-	package-menu-mode-hook))
-(lin-global-mode +1)
-
 ;; if there is a dired buffer displayed in the next window, use its
 ;; current subdir, instead of the current subdir of this dired buffer
 (setq dired-dwim-target t)
@@ -215,7 +204,7 @@
 
 ;; automatically indenting yanked text if in programming-modes
 (defun yank-advised-indent-function (beg end)
-  "Do indentation, as long as the region isn't too large."
+  "Do indentation, as long as the region isn't too large between BEG and END."
   (if (<= (- end beg) conjure-yank-indent-threshold)
       (indent-region beg end nil)))
 
@@ -312,6 +301,7 @@ indent yanked text (with prefix arg don't indent)."
 
 ;; pulse line when jumping locations
 (require 'pulsar)
+(setq pulsar-face 'pulsar-green)
 (pulsar-global-mode +1)
 (when (fboundp 'ace-window)
   ;; pulsar doesn't detect the override because of ordering so we have to set it ourselves
@@ -359,7 +349,7 @@ targets."
         embark-isearch-highlight-indicator))
 
 (defun embark-hide-which-key-indicator (fn &rest args)
-  "Hide the which-key indicator immediately when using the completing-read FN using ARGS."
+  "Hide the which-key indicator immediately when using the `completing-read' FN using ARGS."
   (which-key--hide-popup-ignore-command)
   (let ((embark-indicators
          (remq #'embark-which-key-indicator embark-indicators)))
