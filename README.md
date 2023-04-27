@@ -1,51 +1,34 @@
 # Emacs Conjure
 
-Conjure is an Emacs distribution that takes inspiration from a number of excellent Emacs configurations. 
+_Conjure_ is an Emacs configuration that takes inspiration from a number of excellent Emacs repositories.
 
 + [Prelude](https://github.com/bbatsov/prelude)
++ [Spacemacs](https://www.spacemacs.org/)
 + [Emacs From Scratch](https://github.com/daviwil/emacs-from-scratch)
 
 ## Installation
 
 [Download Emacs](https://www.gnu.org/software/emacs/download.html) from one of listed locations.
 
-Clone this repo to `~/.emacs.d`
+Make a backup of your existing `.emacs.d` folder if necessary, then clone this repo to `~/.emacs.d`.
 
-	cd ~
-	git clone https://github.com/jaybarra/.emacs.d
+``` shell
+mv ~/.emacs.d ~/.emacs.d.bak
+git clone https://github.com/jaybarra/.emacs.d ~/.emacs.d
+```
 
 Once downloaded, run Emacs. On first run it will attempt to install packages.
 
-Some packages need additional interactive steps to configure. Specifically any that require fonts and icons.
+It is advisable to copy the `sample/conjure-modules.el` to the `personal` directory to begin modifying it to your own needs.
 
-Run the following and restart Emacs.
-	
-    <M-x> all-the-icons-install-fonts
-    
-### Prerequisites
+## Purpose
 
-[Conjure](./core/conjure-ui.el) uses [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro) as the preferred font.
+_Conjure_ was originally only my personal configuration. Interest on my teams had been expressed over Emacs and in my efforts to genericize my own configuration to make it appealing to others, the idea of publishing it generally occurred to me.
 
+## License
 
-## Extras
+Copyright © 2023 Jay Barra
 
-Emacs is powerful by itself, but it can leverage external applications to extend its capabilities.
+Distributed under the GNU General Public License, version 3
 
-### Language Server Protocol (LSP)
-
-To enable a more IDE like experience Emacs supports Language Servers.
-
-Conjure uses eglot as its LSP interface which relies on external applications.
-Feel free to switch out `eglot` for `lsp` by replacing `ensure-eglot` with `lsp-deferred` in throughout the configurations or for unhandled languages. You will also need to add `lsp` to the list of [conjure-package](./core/conjure-packages.el)
-
-It is suggested to install the following LSPs on your system:
-
-* [Typescript Language Server](https://github.com/typescript-language-server/typescript-language-server) for JavaScript and TypeScript
-  * `npm install --location=global typescript-language-server`
-* [YAML Language Server](https://github.com/redhat-developer/yaml-language-server) for YAML
-  * `brew install yaml-language-server`
-* [JDTLS](https://github.com/eclipse/eclipse.jdt.ls) for Java (requires java 17+)
-  * `brew install jdtls`
-* [Solargraph](https://solargraph.org/) for Ruby
-  * `gem install solargraph`
-
+[badge-license]: https://img.shields.io/badge/license-GPL_3-green.svg
