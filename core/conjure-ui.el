@@ -29,15 +29,26 @@
 (column-number-mode)
 (size-indication-mode)
 
+;; improved line highlighting for selected modes
+;; TODO sync lin and pulsar colors
+(require 'lin)
+(setq lin-face 'lin-green)
+(setq lin-mode-hooks
+      '(dired-mode-hook
+	ibuffer-mode-hook
+	log-view-mode-hook
+	magit-log-mode-hook
+	package-menu-mode-hook
+	prog-mode-hook))
+(lin-global-mode +1)
+
 ;; show line numbers
 ;; nlinum is faster than linum (maybe)
 (require 'nlinum)
 (require 'nlinum-relative)
 
-(setq nlinum-format "%4d"
-      ;; optionally have a separator at the end
-      ;;nlinum-format "%4d \u2502"
-      nlinum-relative-redisplay-delay 0.1)
+(setq nlinum-format "%4d "
+      nlinum-relative-redisplay-delay 0.2)
 
 (global-nlinum-mode t)
 (global-nlinum-relative-mode)
