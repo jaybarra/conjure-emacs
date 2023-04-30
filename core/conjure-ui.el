@@ -33,13 +33,6 @@
 ;; TODO sync lin and pulsar colors
 (require 'lin)
 (setq lin-face 'lin-green)
-(setq lin-mode-hooks
-      '(dired-mode-hook
-	ibuffer-mode-hook
-	log-view-mode-hook
-	magit-log-mode-hook
-	package-menu-mode-hook
-	prog-mode-hook))
 (lin-global-mode +1)
 
 ;; show line numbers
