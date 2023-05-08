@@ -2,14 +2,17 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Narrowing frameworks (should use one)
+;; Narrowing frameworks (only one should be enabled)
 ;; (require 'conjure-helm)
 ;; (require 'conjure-ivy)
 (require 'conjure-vertico)
 
 ;; Utilities
-(require 'conjure-datatypes) ;; define custom type-mappings in here
+(require 'conjure-datatypes)
 (require 'conjure-org)
+
+;; UI Elements
+(require 'conjure-icons)
 
 ;; Modules for common languages
 (require 'conjure-c)

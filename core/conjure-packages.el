@@ -60,7 +60,8 @@
   (unless (memq package conjure-packages)
     (add-to-list 'conjure-packages package))
   (unless (package-installed-p package)
-    (package-install package)))
+    (package-install package))
+  (require package))
 
 (defun conjure-require-packages (packages)
   "Install PACKAGES."

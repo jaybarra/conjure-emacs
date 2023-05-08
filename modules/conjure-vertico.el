@@ -48,6 +48,7 @@
 
 (require 'affe)
 (require 'orderless)
+
 (defun affe-orderless-regexp-compiler (input _type _ignorecase)
   (setq input (orderless-pattern-compiler input))
   (cons input (apply-partially #'orderless--highlight input)))
@@ -55,7 +56,7 @@
 (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
 
 (setq completion-styles '(orderless basic)
-      completion-category-overrides '((file (styles partial-completion))))
+      completion-category-overrides '((file (styles basic partial-completion))))
 
 ;; C-c bindings
 (global-set-key (kbd "C-c M-x") 'consult-mode-command)
@@ -127,11 +128,7 @@
 (require 'corfu)
 (setq corfu-cycle nil
       corfu-auto t
-      corfu-auto-prefix 2
-      corfu-auto-delay 0.2
-      corfu-quit-at-boundary 'separator
-      corfu-preview-current 'insert
-      corfu-preselect 'valid)
+      corfu-separator ?\s)
 
 (define-key corfu-map (kbd "M-SPC") 'corfu-insert-separator)
 (define-key corfu-map (kbd "TAB") 'corfu-next)
@@ -144,8 +141,6 @@
 
 (require 'kind-icon)
 (setq kind-icon-default-face 'corfu-default
-      ;; after updating to 29, try again to use non-nil
-      ;; currently broken in 28 for 28
       kind-icon-use-icons nil)
 
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
