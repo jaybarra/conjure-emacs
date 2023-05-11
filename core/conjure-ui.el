@@ -62,7 +62,7 @@
 
 (defun font-exists-p (font)
   "Check if FONT exists (but only in x-window)."
-  (when (fboundp 'x-list-fonts)
+  (when (and (display-graphic-p) (fboundp 'x-list-fonts))
     (if (null (x-list-fonts font)) nil t)))
 
 (defun set-default-font (font)
@@ -70,7 +70,7 @@
   (when font
     (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
 
-(when (fboundp 'x-list-fonts)
+(when (and (display-graphic-p) (fboundp 'x-list-fonts))
   ;; TODO use a macro expansion to generate this
   (let ((selected-font (cond ((font-exists-p "Fira Code Retina") "Fira Code Retina")
 			     ((font-exists-p "Fira Code") "Fira Code")

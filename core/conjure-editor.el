@@ -164,8 +164,8 @@
       ;; -G colorize output
       ;; -F display entry type with ending e.g / *, @, % |
       dired-listing-switches (if osx-p
-                                 "-alFG"
-                               "-alFG --group-directories-first"))
+                                 "-alhFG"
+                               "-alhFG --group-directories-first"))
 
 ;; if there is a dired buffer displayed in the next window, use its
 ;; current subdir, instead of the current subdir of this dired buffer
