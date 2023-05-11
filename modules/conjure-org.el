@@ -32,6 +32,9 @@
 (setq org-roam-directory (expand-file-name "roam" (file-truename "~"))
       org-roam-db-location (expand-file-name "org-roam.db" conjure-savefile-dir))
 
+(unless (file-exists-p org-roam-directory)
+  (make-directory org-roam-directory))
+
 (defun org-roam-insert-node-immediate (arg &rest args)
   "Insert a node without prompting for additional information.
 fTakes ARG and optionally ARGS as pass-thrus."
