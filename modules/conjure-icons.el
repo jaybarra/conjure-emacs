@@ -3,12 +3,9 @@
 ;;; Code:
 
 (require 'conjure-packages)
-;;(conjure-require-packages '(all-the-icons))
-(conjure-require-packages '(nerd-icons))
-
-(require 'nerd-icons)
-(require 'nerd-icons-dired)
-(require 'nerd-icons-ibuffer)
+(conjure-require-packages '(nerd-icons
+			    nerd-icons-dired
+			    nerd-icons-ibuffer))
 
 (setq nerd-icons-font-family "Symbols Nerd Font Mono")
 
