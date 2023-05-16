@@ -100,8 +100,8 @@
 (defvar conjure-use-ligatures)
 (global-ligature-mode conjure-use-ligatures)
 
+;; Make ef-themes functions available but defer to user-preferences
 (require 'ef-themes)
-(ef-themes-load-random 'dark)
 
 (provide 'conjure-ui)
 

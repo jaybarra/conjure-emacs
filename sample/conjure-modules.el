@@ -33,6 +33,9 @@
 (require 'conjure-web)
 (require 'conjure-yaml)
 
+(ef-themes-select 'ef-winter)
+(setq ef-themes-to-toggle '(ef-winter ef-cyprus))
+
 (provide 'conjure-modules)
 
 ;;; conjure-modules.el ends here

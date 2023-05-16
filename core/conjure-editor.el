@@ -180,6 +180,7 @@
 
 ;; clean up obsolete buffers
 (require 'midnight)
+(midnight-delay-set 'midnight-delay "4:30am")
 
 ;; enhance kill-ring navigation
 (require 'browse-kill-ring)
