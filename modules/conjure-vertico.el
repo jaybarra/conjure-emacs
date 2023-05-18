@@ -141,8 +141,8 @@
 
 (require 'kind-icon)
 (setq kind-icon-default-face 'corfu-default
-      kind-icon-use-icons nil)
-
+      ;; TODO waiting for Emacs 29 to hopefully resolve svg issues on Mac/ventura
+      kind-icon-use-icons (if osx-p nil t))
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
 (with-eval-after-load 'org-roam
