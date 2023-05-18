@@ -263,9 +263,21 @@ indent yanked text (with prefix arg don't indent)."
 ;; http://stackoverflow.com/a/3072831/355252
 (require 'xterm-color)
 (setq compilation-environment '("TERM=xterm-256color"))
-;; Be aware of using rg.el or ag.el
+
+(ignore-errors
+  (require 'ansi-color)
+  (defun conjure-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'conjure-colorize-compilation-buffer))
+
+;; This is the more *proper* way to do it but `rg' and `ag' have issues
 ;; See https://github.com/dajva/rg.el/issues/154
-(add-hook 'compilation-filter-hook 'conjure-colorize-buffer-ansi-colors)
+;;(require 'xterm-color)
+;;(setq compilation-environment '("TERM=xterm-256color"))
+;;(defun my/advice-compilation-filter (f proc string)
+;;  (funcall f proc (xterm-color-filter string)))
+;;(advice-add 'compilation-filter :around #'my/advice-compilation-filter)
 
 ;; better undo/redo
 (require 'undo-tree)
