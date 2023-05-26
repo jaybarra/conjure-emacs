@@ -27,7 +27,7 @@
 (defvar conjure-savefile-dir (expand-file-name "savefile" user-emacs-directory)
   "Folder for storing generated history files.")
 (defvar conjure-modules-file (expand-file-name "conjure-modules.el" conjure-personal-dir)
-  "Folder for storing generated history files.")
+  "File containing a list of modules that will be loaded by Conjure.")
 
 (unless (file-exists-p conjure-savefile-dir)
   (make-directory conjure-savefile-dir))
@@ -54,9 +54,10 @@
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
 
-(when (file-exists-p conjure-personal-dir)
-  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-dir)
-  (mapc 'load (delete conjure-modules-file (directory-files conjure-personal-dir 't "^[^#\.].*\\.el$"))))
+;; preload the personal settings from `conjure-personal-preload-dir'
+(when (file-exists-p conjure-personal-preload-dir)
+  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-preload-dir)
+  (mapc 'load (directory-files conjure-personal-preload-dir 't "^[^#\.].*el$")))
 
 (message "[Conjure] Invoking the Deep Magic...")
 
@@ -68,6 +69,7 @@
 (require 'conjure-global-keybindings)
 
 (when osx-p (require 'conjure-macos))
+(when linux-p (require 'conjure-linux))
 
 (message "[Conjure] Loading Conjure's modules...")
 (if (file-exists-p conjure-modules-file)
@@ -80,6 +82,10 @@
 ;; Save customization variables to a separate file
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
+
+(when (file-exists-p conjure-personal-dir)
+  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-dir)
+  (mapc 'load (delete conjure-modules-file (directory-files conjure-personal-dir 't "^[^#\.].*\\.el$"))))
 
 (message "[Conjure] Conjure is ready to make magic!")
 

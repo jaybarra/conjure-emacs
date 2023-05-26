@@ -36,4 +36,6 @@ recentf
 /logview-cache.extmap
 /url/
 
-/personal/conjure-modules.el
+/personal/*
+!/personal/.gitkeep
+!/personal/preload/.gitkeep
