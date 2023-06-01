@@ -60,8 +60,7 @@
   (unless (memq package conjure-packages)
     (add-to-list 'conjure-packages package))
   (unless (package-installed-p package)
-    (package-install package))
-  (require package))
+    (package-install package)))
 
 (defun conjure-require-packages (packages)
   "Install PACKAGES."
@@ -70,9 +69,9 @@
 (defun conjure-install-packages ()
   "Install all core packages."
   (unless (conjure-packages-installed-p)
-    (message "%s" "Conjure is updating the package database...")
+    (message "%s" "[Conjure] Updating the package database...")
     (package-refresh-contents)
-    (message "%s" " done.")
+    (message "%s" "[Conjure] Packages update completed.")
     (conjure-require-packages conjure-packages)))
 
 (conjure-install-packages)
