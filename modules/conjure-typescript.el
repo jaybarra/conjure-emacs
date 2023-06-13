@@ -15,10 +15,6 @@
 (add-hook 'typescript-mode-hook 'eglot-ensure)
 
 (require 'projectile)
-(projectile-register-project-type 'npm-spec '("package.json")
-				  :project-file "package.json"
-				  :compile "npm install"
-                                  :test "npm test"
-				  :test-suffix ".spec")
+
 (provide 'conjure-typescript)
 ;;; conjure-typescript.el ends here
