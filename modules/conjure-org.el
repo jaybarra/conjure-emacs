@@ -13,17 +13,30 @@
 ;;; ORG MODE;
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
-(with-eval-after-load 'org
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (shell . t)
-     (python . t))))
+(conjure-require-packages '(ob-async
+			    ob-coffee
+			    ob-ipython
+			    ob-typescript))
+
+(require 'org)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((coffee . t)
+   (ipython . t)
+   (js . t)
+   (python . t)
+   (typescript . t)
+   (shell . t)))
+
+(setq org-src-fontify-natively t
+      org-confirm-babel-evaluate nil
+      ob-async-no-async-languages-alist '("ipython"))
 
 ;; ignore white space cleanup since it interferes with org-roam node insertions
 ;; cleanup can still be run manually
 (add-hook 'org-mode-hook
           (lambda ()
+	    (whitespace-mode -1)
             (setq-local conjure-cleanup-whitespace-on-save nil)))
 
 ;;; ORG-ROAM:

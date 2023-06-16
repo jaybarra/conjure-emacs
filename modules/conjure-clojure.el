@@ -58,19 +58,7 @@
     ;; Midje testing
     ;; https://github.com/marick/Midje
     (fact 1)
-    (facts 1))
-
-  (defun clerk-show ()
-    "Start Clerk."
-    (interactive)
-    (when-let
-        ((filename
-          (buffer-file-name)))
-      (save-buffer)
-      (cider-interactive-eval
-       (concat "(nextjournal.clerk/show! \"" filename "\")"))))
-
-  (define-key clojure-mode-map (kbd "<M-return>") 'clerk-show))
+    (facts 1)))
 
 (with-eval-after-load 'cider
   (setq nrepl-log-messages t
@@ -78,7 +66,6 @@
         cider-repl-display-help-banner nil
 	cider-connection-message-fn nil
         cider-repl-result-prefix ";; => "
-	cider-repl-buffer-size-limit 8192
         cider-result-overlay-position 'at-eol
         cider-font-lock-max-length 4096
 	cider-print-fn 'fipp

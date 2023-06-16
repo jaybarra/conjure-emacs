@@ -15,6 +15,5 @@
 (add-hook 'typescript-mode-hook 'eglot-ensure)
 
 (require 'projectile)
-
 (provide 'conjure-typescript)
 ;;; conjure-typescript.el ends here

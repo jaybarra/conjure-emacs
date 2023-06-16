@@ -22,12 +22,8 @@
     (whitespace-toggle-options '(tabs))
     (subword-mode +1))
 
-  (defun eglot-go-install-save-hooks ()
-    (add-hook 'before-save-hook 'eglot-format-buffer t t))
-
   (setq conjure-go-mode-hook 'conjure-go-mode-defaults)
 
-  (add-hook 'go-mode-hook 'eglot-go-install-save-hooks)
   (add-hook 'go-mode-hook 'eglot-ensure)
   (add-hook 'go-mode-hook (lambda () (run-hooks 'conjure-go-mode-hook))))
 

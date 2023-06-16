@@ -5,6 +5,12 @@
 (require 'conjure-packages)
 (conjure-require-packages '(rainbow-delimiters))
 
+(require 'eglot)
+(defun conjure-eglot-format-on-save ()
+  "Format buffer using eglot."
+  ;; TODO prettier and eglot can sometimes fight
+  (when conjure-format-on-save (eglot-format-buffer)))
+
 (defun conjure-local-comment-auto-fill ()
   (set (make-local-variable 'comment-auto-fill-only-comments) t))
 
@@ -34,7 +40,11 @@
   (smartparens-mode +1)
   (rainbow-delimiters-mode +1)
   (conjure-enable-whitespace)
-  (conjure-local-comment-auto-fill))
+  (conjure-local-comment-auto-fill)
+
+  (add-hook 'eglot-managed-mode-hook
+	    (lambda ()
+	      (add-hook 'before-save-hook 'conjure-eglot-format-on-save) t t)))
 
 (setq conjure-prog-mode-hook 'conjure-prog-mode-defaults)
 

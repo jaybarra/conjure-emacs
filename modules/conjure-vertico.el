@@ -139,6 +139,11 @@
 
 (global-corfu-mode)
 
+(require 'cape)
+(add-to-list 'completion-at-point-functions 'cape-dabbrev)
+(add-to-list 'completion-at-point-functions 'cape-file)
+(add-to-list 'completion-at-point-functions 'cape-elisp-block)
+
 (require 'kind-icon)
 (setq kind-icon-default-face 'corfu-default
       ;; TODO waiting for Emacs 29 to hopefully resolve svg issues on Mac/ventura
