@@ -4,7 +4,7 @@
 
 (require 'conjure-programming)
 
-(conjure-require-packages '(eglot go-mode))
+(conjure-require-packages '(go-mode))
 
 (add-to-list 'completion-ignored-extensions ".test")
 (add-to-list 'super-save-predicates

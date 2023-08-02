@@ -2,14 +2,15 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-packages)
+(use-package helm
+  :bind ("M-x" . helm-M-x)
+  :config
+  (helm-mode 1))
 
-(conjure-require-packages '(helm helm-projectile))
-
-(helm-mode 1)
-(helm-projectile-on)
-
-(global-set-key (kbd "M-x") 'helm-M-x)
+(use-package helm-projectile
+  :after helm
+  :config
+  (helm-projectile-on))
 
 (provide 'conjure-helm)
 ;;; conjure-helm.el ends here

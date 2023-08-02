@@ -4,7 +4,7 @@
 
 (require 'conjure-programming)
 
-(conjure-require-packages '(eglot prettier typescript-mode))
+(conjure-require-packages '(prettier typescript-mode))
 
 (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
 

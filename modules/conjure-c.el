@@ -15,9 +15,6 @@
 
 (defun conjure-c-mode-common-defaults ()
   "Sensible defaults for `c-mode' buffers."
-
-  (setq c-default-style "k&r"
-	c-basic-offset 4)
   (c-set-offset 'substatement-open 0))
 
 (defvar conjure-c-mode-common-hook nil)

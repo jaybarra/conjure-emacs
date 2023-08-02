@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'conjure-programming)
-(conjure-require-packages '(eglot))
 
 (when (fboundp 'exec-path-from-shell-copy-env)
   (exec-path-from-shell-copy-env "PYTHONPATH"))

@@ -3,7 +3,7 @@
 ;;; Code:
 (require 'conjure-programming)
 
-(conjure-require-packages '(cargo eglot rust-mode))
+(conjure-require-packages '(cargo rust-mode))
 
 (with-eval-after-load 'rust-mode
   (add-hook 'rust-mode-hook 'cargo-minor-mode))

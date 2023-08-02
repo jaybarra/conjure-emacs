@@ -15,14 +15,12 @@
 
 (conjure-require-packages '(ob-async
 			    ob-coffee
-			    ob-ipython
-			    ob-typescript))
+                            ob-typescript))
 
 (require 'org)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((coffee . t)
-   (ipython . t)
    (js . t)
    (python . t)
    (typescript . t)
