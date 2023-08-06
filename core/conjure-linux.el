@@ -1,11 +1,10 @@
 ;;; conjure-linux.el --- *Nix specific settings
 ;;; Commentary:
 ;;; Code:
-(require 'conjure-packages)
-(conjure-require-packages '(exec-path-from-shell))
 
-(require 'exec-path-from-shell)
-(exec-path-from-shell-initialize)
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
 
 (message "[Conjure] Configuring Linux specific settings...")
 

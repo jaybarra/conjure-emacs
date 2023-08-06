@@ -13,5 +13,7 @@
   (add-hook 'ibuffer-mode-hook 'nerd-icons-ibuffer-mode)
   (nerd-icons-completion-mode))
 
+(diminish 'nerd-icons-dired-mode)
+
 (provide 'conjure-icons)
 ;;; conjure-icons.el ends here

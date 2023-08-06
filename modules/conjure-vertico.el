@@ -20,43 +20,49 @@
                             orderless
 			    vertico))
 
-(require 'vertico)
-(setq vertico-cycle t
-      vertico-count 18)
+(use-package vertico
+  :init
+  (vertico-mode)
 
-(vertico-mode)
+  (setq vertico-cycle t
+	vertico-count 18))
 
-(require 'emacs)
-(defun crm-indicator (args)
-  "Extend ARGS for a prompt indicator to `completing-read-multiple'."
-  (cons (format "[CRM%s] %s"
-                (replace-regexp-in-string
-                 "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                 crm-separator)
-                (car args))
-        (cdr args)))
-(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+(use-package emacs
+  :init
+  (defun crm-indicator (args)
+    "Extend ARGS for a prompt indicator to `completing-read-multiple'."
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
 
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-(setq enable-recursive-minibuffers t)
+  (setq minibuffer-prompt-properties
+	'(read-only t cursor-intangible t face minibuffer-prompt))
+
+  (setq enable-recursive-minibuffers t))
+
 (setq consult-flyspell-select-function 'flyspell-correct-at-point)
 
-(require 'embark-consult)
-(add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
+(use-package embark-consult
+  :after embark
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
-(require 'affe)
-(require 'orderless)
+(use-package affe)
 
-(defun affe-orderless-regexp-compiler (input _type _ignorecase)
-  (setq input (orderless-pattern-compiler input))
-  (cons input (apply-partially #'orderless--highlight input)))
+(use-package orderless
+  :init
+  (defun affe-orderless-regexp-compiler (input _type _ignorecase)
+    (setq input (orderless-pattern-compiler input))
+    (cons input (apply-partially #'orderless--highlight input)))
 
-(setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
+  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
 
-(setq completion-styles '(orderless basic)
-      completion-category-overrides '((file (styles basic partial-completion))))
+  (setq completion-styles '(orderless basic)
+	completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; C-c bindings
 (global-set-key (kbd "C-c M-x") 'consult-mode-command)
@@ -146,14 +152,11 @@
 
 (require 'kind-icon)
 (setq kind-icon-default-face 'corfu-default
-      ;; TODO waiting for Emacs 29 to hopefully resolve svg issues on Mac/ventura
-      kind-icon-use-icons (if osx-p nil t))
+      kind-icon-use-icons t)
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
 (with-eval-after-load 'org-roam
   (global-set-key (kbd "C-c n f") 'consult-org-roam-file-find)
-  ;;(global-set-key (kbd "C-c n l b") 'consult-org-roam-backlinks)
-  ;;(global-set-key (kbd "C-c n l f") 'consult-org-roam-forward-links)
 
   (consult-org-roam-mode +1)
   (diminish 'consult-org-roam-mode))

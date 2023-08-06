@@ -1,13 +1,13 @@
 ;;; conjure-macos.el --- Mac specific settings
 ;;; Commentary:
 ;;; Code:
-(require 'conjure-packages)
-(conjure-require-packages '(exec-path-from-shell))
 
-(require 'exec-path-from-shell)
-(dolist (var '("JAVA_HOME"))
-  (add-to-list 'exec-path-from-shell-variables var))
-(exec-path-from-shell-initialize)
+(use-package exec-path-from-shell
+  :config
+  (dolist (var '("JAVA_HOME"))
+    (add-to-list 'exec-path-from-shell-variables var))
+  (exec-path-from-shell-initialize))
+
 
 ;; Allow GPG to decrypt gpg file
 (setf epa-pinentry-mode 'loopback)
