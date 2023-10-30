@@ -55,9 +55,9 @@ Requires `conjure-whitespace' to also be enabled."
   :type 'boolean
   :group 'conjure)
 
-(defcustom conjure-format-on-save t
+(defcustom conjure-format-on-save "eglot"
   "Non-nil will attempt to format buffers on save, when supported by the mode."
-  :type 'boolean
+  :type 'string
   :group 'conjure)
 
 (defcustom conjure-use-ligatures t

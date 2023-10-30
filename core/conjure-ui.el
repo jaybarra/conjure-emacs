@@ -10,7 +10,6 @@
 ;; always disable the menu-bar
 (menu-bar-mode -1)
 
-;; don't blink the cursor
 (blink-cursor-mode -1)
 
 ;; disable the bell
@@ -30,13 +29,15 @@
 (size-indication-mode)
 
 ;; improved line highlighting for selected modes
-;; TODO sync lin and pulsar colors
-(require 'lin)
-(setq lin-face 'lin-green)
-(lin-global-mode +1)
+(use-package lin
+  :custom
+  (lin-face 'lin-green)
+  :config
+  (lin-global-mode))
+
+(global-hl-line-mode)
 
 ;; show line numbers
-;; nlinum is faster than linum (maybe)
 (require 'nlinum)
 (require 'nlinum-relative)
 
@@ -68,15 +69,15 @@
 (defun set-default-font (font)
   "Set the default FONT for Conjure."
   (when font
-    (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
+    (set-face-attribute 'default nil :family font :height 120 :weight 'normal :width 'normal)))
 
 (when (and (display-graphic-p) (fboundp 'x-list-fonts))
   ;; TODO use a macro expansion to generate this
   (let ((selected-font (cond ((font-exists-p "Fira Code Retina") "Fira Code Retina")
 			     ((font-exists-p "Fira Code") "Fira Code")
+			     ((font-exists-p "Cascadia Code") "Cascadia Code")
 			     ((font-exists-p "Source Code Pro") "Source Code Pro")
 			     ((font-exists-p "Iosevka") "Iosevka")
-			     ((font-exists-p "Cascadia Code") "Cascadia Code")
 			     ((font-exists-p "Meslo") "Meslo"))))
     (when (bound-and-true-p selected-font)
       (set-default-font selected-font))))

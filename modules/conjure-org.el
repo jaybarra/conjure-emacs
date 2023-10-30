@@ -48,7 +48,7 @@
 
 (defun org-roam-insert-node-immediate (arg &rest args)
   "Insert a node without prompting for additional information.
-fTakes ARG and optionally ARGS as pass-thrus."
+Takes ARG and optionally ARGS as pass-thrus."
   (interactive "P")
   (let ((args (cons arg args))
 	(org-roam-capture-templates (list (append (car org-roam-capture-templates)

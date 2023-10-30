@@ -4,10 +4,6 @@
 
 (require 'conjure-programming)
 
-(conjure-require-packages '(eglot prettier))
-
-(add-hook 'js-mode-hook 'eglot-ensure)
-(add-hook 'js-mode-hook 'prettier-mode)
 
 (provide 'conjure-javascript)
 

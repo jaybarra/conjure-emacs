@@ -3,29 +3,15 @@
 ;;; Code:
 
 (require 'conjure-programming)
+(require 'eglot)
 
-(conjure-require-packages '(go-mode))
-
-(add-to-list 'completion-ignored-extensions ".test")
-(add-to-list 'super-save-predicates
-             (lambda () (not (eq major-mode 'go-mode))))
-
-(with-eval-after-load 'go-mode
-  (defun conjure-go-mode-defaults ()
-    "Sensible defaults for `go-mode'."
-
-    ;; prefer goimports to gofmt
-    (let ((goimports (executable-find "goimports")))
-      (when goimports
-        (setq gofmt-command goimports)))
-
-    (whitespace-toggle-options '(tabs))
-    (subword-mode +1))
-
-  (setq conjure-go-mode-hook 'conjure-go-mode-defaults)
-
-  (add-hook 'go-mode-hook 'eglot-ensure)
-  (add-hook 'go-mode-hook (lambda () (run-hooks 'conjure-go-mode-hook))))
+(use-package go-mode
+  :mode "\\.go\\'"
+  :hook ((before-save . gofmt-before-save)
+	 (go-mode . eglot-ensure))
+  :config
+  (let ((goimports (executable-find "goimports")))
+    (when goimports (setq gofmt-command goimports))))
 
 (provide 'conjure-go)
 

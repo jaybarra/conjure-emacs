@@ -4,16 +4,10 @@
 
 (require 'conjure-programming)
 
-(conjure-require-packages '(prettier typescript-mode))
+(use-package typescript-ts-mode
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+	 ("\\.tsx\\'" . tsx-ts-mode))
+  :hook ((typescript-ts-mode tsx-ts-mode) . eglot-ensure))
 
-(add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
-
-(require 'typescript-mode)
-(setq typescript-indent-level 2)
-
-(add-hook 'typescript-mode-hook 'prettier-mode)
-(add-hook 'typescript-mode-hook 'eglot-ensure)
-
-(require 'projectile)
 (provide 'conjure-typescript)
 ;;; conjure-typescript.el ends here

@@ -2,25 +2,25 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-programming)
+(require 'exec-path-from-shell)
 
-(when (fboundp 'exec-path-from-shell-copy-env)
-  (exec-path-from-shell-copy-env "PYTHONPATH"))
+(use-package pyvenv-auto
+  :ensure t)
 
-(require 'python)
-(defun conjure-python-mode-defaults ()
-  "Sensible defaults for `python-mode'."
-  (subword-mode +1)
-  (eldoc-mode +1)
+(use-package apheleia
+  :ensure t)
 
-  (setq python-shell-interpreter "jupyter"
-        python-shell-interpreter-args "console --simple-prompt"
-        python-shell-completion-native-enable nil))
+(use-package python-mode
+  :ensure nil
+  :hook
+  ((python-mode . python-ts-mode)
+   (python-mode . apheleia-mode)
+   (python-ts-mode . eglot-ensure))
+  :init
+  (exec-path-from-shell-initialize)
+  (setq python-interpreter "ipython"))
 
-(setq conjure-python-mode-hook 'conjure-python-mode-defaults)
-(add-hook 'python-mode-hook (lambda ()
-                              (run-hooks 'conjure-python-mode-hook)))
-(add-hook 'python-mode-hook 'eglot-ensure)
+(message "loading python")
 
 (provide 'conjure-python)
 ;;; conjure-python.el ends here

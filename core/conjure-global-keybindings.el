@@ -27,14 +27,12 @@
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(with-eval-after-load 'projectile
-  (when conjure-super-keybindings
-    (global-set-key(kbd "s-p") 'projectile-command-map))
-  (global-set-key (kbd "C-c p") 'projectile-command-map))
+(when conjure-super-keybindings
+  (global-set-key(kbd "s-p") 'projectile-command-map))
+(global-set-key (kbd "C-c p") 'projectile-command-map)
 
-(with-eval-after-load 'embark
-  (global-set-key (kbd "C-.") 'embark-act)
-  (global-set-key (kbd "M-.") 'embark-dwim))
+(global-set-key (kbd "C-.") 'embark-act)
+(global-set-key (kbd "M-.") 'embark-dwim)
 
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
 

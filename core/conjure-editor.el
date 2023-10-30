@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq-default tab-width 8)
+(setq-default tab-width 4)
 
 ;; newlines at the end of files
 (setq require-final-newline t)
@@ -20,11 +20,12 @@
 (setq tab-always-indent 'complete)
 
 ;; smart pairing
-(require 'smartparens-config)
-(show-smartparens-global-mode t)
+(use-package smartparens
+  :config
+  (show-smartparens-global-mode t))
 
 ;; now tidy up the mode-line
-(require 'diminish)
+(use-package diminish)
 
 ;; give better names for buffers with the same name
 (require 'uniquify)
@@ -241,8 +242,10 @@ indent yanked text (with prefix arg don't indent)."
 (setq whitespace-line-column conjure-column-fill
       whitespace-style '(face tabs empty trailing lines-tail))
 
-(add-hook 'text-mode (lambda ()
-                       (setq-local whitespace-line-column nil)))
+(add-hook 'text-mode (lambda () (setq-local whitespace-line-column nil)))
+
+(setq-default display-fill-column-indicator-column nil)
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; better regex syntax
 (require 're-builder)
@@ -263,9 +266,9 @@ indent yanked text (with prefix arg don't indent)."
 ;; http://stackoverflow.com/a/3072831/355252
 (require 'xterm-color)
 (setq compilation-environment '("TERM=xterm-256color"))
-;; (defun my/advice-compilation-filter (f proc string)
-;;   (funcall f proc (xterm-color-filter string)))
-;; (advice-add 'compilation-filter :around #'my/advice-compilation-filter)
+(defun my/advice-compilation-filter (f proc string)
+  (funcall f proc (xterm-color-filter string)))
+(advice-add 'compilation-filter :around #'my/advice-compilation-filter)
 
 ;; better undo/redo
 (require 'undo-tree)

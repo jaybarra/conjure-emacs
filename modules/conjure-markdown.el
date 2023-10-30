@@ -19,7 +19,7 @@
 
 (add-hook 'markdown-mode-hook
           (lambda ()
-            (setq-local whitespace-line-column 9999)))
+            (setq-local whitespace-line-column nil)))
 
 (provide 'conjure-markdown)
 ;;; conjure-markdown.el ends here

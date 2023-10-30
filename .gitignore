@@ -39,3 +39,4 @@ recentf
 /personal/*
 !/personal/.gitkeep
 !/personal/preload/.gitkeep
+/tree-sitter/

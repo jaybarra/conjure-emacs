@@ -2,9 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-programming)
+(require 'eglot)
 
-(conjure-require-packages '(elixir-mode))
+(use-package elixir-mode
+  :defer t
+  :hook (elixir-mode . eglot-ensure)
+  :init
+  (let ((elixir-ls (executable-find "language_server.sh")))
+    (when elixir-ls (add-to-list 'eglot-server-programs '(elixir-mode elixir-lsp)))))
 
 (provide 'conjure-elixir)
 

@@ -36,8 +36,7 @@
   (setq conjure-clojure-mode-hook 'conjure-clojure-mode-defaults)
 
   (add-hook 'clojure-mode-hook
-            (lambda ()
-              (run-hooks 'conjure-clojure-mode-hook)))
+            (lambda () (run-hooks 'conjure-clojure-mode-hook)))
 
   (define-clojure-indent
     ;; Compojure

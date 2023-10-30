@@ -23,9 +23,8 @@
 (use-package vertico
   :init
   (vertico-mode)
-
-  (setq vertico-cycle t
-	vertico-count 18))
+  
+  (setq vertico-cycle t))
 
 (use-package emacs
   :init
