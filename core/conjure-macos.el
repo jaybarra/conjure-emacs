@@ -4,10 +4,7 @@
 
 (use-package exec-path-from-shell
   :config
-  (dolist (var '("JAVA_HOME"))
-    (add-to-list 'exec-path-from-shell-variables var))
   (exec-path-from-shell-initialize))
-
 
 ;; Allow GPG to decrypt gpg file
 (setf epa-pinentry-mode 'loopback)
@@ -27,8 +24,6 @@
 
 ;; don't bother hiding the menu-bar
 (when (display-graphic-p) (menu-bar-mode +1))
-
-(message "[Conjure] Configuring MacOS specific settings...")
 
 (provide 'conjure-macos)
 

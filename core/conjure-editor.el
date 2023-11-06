@@ -2,10 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 8)
 
 ;; newlines at the end of files
 (setq require-final-newline t)
+
+;; allow overwrite of active region by typing
+(delete-selection-mode t)
 
 ;; store all backups and auto-save files in tmp
 (setq backup-directory-alist
@@ -21,7 +25,64 @@
 
 ;; smart pairing
 (use-package smartparens
+  :diminish
+  :hook (prog-mode text-mode markdown-mode)
+  :bind (:map smartparens-mode-map
+              ("C-M-f" . sp-forward-sexp)
+              ("C-M-b" . sp-backward-sexp)
+
+              ("C-M-f" . sp-forward-sexp)
+              ("C-M-b" . sp-backward-sexp)
+
+              ("C-M-d" . sp-down-sexp)
+              ("C-M-a" . sp-backward-down-sexp)
+              ("C-S-d" . sp-beginning-of-sexp)
+              ("C-S-a" . sp-end-of-sexp)
+
+              ("C-M-e" . sp-up-sexp)
+              ("C-M-u" . sp-backward-up-sexp)
+              ("C-M-t" . sp-transpose-sexp)
+
+              ("C-M-n" . sp-forward-hybrid-sexp)
+              ("C-M-p" . sp-backward-hybrid-sexp)
+
+              ("C-M-k" . sp-kill-sexp)
+              ("C-M-w" . sp-copy-sexp)
+
+              ("M-<delete>" . sp-unwrap-sexp)
+              ("M-<backspace>" . sp-backward-unwrap-sexp)
+
+              ("C-)" . sp-forward-slurp-sexp)
+              ("C-(" . sp-forward-barf-sexp)
+              ("C-M-(" . sp-backward-slurp-sexp)
+              ("C-M-)" . sp-backward-barf-sexp)
+
+              ("M-D" . sp-splice-sexp)
+              ("C-M-<delete>" . sp-splice-sexp-killing-forward)
+              ("C-M-<backspace>" . sp-splice-sexp-killing-backward)
+              ("C-S-<backspace>" . sp-splice-sexp-killing-around)
+
+              ("C-]" . sp-select-next-thing-exchange)
+              ("C-<left_bracket>" . sp-select-previous-thing)
+              ("C-M-]" . sp-select-next-thing)
+
+              ("M-F" . sp-forward-symbol)
+              ("M-B" . sp-backward-symbol)
+
+              ("C-\"" . sp-change-inner)
+              ("M-i" . sp-change-enclosing))
   :config
+  (require 'smartparens-config)
+  (add-hook 'lisp-mode-hook (lambda () (smartparens-strict-mode +1)))
+  (add-hook 'lisp-data-mode-hook (lambda () (smartparens-strict-mode +1)))
+  (add-hook 'eval-expression-minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
+  (bind-key "C-c f" (lambda () (interactive) (sp-beginning-of-sexp 2)) smartparens-mode-map)
+  (bind-key "C-c b" (lambda () (interactive) (sp-beginning-of-sexp -2)) smartparens-mode-map)
+
+  ;; disable annoying blink-matching-paren
+  (setq blink-matching-paren nil)
+
+  ;; globally show matched with sp
   (show-smartparens-global-mode t))
 
 ;; now tidy up the mode-line
@@ -47,29 +108,33 @@
 (savehist-mode t)
 
 ;; save recent files
-(require 'recentf)
-(setq recentf-save-file (expand-file-name "recentf" conjure-savefile-dir)
-      recentf-max-saved-items 500
-      recentf-max-menu-items 15
-      ;; disable on startup for better performance, and don't try to cleanup remotes
-      recentf-auto-cleanup 'never)
+(use-package recentf
+  :straight nil
+  :config
+  (setq recentf-save-file (expand-file-name "recentf" conjure-savefile-dir)
+        recentf-max-saved-items 500
+        recentf-max-menu-items 15
+        ;; disable on startup for better performance, and don't try to cleanup remotes
+        recentf-auto-cleanup 'never)
 
-(defun conjure-recentf-exclude-p (file)
-  "A predicate to decide whether to exclude FILE from recentf."
-  (let ((file-dir (file-truename (file-name-directory file))))
-    (cl-some (lambda (dir)
-               (string-prefix-p dir file-dir))
-             (mapcar 'file-truename (list conjure-savefile-dir package-user-dir)))))
+  (defun conjure-recentf-exclude-p (file)
+    "A predicate to decide whether to exclude FILE from recentf."
+    (let ((file-dir (file-truename (file-name-directory file))))
+      (cl-some (lambda (dir)
+                 (string-prefix-p dir file-dir))
+               (mapcar 'file-truename (list conjure-savefile-dir package-user-dir)))))
 
-(add-to-list 'recentf-exclude "\\roam.*\\'")
-(add-to-list 'recentf-exclude 'conjure-recentf-exclude-p)
-(recentf-mode t)
+  (add-to-list 'recentf-exclude "\\roam.*\\'")
+  (add-to-list 'recentf-exclude 'conjure-recentf-exclude-p)
+  (recentf-mode t))
 
 ;; automatically save buffers on switching
-(require 'super-save)
-(add-to-list 'super-save-triggers 'ace-window)
-(super-save-mode +1)
-(diminish 'super-save-mode)
+(use-package ace-window)
+(use-package super-save
+  :diminish
+  :config
+  (add-to-list 'super-save-triggers 'ace-window)
+  (super-save-mode +1))
 
 (defadvice set-buffer-major-mode (after set-major-mode activate compile)
   "Set buffer major mode according to `auto-mode-alist'."
@@ -79,19 +144,20 @@
       (setq mode (car mode)))
     (with-current-buffer buffer (if mode (funcall mode)))))
 
-(require 'volatile-highlights)
-(volatile-highlights-mode t)
-(diminish 'volatile-highlights-mode)
+(use-package volatile-highlights
+  :diminish
+  :config
+  (volatile-highlights-mode t))
 
-;; on-the-fly spell-checking
-(require 'flyspell)
-(setq ispell-program-name "aspell"
-      ispell-extra-args '("--sug-mode=ultra"))
-
-(defun conjure-enable-flyspell ()
-  "Enable command `flyspell-mode' if `conjure-flyspell' is not nil."
-  (when (and conjure-flyspell (executable-find ispell-program-name))
-    (flyspell-mode t)))
+;; (use-package flyspell
+;;   :custom
+;;   (ispell-program-name "aspell")
+;;   (ispell-extra-args '("--sug-mode=ultra"))
+;;   :config
+;;   (defun conjure-enable-flyspell ()
+;; 	"Enable command `flyspell-mode' if `conjure-flyspell' is not nil."
+;; 	(when (and conjure-flyspell (executable-find ispell-program-name))
+;;       (flyspell-mode t))))
 
 (defun conjure-cleanup-maybe ()
   "Invoke `whitespace-cleanup' if `conjure-clean-whitespace-on-save' is not nil."
@@ -106,9 +172,10 @@
     (whitespace-mode +1)
     (diminish 'whitespace-mode)))
 
-(add-hook 'text-mode-hook 'conjure-enable-flyspell)
-(add-hook 'text-mode-hook 'conjure-enable-whitespace)
+;;(add-hook 'text-mode-hook 'conjure-enable-flyspell)
+;;(add-hook 'text-mode-hook 'conjure-enable-whitespace)
 
+(use-package expand-region)
 ;; enable narrowing commands
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
@@ -121,38 +188,46 @@
 ;; enable erase-buffer command
 (put 'erase-buffer 'disabled nil)
 
-(require 'expand-region)
-
 ;; bookmarks
-(require 'bookmark)
-(setq bookmark-default-file (expand-file-name "bookmarks" conjure-savefile-dir)
-      bookmark-save-flag 1)
+(use-package bookmark
+  :config
+  (setq bookmark-default-file (expand-file-name "bookmarks" conjure-savefile-dir)
+	bookmark-save-flag 1))
 
-;; magit settings <-- this is important
-(require 'magit)
-(setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
-      git-commit-summary-max-length 50)
+;; magit
+(use-package magit
+  :config
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
+	git-commit-summary-max-length 50)
+  (add-hook 'magit-mode-hook (lambda() (display-line-numbers-mode -1))))
 
-;; Projectile <-- this is an important one
-(require 'projectile)
-(setq projectile-cache-file (expand-file-name "projectile.cache" conjure-savefile-dir)
-      projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" conjure-savefile-dir)
-      projectile-ignored-projects '("~/")
-      projectile-create-missing-test-files t)
-(projectile-mode t)
-(diminish 'projectile-mode)
+(use-package magit-todos
+  :after magit
+  :config
+  (magit-todos-mode 1))
+
+;; Projectile
+(use-package projectile
+  :diminish
+  :config
+  (setq projectile-cache-file (expand-file-name "projectile.cache" conjure-savefile-dir)
+	projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" conjure-savefile-dir)
+	projectile-ignored-projects '("~/")
+	projectile-create-missing-test-files t)
+  (projectile-mode t))
 
 ;; enhance isearch & query-replace
-(require 'anzu)
-(global-anzu-mode)
-(diminish 'anzu-mode)
+(use-package anzu
+  :diminish
+  :config
+  (global-anzu-mode))
 
 ;; show key completions as they're typed
-(require 'which-key)
-(setq which-key-add-column-padding 4
-      which-key-max-description-length 36)
-(which-key-mode)
-(diminish 'which-key-mode)
+(use-package which-key
+  :diminish
+  :config
+  (setq which-key-add-column-padding 4
+	which-key-max-description-length 36))
 
 ;; dired - reuse current buffer by pressing 'a'
 (put 'dired-find-alternate-file 'disabled nil)
@@ -180,19 +255,23 @@
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; clean up obsolete buffers
-(require 'midnight)
-(midnight-delay-set 'midnight-delay "4:30am")
+(use-package midnight
+  :config
+  (midnight-delay-set 'midnight-delay "4:30am"))
 
 ;; enhance kill-ring navigation
-(require 'browse-kill-ring)
-(browse-kill-ring-default-keybindings)
+(use-package browse-kill-ring
+  :config
+  (browse-kill-ring-default-keybindings))
 
 (defadvice exchange-point-and-mark (before deactivate-mark activate compile)
   "When called with no active region, do not activate mark."
   (interactive
    (list (not (region-active-p)))))
 
-(require 'tabify)
+(use-package tabify
+  :straight nil)
+
 (defmacro with-region-or-buffer (func)
   "When called with no active region, call FUNC on current buffer."
   `(defadvice ,func (before with-region-or-buffer activate compile)
@@ -238,9 +317,10 @@ indent yanked text (with prefix arg don't indent)."
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;; whitespace-mode config
-(require 'whitespace)
-(setq whitespace-line-column conjure-column-fill
-      whitespace-style '(face tabs empty trailing lines-tail))
+(use-package whitespace
+  :straight nil
+  :config
+  (setq whitespace-style '(face tabs empty trailing lines-tail)))
 
 (add-hook 'text-mode (lambda () (setq-local whitespace-line-column nil)))
 
@@ -248,8 +328,9 @@ indent yanked text (with prefix arg don't indent)."
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; better regex syntax
-(require 're-builder)
-(setq reb-re-syntax 'string)
+(use-package re-builder
+  :config
+  (setq reb-re-syntax 'string))
 
 (require 'eshell)
 (setq eshell-directory-name (expand-file-name "eshell" conjure-savefile-dir))
@@ -264,6 +345,7 @@ indent yanked text (with prefix arg don't indent)."
 
 ;; Colorize output of Compilation Mode, see
 ;; http://stackoverflow.com/a/3072831/355252
+(use-package xterm-color)
 (require 'xterm-color)
 (setq compilation-environment '("TERM=xterm-256color"))
 (defun my/advice-compilation-filter (f proc string)
@@ -271,98 +353,103 @@ indent yanked text (with prefix arg don't indent)."
 (advice-add 'compilation-filter :around #'my/advice-compilation-filter)
 
 ;; better undo/redo
-(require 'undo-tree)
-(setq undo-tree-history-directory-alist `((".*" . ,temporary-file-directory))
-      undo-tree-auto-save-history t)
-(global-undo-tree-mode)
-(diminish 'undo-tree-mode)
+(use-package undo-tree
+  :diminish
+  :config
+  (setq undo-tree-history-directory-alist `((".*" . ,temporary-file-directory))
+	undo-tree-auto-save-history t)
+  (global-undo-tree-mode))
 
 ;; manage window configurations via winner-mode
-(winner-mode t)
+(use-package winner)
 
 ;; diff-hl
-(global-diff-hl-mode t)
-(add-hook 'dired-mode-hook #'diff-hl-dired-mode)
-(add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+(use-package diff-hl
+  :after (magit)
+  :config
+  (global-diff-hl-mode t)
+  (add-hook 'dired-mode-hook #'diff-hl-dired-mode)
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 
 ;; operate-on-number
-(require 'operate-on-number)
-(require 'smartrep)
-
-(smartrep-define-key global-map "C-c ."
-  '(("+" . apply-operation-to-number-at-point)
-    ("-" . apply-operation-to-number-at-point)
-    ("*" . apply-operation-to-number-at-point)
-    ("/" . apply-operation-to-number-at-point)
-    ("\\" . apply-operation-to-number-at-point)
-    ("^" . apply-operation-to-number-at-point)
-    ("<" . apply-operation-to-number-at-point)
-    (">" . apply-operation-to-number-at-point)
-    ("#" . apply-operation-to-number-at-point)
-    ("%" . apply-operation-to-number-at-point)
-    ("'" . operate-on-number-at-point)))
+(use-package operate-on-number)
+(use-package smartrep
+  :config
+  (smartrep-define-key global-map "C-c ."
+    '(("+" . apply-operation-to-number-at-point)
+      ("-" . apply-operation-to-number-at-point)
+      ("*" . apply-operation-to-number-at-point)
+      ("/" . apply-operation-to-number-at-point)
+      ("\\" . apply-operation-to-number-at-point)
+      ("^" . apply-operation-to-number-at-point)
+      ("<" . apply-operation-to-number-at-point)
+      (">" . apply-operation-to-number-at-point)
+      ("#" . apply-operation-to-number-at-point)
+      ("%" . apply-operation-to-number-at-point)
+      ("'" . operate-on-number-at-point))))
 
 ;; pulse line when jumping locations
-(require 'pulsar)
-(setq pulsar-face 'pulsar-green)
-(pulsar-global-mode +1)
-(when (fboundp 'ace-window)
-  ;; pulsar doesn't detect the override because of ordering so we have to set it ourselves
-  (add-to-list 'pulsar-pulse-functions 'ace-window))
-(add-hook 'next-error-hook 'pulsar-pulse-line)
+(use-package pulsar
+  :config
+  (setq pulsar-face 'pulsar-green)
+  (pulsar-global-mode +1)
 
-;; editorconfig
-(require 'editorconfig)
-(editorconfig-mode t)
-(diminish 'editorconfig-mode)
+  (when (fboundp 'ace-window)
+    ;; pulsar doesn't detect the override because of ordering so we have to set it ourselves
+    (add-to-list 'pulsar-pulse-functions 'ace-window))
 
-;; hide embark completion buffers
-(add-to-list 'display-buffer-alist
-             '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-               nil
-               (window-parameters (mode-line-format . none))))
+  (add-hook 'next-error-hook 'pulsar-pulse-line))
 
-;; integrate embark with which-key
-(defun embark-which-key-indicator ()
-  "An embark indicator that displays keymaps using which-key.
+(use-package embark
+  :config
+  ;; hide embark completion buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		 nil
+		 (window-parameters (mode-line-format . none))))
+
+  ;; integrate embark with which-key
+  (defun embark-which-key-indicator ()
+    "An embark indicator that displays keymaps using which-key.
 The which-key help message will show the type and value of the
 current target followed by an ellipsis if there are further
 targets."
-  (lambda (&optional keymap targets prefix)
-    (if (null keymap)
-        (which-key--hide-popup-ignore-command)
-      (which-key--show-keymap
-       (if (eq (plist-get (car targets) :type) 'embark-become)
-           "Become"
-         (format "Act on %s '%s'%s"
-                 (plist-get (car targets) :type)
-                 (embark--truncate-target (plist-get (car targets) :target))
-                 (if (cdr targets) "…" "")))
-       (if prefix
-           (pcase (lookup-key keymap prefix 'accept-default)
-             ((and (pred keymapp) km) km)
-             (_ (key-binding prefix 'accept-default)))
-         keymap)
-       nil nil t (lambda (binding)
-                   (not (string-suffix-p "-argument" (cdr binding))))))))
+    (lambda (&optional keymap targets prefix)
+      (if (null keymap)
+          (which-key--hide-popup-ignore-command)
+	(which-key--show-keymap
+	 (if (eq (plist-get (car targets) :type) 'embark-become)
+	     "Become"
+           (format "Act on %s '%s'%s"
+                   (plist-get (car targets) :type)
+                   (embark--truncate-target (plist-get (car targets) :target))
+                   (if (cdr targets) "…" "")))
+	 (if prefix
+	     (pcase (lookup-key keymap prefix 'accept-default)
+               ((and (pred keymapp) km) km)
+               (_ (key-binding prefix 'accept-default)))
+           keymap)
+	 nil nil t (lambda (binding)
+		     (not (string-suffix-p "-argument" (cdr binding))))))))
 
-(setq embark-indicators
-      '(embark-which-key-indicator
-        embark-highlight-indicator
-        embark-isearch-highlight-indicator))
+  (setq embark-indicators
+	'(embark-which-key-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))
 
-(defun embark-hide-which-key-indicator (fn &rest args)
-  "Hide the which-key indicator immediately when using the `completing-read' FN using ARGS."
-  (which-key--hide-popup-ignore-command)
-  (let ((embark-indicators
-         (remq #'embark-which-key-indicator embark-indicators)))
-    (apply fn args)))
+  (defun embark-hide-which-key-indicator (fn &rest args)
+    "Hide the which-key indicator immediately when using the `completing-read' FN using ARGS."
+    (which-key--hide-popup-ignore-command)
+    (let ((embark-indicators
+           (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
 
-(advice-add #'embark-completing-read-prompter
-            :around
-	    #'embark-hide-which-key-indicator)
+  (advice-add #'embark-completing-read-prompter
+              :around
+	      #'embark-hide-which-key-indicator))
 
+;; TODO move to `conjure-prog'
 (add-hook 'prog-mode-hook #'bug-reference-prog-mode)
 
 (provide 'conjure-editor)

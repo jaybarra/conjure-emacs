@@ -18,5 +18,14 @@
       (backward-char) (insert "\n"))
     (indent-region begin end)))
 
+(defun derived-modes (mode)
+  "Return a list of the ancestor modes that MODE is derived from."
+  (let ((modes   ())
+        (parent  nil))
+    (while (setq parent (get mode 'derived-mode-parent))
+      (push parent modes)
+      (setq mode parent))
+    (setq modes  (nreverse modes))))
+
 (provide 'conjure-common)
 ;;; conjure-common.el ends here

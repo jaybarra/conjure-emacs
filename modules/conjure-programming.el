@@ -2,9 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-packages)
-
-(require 'eglot)
+(set-language-environment 'utf-8)
 
 (use-package rainbow-mode
   :diminish

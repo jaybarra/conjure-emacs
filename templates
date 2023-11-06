@@ -1,0 +1,25 @@
+;;; -*- mode: lisp-data -*-
+
+prog-mode
+
+(fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
+(todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
+(bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
+(hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
+
+typescript-ts-mode tsx-ts-mode js-ts-mode jsx-ts-mode
+
+(rafce "import React from 'react'" n 
+       n
+       "const " (s componentName) " = () => {" n>
+       "return (" n>
+       "<>" n> r n> "</>" n>
+       ")" n "}" n
+       "export default " componentName ";" n)
+
+(rfce "import React from 'react'" n 
+      n
+      "export default function() {" n>
+      "return (" n>
+      "<>" n> r n> "</>" n>
+      ")" n "}" n)

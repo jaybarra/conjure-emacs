@@ -36,6 +36,8 @@
 
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
 
+
+
 (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
 (define-key smartparens-mode-map (kbd "C-M-)") 'sp-backward-slurp-sexp)
