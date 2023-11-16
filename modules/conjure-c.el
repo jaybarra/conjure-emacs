@@ -9,7 +9,6 @@
 
 (defun conjure-c-mode-common-defaults ()
   "Sensible defaults for programming in C languages."
-  (message "[Conjure] looky here, we're editing C!")
   (c-set-offset 'substatement-open 0))
 
 (setq conjure-c-mode-common-hook 'conjure-c-mode-common-defaults)
