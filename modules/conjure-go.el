@@ -6,9 +6,7 @@
 (require 'eglot)
 
 (use-package go-mode
-  :mode "\\.go\\'"
-  :hook ((before-save . gofmt-before-save)
-	 (go-mode . eglot-ensure))
+  :hook ((before-save . gofmt-before-save))
   :config
   (let ((goimports (executable-find "goimports")))
     (when goimports (setq gofmt-command goimports))))

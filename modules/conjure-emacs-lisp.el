@@ -4,8 +4,6 @@
 
 (require 'conjure-lisp)
 
-(conjure-require-packages '(elisp-slime-nav))
-
 (defun conjure-recompile-elc-on-save ()
   "Recompile elc when saving an elisp file."
   (add-hook 'after-save-hook
@@ -17,15 +15,13 @@
             nil
             t))
 
-(require 'smartparens-config)
 (defun conjure-emacs-lisp-mode-defaults ()
   "Sensible defaults for `emacs-lisp-mode'."
   (run-hooks 'conjure-lisp-coding-hook)
   (eldoc-mode +1)
 
   (smartparens-strict-mode +1)
-  (diminish 'smartparens-mode)
-
+  
   (conjure-recompile-elc-on-save)
   (prettify-symbols-mode +1)
   (checkdoc-minor-mode +1))

@@ -1,7 +1,5 @@
 ;;; conjure-vertico.el --- Vertico configuration
 ;;; Commentary:
-
-;; Uses a more minimalistic set of packages
 ;;; Code:
 
 (use-package vertico
@@ -9,7 +7,6 @@
   (vertico-count 12)
   (vertico-resize nil)
   (vertico-cycle nil)
-
   :bind
   (:map vertico-map
         ("<tab>" . vertico-insert)
@@ -46,23 +43,31 @@
       '(read-only t cursor-intangible t face minibuffer-prompt))
 (setq enable-recursive-minibuffers t)
 
-
-
 (setq consult-flyspell-select-function 'flyspell-correct-at-point)
+
+(use-package consult
+  :config
+  (consult-customize consult-theme :preview-key '(:debounce 0.2 any) :preview-key '(:debounce 0.4 any))
+
+  (setq consult-narrow-key "<"
+        consult-goto-line-numbers nil)
+
+  (advice-add #'register-preview :override #'consult-register-window))
 
 (use-package embark-consult
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
-
+(use-package affe)
 (use-package orderless
-  :custom
+  :config
   (defun affe-orderless-regexp-compiler (input _type _ignorecase)
     (setq input (orderless-pattern-compiler input))
     (cons input (apply-partially #'orderless--highlight input)))
 
   (setq affe-regex-compiler #'affe-orderless-regexp-compiler)
-  
-  (completion-styles '(orderless flex partial-completion)))
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion))))))
 
 ;; C-c bindings
 (global-set-key (kbd "C-c M-x") 'consult-mode-command)
@@ -91,7 +96,10 @@
 (cond ((executable-find "rg") (global-set-key (kbd "C-s-f") 'consult-ripgrep))
       (t (global-set-key (kbd "C-s-f") 'consult-grep)))
 
-;; IntelliJ style keybindings
+(use-package projectile)
+(use-package consult-projectile
+  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master"))
+
 (global-set-key (kbd "s-E") 'consult-projectile-recentf)
 (global-set-key (kbd "s-e") 'consult-projectile-find-file)
 (global-set-key (kbd "C-s-e") 'consult-recent-file)
@@ -101,22 +109,6 @@
 (with-eval-after-load 'projectile
   (define-key projectile-mode-map [remap projectile-switch-project] 'consult-projectile-switch-project)
   (define-key projectile-mode-map [remap projectile-find-file] 'consult-projectile-find-file))
-
-;; configure register formatting
-(setq register-preview-delay 0.5
-      register-preview-function #'consult-register-format)
-
-(use-package affe
-  :config
-  (consult-customize affe-grep :preview-key "M-."))
-
-(consult-customize consult-theme :preview-key '(:debounce 0.2 any)
-                   :preview-key '(:debounce 0.4 any))
-
-(setq consult-narrow-key "<"
-      consult-goto-line-numbers nil)
-
-(advice-add #'register-preview :override #'consult-register-window)
 
 (use-package xref
   :init
@@ -131,13 +123,11 @@
 
 ;; Setup annotations for Vertico
 (use-package marginalia
-  :bind
-  (:map minibuffer-local-map ("M-A" . marginalia-cycle))
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
   :config
-  (setq marginalia-max-relative-age 0)
-  (setq marginalia-align 'right)
+  (setq marginalia-align 'left)
   (marginalia-mode))
-
 
 ;; Corfu Auto-complete
 (use-package corfu
@@ -163,26 +153,12 @@
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block))
 
-
-(use-package dabbrev
-  :bind
-  (("M-/" . dabbrev-completion)
-   ("C-M-/" . dabbrev-expand))
-  :custom
-  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
-
 (define-key corfu-map (kbd "M-SPC") 'corfu-insert-separator)
 (define-key corfu-map (kbd "TAB") 'corfu-next)
 (define-key corfu-map [tab] 'corfu-next)
 (define-key corfu-map (kbd "S-TAB") 'corfu-previous)
 (define-key corfu-map [backtab] 'corfu-previous)
 (define-key corfu-map (kbd "S-<return>") 'corfu-insert)
-
-;; (with-eval-after-load 'org-roam
-;;   (global-set-key (kbd "C-c n f") 'consult-org-roam-file-find)
-
-;;   (consult-org-roam-mode +1)
-;;   (diminish 'consult-org-roam-mode))
 
 (provide 'conjure-vertico)
 

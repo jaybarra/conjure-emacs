@@ -4,7 +4,7 @@
 
 (require 'conjure-programming)
 
-(conjure-require-packages '(svelte-mode))
+(use-package svelte-mode)
 
 (provide 'conjure-svelte)
 ;;; conjure-svelte.el ends here

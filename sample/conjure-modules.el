@@ -5,13 +5,6 @@
 ;; Narrowing frameworks (only one should be enabled)
 (require 'conjure-vertico)
 
-;; Utilities
-;;(require 'conjure-datatypes)
-;;(require 'conjure-org)
-
-;; UI Elements
-;;(require 'conjure-icons)
-
 ;; Modules for common languages
 ;; (require 'conjure-c)
 ;; (require 'conjure-clojure)
@@ -30,9 +23,6 @@
 ;; (require 'conjure-vertico)
 ;; (require 'conjure-web)
 ;; (require 'conjure-yaml)
-
-;; (ef-themes-select 'ef-winter)
-;; (setq ef-themes-to-toggle '(ef-winter ef-cyprus))
 
 (provide 'conjure-modules)
 

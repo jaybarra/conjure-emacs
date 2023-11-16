@@ -1,7 +1,6 @@
 ;;; conjure-global-keybindings.el --- Conjure Global Keybindings
 ;;; Commentary:
 ;;; Code:
-
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<f5>") 'revert-buffer)
 
@@ -27,16 +26,15 @@
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(when conjure-super-keybindings
-  (global-set-key(kbd "s-p") 'projectile-command-map))
-(global-set-key (kbd "C-c p") 'projectile-command-map)
-
 (global-set-key (kbd "C-.") 'embark-act)
 (global-set-key (kbd "M-.") 'embark-dwim)
 
 (global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
 
 
+(global-set-key (kbd "C-x p p") 'consult-projectile)
+(global-set-key (kbd "C-x p f") 'consult-projectile-find-file)
+(global-set-key (kbd "C-x p s") 'consult-projectile-switch-project)
 
 (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
@@ -49,12 +47,6 @@
 (define-key smartparens-mode-map (kbd "M-D") 'sp-splice-sexp)
 
 (global-set-key (kbd "C-x g") 'magit-status)
-
-(require 'smartrep)
-(smartrep-define-key
-    global-map "C-x"
-  '(("{" . shrink-window-horizontally)
-    ("}" . enlarge-window-horizontally)))
 
 (provide 'conjure-global-keybindings)
 ;;; conjure-global-keybindings.el ends here

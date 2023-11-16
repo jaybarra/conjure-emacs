@@ -3,14 +3,11 @@
 ;;; Code:
 
 (require 'conjure-lisp)
-(conjure-require-packages '(cider clojure-mode))
-
-(require 'apheleia)
 
 (with-eval-after-load 'clojure-mode
-  (require 'smartparens-config)
+  
   ;; disable single quote pairing to allow for lists '()
-  (sp-local-pair '(clojure-mode) "'" "'" :actions nil)
+  (sp-local-pair '(clojure-mode) "'" nil :actions nil)
 
   (defun conjure-clojure-mode-defaults ()
     "Configure sensible defaults for `clojure-mode'."
@@ -26,8 +23,7 @@
 			      filepath))
 	  apheleia-formatters)
 
-    (add-to-list 'apheleia-mode-alist
-		 '((clojure-mode . clojure-cljfmt)))
+    (add-to-list 'apheleia-mode-alist '((clojure-mode . clojure-cljfmt)))
 
     ;; run general lisp hooks
     (subword-mode +1)
@@ -39,25 +35,25 @@
             (lambda () (run-hooks 'conjure-clojure-mode-hook)))
 
   (define-clojure-indent
-    ;; Compojure
-    ;; https://github.com/weavejester/compojure/wiki/Emacs-indentation
-    (defroutes 'defun)
-    (GET 2)
-    (POST 2)
-    (PUT 2)
-    (DELETE 2)
-    (HEAD 2)
-    (ANY 2)
-    (OPTIONS 2)
-    (PATCH 2)
-    (rfn 2)
-    (let-routes 1)
-    (context 2)
+   ;; Compojure
+   ;; https://github.com/weavejester/compojure/wiki/Emacs-indentation
+   (defroutes 'defun)
+   (GET 2)
+   (POST 2)
+   (PUT 2)
+   (DELETE 2)
+   (HEAD 2)
+   (ANY 2)
+   (OPTIONS 2)
+   (PATCH 2)
+   (rfn 2)
+   (let-routes 1)
+   (context 2)
 
-    ;; Midje testing
-    ;; https://github.com/marick/Midje
-    (fact 1)
-    (facts 1)))
+   ;; Midje testing
+   ;; https://github.com/marick/Midje
+   (fact 1)
+   (facts 1)))
 
 (with-eval-after-load 'cider
   (setq nrepl-log-messages t
@@ -83,4 +79,5 @@
             (lambda () (run-hooks 'conjure-cider-repl-mode-hook))))
 
 (provide 'conjure-clojure)
+
 ;;; conjure-clojure.el ends here

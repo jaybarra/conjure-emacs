@@ -9,7 +9,10 @@
 (add-to-list 'auto-mode-alist '("\\.kml\\'" . nxml-mode))
 
 ;; Shell Scripts
-(add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.zsh\\'" . bash-ts-mode))
+
+;; Development
+(add-to-list 'auto-mode-alist '("\\.env(\.(local|prod|production|development))?\\'" . conf-mode))
 
 (provide 'conjure-datatypes)
 

@@ -2,25 +2,19 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'exec-path-from-shell)
+(require 'conjure-programming)
 
-(use-package pyvenv-auto
-  :ensure t)
+(use-package exec-path-from-shell)
+(use-package pyvenv-auto)
 
-(use-package apheleia
-  :ensure t)
-
-(use-package python-mode
-  :ensure nil
-  :hook
-  ((python-mode . python-ts-mode)
-   (python-mode . apheleia-mode)
-   (python-ts-mode . eglot-ensure))
-  :init
+(use-package python
+  :straight nil
+  :config
   (exec-path-from-shell-initialize)
   (setq python-interpreter "ipython"))
 
-(message "loading python")
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
+(add-hook 'python-ts-mode-hook #'eglot-ensure)
 
 (provide 'conjure-python)
 ;;; conjure-python.el ends here

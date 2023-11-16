@@ -17,8 +17,11 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(straight-use-package '(use-package :type built-in))
+
 (setq straight-use-package-by-default t)
 (setq package-enable-at-startup nil)
 
 (provide 'conjure-core)
+
 ;;; conjure-core.el ends here

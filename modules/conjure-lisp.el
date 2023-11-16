@@ -7,8 +7,8 @@
 (setq debugger-bury-or-kill 'kill)
 
 (require 'smartparens-config)
-;; disable single quote pairing to allow for lists '()
-(sp-local-pair '(emacs-lisp-mode lisp-data-mode) "'" "'" :actions nil)
+(sp-local-pair '(emacs-lisp-mode lisp-data-mode) "'" nil :actions nil)
+(sp-local-pair 'emacs-lisp-mode "`" nil :when '(sp-in-string-p))
 
 (defun conjure-lisp-coding-defaults ()
   "Sensible defaults for Lispy languages."
