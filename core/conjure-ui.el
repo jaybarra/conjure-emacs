@@ -24,10 +24,11 @@
       scroll-conservatively 10000
       scroll-preserve-screen-position 1)
 
-;; mode line settings
-(line-number-mode t)
-(column-number-mode)
-;; (size-indication-mode -1)
+;; disable mode-line entries that aren't that useful
+(line-number-mode -1)
+(column-number-mode -1)
+(size-indication-mode -1)
+(display-time-mode -1)
 
 ;; clean up modeline entries
 (use-package delight)
@@ -47,7 +48,7 @@
 (use-package ef-themes)
 (use-package modus-themes
   :config
-  (modus-themes-select 'modus-vivendi-tinted))
+  (modus-themes-select 'modus-vivendi))
 
 (defun font-exists-p (font)
   "Check if FONT exists (but only in x-window)."

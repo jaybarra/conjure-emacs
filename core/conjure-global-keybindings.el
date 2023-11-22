@@ -26,16 +26,6 @@
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(global-set-key (kbd "C-.") 'embark-act)
-(global-set-key (kbd "M-.") 'embark-dwim)
-
-(global-set-key (kbd "C-x C-SPC") 'consult-global-mark)
-
-
-(global-set-key (kbd "C-x p p") 'consult-projectile)
-(global-set-key (kbd "C-x p f") 'consult-projectile-find-file)
-(global-set-key (kbd "C-x p s") 'consult-projectile-switch-project)
-
 (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
 (define-key smartparens-mode-map (kbd "C-M-)") 'sp-backward-slurp-sexp)

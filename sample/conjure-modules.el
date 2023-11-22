@@ -7,6 +7,7 @@
 
 ;; Modules for common languages
 (require 'conjure-c)
+(require 'conjure-css)
 (require 'conjure-clojure)
 (require 'conjure-elixir)
 (require 'conjure-emacs-lisp)

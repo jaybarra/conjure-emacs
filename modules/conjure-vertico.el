@@ -46,13 +46,85 @@
 (setq consult-flyspell-select-function 'flyspell-correct-at-point)
 
 (use-package consult
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :init
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  (advice-add #'register-preview :override #'consult-register-window)
+  
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  :bind (;; C-c bindings
+         ("C-c M-x" . consult-mode-command)
+         ("C-c h" . consult-history)
+         ("C-c k" . consult-kmacro)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings
+         ("C-x M-:" . consult-complex-command)
+         ("C-x b" . consult-buffer)
+         ("C-x 4 b" . consult-buffer-other-window)
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("C-x r b" . consult-bookmark)
+         ("C-x p b " . consult-project-buffer)
+         ;; Custom bindings
+         ("s-l" . consult-register-load)
+         ("s-'" . consult-register-store)
+         ("C-M-'" . consult-register)
+         ;; Other
+         ("M-y" . consult-yank-pop)
+         ;; M-g (goto) bindings
+         ("M-g e" . consult-compile-error)
+         ("M-g g" . consult-goto-line)
+         ("M-g o" . consult-outline)
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ;; M-i bindings
+         ("M-i" . consult-imenu)
+         ("M-I" . consult-imenu-multi)
+         ;; M-s bindings
+         ("M-s f" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep) 
+         ("s-a" . consult-ripgrep)
+         ("M-s l" . consult-line) 
+         ("M-s L" . consult-line-multi) 
+         ("M-s k" . consult-keep-lines) 
+         ;; ("C-x u" . consult-focus-lines) ;; s-s u;; conflicts with undo-tree
+         ;; isearch integrations
+         ("M-s e" . consult-isearch-history)
+         :map minibuffer-local-map
+         ("M-s" . consult-history)
+         ("s-r" . consult-history))
   :config
-  (consult-customize consult-theme :preview-key '(:debounce 0.2 any) :preview-key '(:debounce 0.4 any))
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
 
-  (setq consult-narrow-key "<"
-        consult-goto-line-numbers nil)
+  (setq consult-narrow-key "<")
 
-  (advice-add #'register-preview :override #'consult-register-window))
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root))))
+
+(use-package consult-dir
+  :bind (("C-x C-d" . 'consult-dir)
+         :map minibuffer-local-completion-map
+         ("C-x C-d" . 'consult-dir)
+         ("C-x C-j" . 'consult-dir-jump-file)))
+
+(use-package consult-eglot)
+
+(use-package consult-flycheck)
 
 (use-package embark-consult
   :hook (embark-collect-mode . consult-preview-at-point-mode))
@@ -69,46 +141,15 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
-;; C-c bindings
-(global-set-key (kbd "C-c M-x") 'consult-mode-command)
-(global-set-key (kbd "C-c h") 'consult-history)
-(global-set-key (kbd "C-c k") 'consult-kmacro)
-(global-set-key (kbd "C-c i") 'consult-info)
-(global-set-key (kbd "C-c m") 'consult-man)
-;; C-x bindings
-(global-set-key (kbd "C-x M-:") 'consult-complex-command)
-(global-set-key (kbd "C-x b") 'consult-buffer)
-(global-set-key (kbd "C-x j") 'consult-recent-file)
-(global-set-key (kbd "C-x f") 'affe-find)
-(global-set-key (kbd "C-x r l") 'consult-bookmark)
-(global-set-key (kbd "C-x r j") 'consult-register)
-(global-set-key (kbd "C-x i") 'consult-imenu)
-(global-set-key (kbd "C-x I") 'consult-imenu-multi)
-;; M-g bindings go-to
-(global-set-key (kbd "M-g g") 'consult-goto-line)
-(global-set-key (kbd "M-g M-g") 'consult-goto-line)
-(global-set-key (kbd "M-g f") 'consult-flymake)
-(global-set-key (kbd "M-g m") 'consult-mark)
-(global-set-key (kbd "M-g i") 'consult-imenu)
-(global-set-key (kbd "M-g o") 'consult-outline)
-
-;; prefer ripgrep
-(cond ((executable-find "rg") (global-set-key (kbd "C-s-f") 'consult-ripgrep))
-      (t (global-set-key (kbd "C-s-f") 'consult-grep)))
-
 (use-package projectile)
 (use-package consult-projectile
-  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master"))
-
-(global-set-key (kbd "s-E") 'consult-projectile-recentf)
-(global-set-key (kbd "s-e") 'consult-projectile-find-file)
-(global-set-key (kbd "C-s-e") 'consult-recent-file)
-
-(global-set-key (kbd "C-s") 'consult-line)
-
-(with-eval-after-load 'projectile
-  (define-key projectile-mode-map [remap projectile-switch-project] 'consult-projectile-switch-project)
-  (define-key projectile-mode-map [remap projectile-find-file] 'consult-projectile-find-file))
+  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master")
+  :bind (("C-x p p" . consult-projectile)
+         ("C-x p s" . consult-projectile-switch-project)
+         ("s-f" . consult-projectile-find-file)
+         ;;("s-g d" . consult-projectile-find-file)
+         ("s-e" . consult-projectile-recentf)
+         ("s-b" . consult-projectile-switch-to-buffer)))
 
 (use-package xref
   :init
@@ -118,8 +159,6 @@
 			     ((executable-find "ugrep") 'ugrep)
 			     ((executable-find "rg") 'ripgrep)
 			     (t 'grep))))
-
-(add-hook 'completion-list-mode-hook 'consult-preview-at-point-mode)
 
 ;; Setup annotations for Vertico
 (use-package marginalia

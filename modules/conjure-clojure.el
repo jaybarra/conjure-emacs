@@ -4,8 +4,8 @@
 
 (require 'conjure-lisp)
 
-(with-eval-after-load 'clojure-mode
-  
+(use-package clojure-mode
+  :config
   ;; disable single quote pairing to allow for lists '()
   (sp-local-pair '(clojure-mode) "'" nil :actions nil)
 
@@ -55,7 +55,9 @@
    (fact 1)
    (facts 1)))
 
-(with-eval-after-load 'cider
+
+(use-package cider
+  :config
   (setq nrepl-log-messages t
         nrepl-hide-special-buffers t
         cider-repl-display-help-banner nil
