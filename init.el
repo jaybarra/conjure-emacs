@@ -100,8 +100,8 @@
     (load conjure-modules-file)
   (message "[Conjure] Missing personal modules file %s" conjure-modules-file)
   (message "[Conjure] Falling back to the default example file sample/conjure-modules.el")
-  (message "[Conjure] Copy the sample to your personal configuration folder [%s] to change behaviors" conjure-modules-dir)
-  (load (expand-file-name "sample/")))
+  (message "[Conjure] Copy the sample to your personal configuration folder [%s] to change behaviors" conjure-personal-dir)
+  (load (expand-file-name "sample/conjure-modules.el" conjure-dir)))
 
 (setq custom-file (expand-file-name "custom.el" conjure-personal-dir))
 
