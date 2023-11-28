@@ -58,10 +58,11 @@
 (defun set-default-font (font)
   "Set the default FONT for Conjure."
   (when font
-    (set-face-attribute 'default nil :family font :height 120 :weight 'normal :width 'normal)))
+    (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
 
 (when (and (display-graphic-p) (fboundp 'x-list-fonts))
   (let ((selected-font (cond
+                        ((font-exists-p "Hack Nerd Font") "Hack Nerd Font")
                         ((font-exists-p "Fira Code Retina") "Fira Code Retina")
 			((font-exists-p "Fira Code") "Fira Code")
                         ((font-exists-p "Cascadia Code") "Cascadia Code")

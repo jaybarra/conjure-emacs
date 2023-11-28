@@ -55,7 +55,6 @@
    (fact 1)
    (facts 1)))
 
-
 (use-package cider
   :config
   (setq nrepl-log-messages t

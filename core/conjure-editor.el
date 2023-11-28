@@ -204,6 +204,7 @@
 ;; Projectile
 (use-package projectile
   :delight
+  :bind (("C-x p t" . projectile-toggle-between-implementation-and-test))
   :config
   (setq projectile-cache-file (expand-file-name "projectile.cache" conjure-savefile-dir)
 	projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" conjure-savefile-dir)
