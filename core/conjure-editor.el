@@ -51,9 +51,6 @@
          ("C-M-u" . sp-backward-up-sexp)
          ("C-M-t" . sp-transpose-sexp)
 
-         ("C-M-n" . sp-forward-hybrid-sexp)
-         ("C-M-p" . sp-backward-hybrid-sexp)
-
          ("C-M-k" . sp-kill-sexp)
          ("C-M-w" . sp-copy-sexp)
 
@@ -379,12 +376,12 @@ indent yanked text (with prefix arg don't indent)."
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
-  :init
+  ;; :init
 
-  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
-  ;; strategy, if you want to see the documentation from multiple providers.
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  ;; ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; ;; strategy, if you want to see the documentation from multiple providers.
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; ;;(setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
 
   :config
 

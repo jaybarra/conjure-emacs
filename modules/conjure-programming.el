@@ -11,9 +11,9 @@
   :hook (web-mode css-mode css-ts-mode))
 
 ;; show the current function def in the modeline
-(use-package which-func
-  :config
-  (which-function-mode 1))
+(require 'which-func)
+(setq which-func-unknown "⊥")
+(add-hook 'prog-mode-hook (lambda () (which-function-mode +1)))
 
 ;; font-lock annotations like TODO
 (use-package hl-todo
