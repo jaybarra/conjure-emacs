@@ -60,17 +60,20 @@
   (when font
     (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
 
-(when (and (display-graphic-p) (fboundp 'x-list-fonts))
-  (let ((selected-font (cond
-                        ((font-exists-p "Hack Nerd Font") "Hack Nerd Font")
-                        ((font-exists-p "Fira Code Retina") "Fira Code Retina")
-			((font-exists-p "Fira Code") "Fira Code")
-                        ((font-exists-p "Cascadia Code") "Cascadia Code")
-                        ((font-exists-p "Source Code Pro") "Source Code Pro")
-                        ((font-exists-p "Iosevka") "Iosevka")
-			((font-exists-p "Meslo") "Meslo"))))
-    (when (bound-and-true-p selected-font)
-      (set-default-font selected-font))))
+(defmacro set-first-available-font (font-list)
+  `(when (and (display-graphic-p) (fboundp 'x-list-fonts))
+     (let ((selected-font (cl-find-if #'font-exists-p ,font-list)))
+       (when (bound-and-true-p selected-font)
+         (set-default-font selected-font)))))
+
+(set-first-available-font '("Hack Nerd Font"
+                            "Fira Code Retina"
+                            "Fira Code"
+                            "Cascadia Code"
+                            "Source Code Pro"
+                            "Iosevka"
+                            "Meslo"))
+
 
 (use-package ligature
   :config
