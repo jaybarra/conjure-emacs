@@ -80,15 +80,18 @@
          ("C-\"" . sp-change-inner)
          ("M-i" . sp-change-enclosing))
   :config
-  (add-hook 'lisp-mode-hook (lambda () (smartparens-strict-mode +1)))
-  (add-hook 'lisp-data-mode-hook (lambda () (smartparens-strict-mode +1)))
+  (require 'smartparens-config)
+
+  (sp-with-modes '(js2-mode typescript-mode java-mode tsx-ts-mode typescript-ts-mode)
+    (sp-local-pair "/**" "*/" :post-handlers '(("| " "SPC")
+                                               ("* ||\n[i]" "RET"))))
+
+  (sp-with-modes '(tsx-ts-mode typescript-ts-mode typescript-mode)
+    (sp-local-pair "<" ">" :actions '(navigate)))
+
   (add-hook 'eval-expression-minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
   
-  ;; disable blink-matching-paren
-  (setq blink-matching-paren nil)
-
-  ;; globally show matched with sp
-  (show-smartparens-global-mode t))
+  (show-smartparens-global-mode))
 
 ;; give better names for buffers with the same name
 (require 'uniquify)

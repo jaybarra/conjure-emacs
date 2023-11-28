@@ -12,13 +12,19 @@
 
 (defun conjure-typescript-mode-defaults ()
   "Sensible defaults for working `typescript'."
-  ;; disable show-smartparens because of tsx problems with `<></>' pairs,
-  (show-smartparens-mode -1)
-  (subword-mode +1))
-
+  ;; nothing here yet
+  
+  )
 (setq conjure-typescript-mode-hook #'conjure-typescript-mode-defaults)
 
-(add-hook 'tsx-ts-mode-hook (lambda () (run-hooks 'conjure-typescript-mode-hook)))
+(defun conjure-jsx-tsx-mode-defaults ()
+  "Sensible defaults for working `typescript'."
+  ;; disable for TSX/JSX because smart-parens does not handle empty `<></>' cleanly
+  (turn-off-show-smartparens-mode))
+
+(setq conjure-tsx-jsx-mode-hook #'conjure-jsx-tsx-mode-defaults)
+
+(add-hook 'tsx-ts-mode-hook (lambda () (run-hooks 'conjure-typescript-mode-hook 'conjure-tsx-jsx-mode-hook)))
 (add-hook 'typescript-ts-mode-hook (lambda () (run-hooks 'conjure-typescript-mode-hook)))
 
 (provide 'conjure-typescript)

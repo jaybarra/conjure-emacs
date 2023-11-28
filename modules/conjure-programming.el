@@ -55,8 +55,6 @@
 (use-package markdown-mode)
 
 (use-package tempel)
-;; (use-package indent-guide
-;;   :hook (cons conjure-indent-sensitive-modes 'tsx-ts-mode))
 
 ;; disable liagures when merging
 (add-hook 'smerge-mode-hook (lambda () (ligature-mode -1)))

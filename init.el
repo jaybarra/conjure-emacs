@@ -2,7 +2,7 @@
 
 ;;; * Debug
 
-(setq debug-on-error t)
+;;; (setq debug-on-error t)
 
 (defconst emacs-start-time (current-time))
 (defconst osx-p (eq system-type 'darwin))

@@ -26,16 +26,6 @@
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp)
-(define-key smartparens-mode-map (kbd "C-(") 'sp-forward-barf-sexp)
-(define-key smartparens-mode-map (kbd "C-M-)") 'sp-backward-slurp-sexp)
-(define-key smartparens-mode-map (kbd "C-M-(") 'sp-backward-barf-sexp)
-
-(define-key smartparens-mode-map (kbd "C-M-k") 'sp-kill-sexp)
-(define-key smartparens-mode-map (kbd "M-<delete>") 'sp-unwrap-sexp)
-(define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
-(define-key smartparens-mode-map (kbd "M-D") 'sp-splice-sexp)
-
 (global-set-key (kbd "C-x g") 'magit-status)
 
 (provide 'conjure-global-keybindings)
