@@ -196,6 +196,11 @@
   :config
   (magit-todos-mode 1))
 
+(use-package git-timemachine)
+(use-package git-modes
+  :config
+  (add-to-list 'auto-mode-alist (cons "/.dockerignore\\'" 'gitignore-mode)))
+
 ;; Projectile
 (use-package projectile
   :delight
