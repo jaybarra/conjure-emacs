@@ -58,7 +58,7 @@
 (defun set-default-font (font)
   "Set the default FONT for Conjure."
   (when font
-    (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
+    (set-face-attribute 'default nil :family font :height 120 :weight 'normal :width 'normal)))
 
 (defmacro set-first-available-font (font-list)
   `(when (and (display-graphic-p) (fboundp 'x-list-fonts))
@@ -66,8 +66,7 @@
        (when (bound-and-true-p selected-font)
          (set-default-font selected-font)))))
 
-(set-first-available-font '("Hack Nerd Font"
-                            "Fira Code Retina"
+(set-first-available-font '("Fira Code Retina"
                             "Fira Code"
                             "Cascadia Code"
                             "Source Code Pro"
