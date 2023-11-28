@@ -19,6 +19,7 @@
 (require 'conjure-ruby)
 (require 'conjure-rust)
 (require 'conjure-svelte)
+(require 'conjure-swift)
 (require 'conjure-terraform)
 (require 'conjure-typescript)
 (require 'conjure-yaml)
