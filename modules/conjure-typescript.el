@@ -10,6 +10,8 @@
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 
+(sp-local-pair 'tsx-ts-mode "<>" "</>")
+
 (defun conjure-typescript-mode-defaults ()
   "Sensible defaults for working `typescript'."
   ;; nothing here yet

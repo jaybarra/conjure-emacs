@@ -4,6 +4,12 @@
 
 (require 'eglot)
 
+(with-eval-after-load 'eglot
+  (setq eglot-events-buffer-size 0
+        eglot-ignored-server-capabilities '(:hoverProvider
+                                            :documentHighlightProvider)
+        eglot-autoshutdown t))
+
 (set-language-environment 'utf-8)
 
 (use-package rainbow-mode
