@@ -8,8 +8,8 @@
 ;; Modules for common languages
 (require 'conjure-c)
 (require 'conjure-css)
+(require 'conjure-csv)
 (require 'conjure-clojure)
-;; (require 'conjure-copilot) ;; Enable if you have access to Copilot
 (require 'conjure-elixir)
 (require 'conjure-emacs-lisp)
 (require 'conjure-javascript)
