@@ -1,10 +1,9 @@
-;;; conjure-svelte.el --- Svelte configuration
+;;; conjure-svelte.el --- Svelte Initialization
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-programming)
-
-(use-package svelte-mode)
+(use-package svelte-mode :ensure t :defer t)
 
 (provide 'conjure-svelte)
+
 ;;; conjure-svelte.el ends here

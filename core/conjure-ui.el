@@ -2,126 +2,165 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Disable visible scroll-bar and toolbar when applicable
 (when (display-graphic-p)
   (tool-bar-mode -1)
   (scroll-bar-mode -1))
 
-;; always disable the menu-bar
-(menu-bar-mode -1)
+;; disable the menu-bar on non-Mac systems
+(unless (eq system-type 'darwin)
+  (menu-bar-mode -1))
 
 ;; disable cursor blink
 (blink-cursor-mode -1)
 
+(setq frame-title-format
+      '(""
+        (:eval
+         (let* ((system-name (or (file-remote-p default-directory 'host) system-name))
+                (project (project-current))
+                (project-name (when project (project-name project)))
+                (project-root (when project (project-root project)))
+                (buffer-name (buffer-name))
+                (buffer-file-name (buffer-file-name))
+                (relative-path (when (and buffer-file-name project)
+                                 (file-relative-name buffer-file-name project-root))))
+           (if (and project-name project-root)
+               (format "(%s)[%s] - %s" system-name project-name relative-path)
+             (format "(%s) %s" system-name buffer-name))))))
+
 ;; disable the bell
 (setq ring-bell-function 'ignore)
 
-;; disable startup screen
-(setq inhibit-startup-message t)
-
-;; fixup scrolling
-(setq scroll-margin 0
-      scroll-conservatively 10000
-      scroll-preserve-screen-position 1)
-
-;; disable mode-line entries that aren't that useful
-(line-number-mode -1)
-(column-number-mode -1)
-(size-indication-mode -1)
-(display-time-mode -1)
-
-;; clean up modeline entries
-(use-package delight)
-
-;; improved line highlighting for other modes
-(use-package lin
+;; Themes
+(use-package zenburn-theme :ensure t)
+(use-package ef-themes
+  :ensure t
   :config
-  (lin-global-mode))
+  (when conjure-theme (ef-themes-select 'zenburn)))
 
-;; better frame titles
-(setq frame-title-format
-      '((:eval (if (buffer-file-name)
-                   (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
+(use-package delight :ensure t)
 
-;; Theme packages
-(use-package ef-themes)
-(use-package modus-themes
-  :config
-  (modus-themes-select 'modus-vivendi))
+(use-package nerd-icons :ensure t)
+(use-package nerd-icons-dired
+  :ensure t
+  :hook (dired-mode . nerd-icons-dired-mode))
+(use-package nerd-icons-ibuffer
+  :ensure t
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
-(defun font-exists-p (font)
-  "Check if FONT exists (but only in x-window)."
-  (when (and (display-graphic-p) (fboundp 'x-list-fonts))
-    (if (null (x-list-fonts font)) nil t)))
+(use-package ace-window
+  :ensure t
+  :bind (("M-o" . 'ace-window)))
 
-(defun set-default-font (font)
-  "Set the default FONT for Conjure."
-  (when font
-    (set-face-attribute 'default nil :family font :height 130 :weight 'normal :width 'normal)))
+(defun font-installed-p (font-name)
+  "Check if font with FONT-NAME is available."
+  (find-font (font-spec :name font-name)))
 
-(defmacro set-first-available-font (font-list)
-  `(when (and (display-graphic-p) (fboundp 'x-list-fonts))
-     (let ((selected-font (cl-find-if #'font-exists-p ,font-list)))
-       (when (bound-and-true-p selected-font)
-         (set-default-font selected-font)))))
 
-(set-first-available-font '("Hasklig"
-                            "Cascadia Code"
-                            "Fira Code Retina"
-                            "Source Code Pro"
-                            "Iosevka"
-                            "Meslo"))
+(defvar conjure-default-fonts
+  '("MonoLisa" "Cascadia Code" "Fira Code"
+    "Jetbrains Mono" "SF Mono" "Hack" "Source Code Pro"
+    "Menlo" "Monaco" "DejaVu Sans Mono" "Consolas"
+    "Hasklig" "Monoid")
+  "List of default fonts to use.")
+
+(defun conjure-setup-fonts ()
+  "Setup fonts."
+  (let ((fonts-list (delete-dups (append conjure-fonts conjure-default-fonts))))
+    (when (display-graphic-p)
+      ;; Set default font
+      (cl-loop for font in fonts-list
+               when (font-installed-p font)
+               return(set-frame-font (concat font (format "-%d" conjure-font-size) ) nil t)))))
+
+(conjure-setup-fonts)
+(add-hook 'window-setup-hook #'conjure-setup-fonts)
+(add-hook 'server-after-make-frame-hook #'conjure-setup-fonts)
+
+(defvar monolisa-v2-ligatures
+  '(;; coding ligatures
+    "<!---" "--->" "|||>" "<!--" "<|||" "<==>" "-->" "->>" "-<<" "..=" "!=="
+    "#_(" "/==" "||>" "||=" "|->" "===" "==>" "=>>" "=<<" "=/=" ">->" ">=>"
+    ">>-" ">>=" "<--" "<->" "<-<" "<||" "<|>" "<=" "<==" "<=>" "<=<" "<<-"
+    "<<=" "<~>" "<~~" "~~>" ">&-" "<&-" "&>>" "&>" "->" "-<" "-~" ".=" "!="
+    "#_" "/=" "|=" "|>" "==" "=>" ">-" ">=" "<-" "<|" "<~" "~-" "~@" "~="
+    "~>" "~~"
+
+    ;; whitespace ligatures
+    "---" "'''" "\"\"\"" "..." "..<" "{|" "[|" ".?" "::" ":::" "::=" ":="
+    ":>" ":<" "\;\;" "!!" "!!." "!!!"  "?." "?:" "??" "?=" "**" "***" "*>"
+    "*/" "--" "#:" "#!" "#?" "##" "###" "####" "#=" "/*" "/>" "//" "/**"
+    "///" "$(" ">&" "<&" "&&" "|}" "|]" "$>" ".." "++" "+++" "+>" "=:="
+    "=!=" ">:" ">>" ">>>" "<:" "<*" "<*>" "<$" "<$>" "<+" "<+>" "<>" "<<"
+    "<<<" "</" "</>" "^=" "%%"))
+
+(defvar fira-code-cascadia-ligatures
+  '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
+    ;; =:= =!=
+    ("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
+    ;; ;; ;;;
+    (";" (rx (+ ";")))
+    ;; && &&&
+    ("&" (rx (+ "&")))
+    ;; !! !!! !. !: !!. != !== !~
+    ("!" (rx (+ (or "=" "!" "\." ":" "~"))))
+    ;; ?? ??? ?:  ?=  ?.
+    ("?" (rx (or ":" "=" "\." (+ "?"))))
+    ;; %% %%%
+    ("%" (rx (+ "%")))
+    ;; |> ||> |||> ||||> |] |} || ||| |-> ||-||
+    ;; |->>-||-<<-| |- |== ||=||
+    ;; |==>>==<<==<=>==//==/=!==:===>
+    ("|" (rx (+ (or ">" "<" "|" "/" ":" "!" "}" "\]"
+                    "-" "=" ))))
+    ;; \\ \\\ \/
+    ("\\" (rx (or "/" (+ "\\"))))
+    ;; ++ +++ ++++ +>
+    ("+" (rx (or ">" (+ "+"))))
+    ;; :: ::: :::: :> :< := :// ::=
+    (":" (rx (or ">" "<" "=" "//" ":=" (+ ":"))))
+    ;; // /// //// /\ /* /> /===:===!=//===>>==>==/
+    ("/" (rx (+ (or ">"  "<" "|" "/" "\\" "\*" ":" "!"
+                    "="))))
+    ;; .. ... .... .= .- .? ..= ..<
+    ("\." (rx (or "=" "-" "\?" "\.=" "\.<" (+ "\."))))
+    ;; -- --- ---- -~ -> ->> -| -|->-->>->--<<-|
+    ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
+    ;; *> */ *)  ** *** ****
+    ("*" (rx (or ">" "/" ")" (+ "*"))))
+    ;; www wwww
+    ("w" (rx (+ "w")))
+    ;; <> <!-- <|> <: <~ <~> <~~ <+ <* <$ </  <+> <*>
+    ;; <$> </> <|  <||  <||| <|||| <- <-| <-<<-|-> <->>
+    ;; <<-> <= <=> <<==<<==>=|=>==/==//=!==:=>
+    ;; << <<< <<<<
+    ("<" (rx (+ (or "\+" "\*" "\$" "<" ">" ":" "~"  "!"
+                    "-"  "/" "|" "="))))
+    ;; >: >- >>- >--|-> >>-|-> >= >== >>== >=|=:=>>
+    ;; >> >>> >>>>
+    (">" (rx (+ (or ">" "<" "|" "/" ":" "=" "-"))))
+    ;; #: #= #! #( #? #[ #{ #_ #_( ## ### #####
+    ("#" (rx (or ":" "=" "!" "(" "\?" "\[" "{" "_(" "_"
+                 (+ "#"))))
+    ;; ~~ ~~~ ~=  ~-  ~@ ~> ~~>
+    ("~" (rx (or ">" "=" "-" "@" "~>" (+ "~"))))
+    ;; __ ___ ____ _|_ __|____|_
+    ("_" (rx (+ (or "_" "|"))))
+    ;; Fira code: 0xFF 0x12
+    ("0" (rx (and "x" (+ (in "A-F" "a-f" "0-9")))))
+    ;; Fira code:
+    "Fl"  "Tl"  "fi"  "fj"  "fl"  "ft"
+    ;; The few not covered by the regexps.
+    "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^="))
 
 (use-package ligature
+  :ensure t
   :config
   ;; Enable the "www" ligature in every possible major mode
   (ligature-set-ligatures 't '("www"))
-  ;; Enable traditional ligature support in eww-mode, if the
-  ;; `variable-pitch' face supports it
-  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
-  ;; Enable all Cascadia Code ligatures in programming modes
-  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
-                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-                                       "\\\\" "://"))
-  ;; Enables ligature checks globally in all buffers. You can also do it
-  ;; per mode with `ligature-mode'.
-  (global-ligature-mode t))
+  (ligature-set-ligatures 'prog-mode monolisa-v2-ligatures)
 
-(use-package which-key
-  :delight
-  :config
-  (if (daemonp)
-      (add-hook 'server-after-make-frame-hook 'which-key-mode)
-    (which-key-mode +1)))
-
-(use-package marginalia)
-
-(use-package nerd-icons)
-
-(use-package nerd-icons-completion
-  :after marginalia
-  :config
-  (nerd-icons-completion-mode)
-  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
-
-(use-package nerd-icons-dired
-  :delight
-  :hook dired-mode)
-
-(use-package nerd-icons-ibuffer
-  :hook ibuffer-mode)
+  (global-ligature-mode conjure-ligatures))
 
 (provide 'conjure-ui)
-
 ;;; conjure-ui.el ends here

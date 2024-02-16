@@ -1,9 +1,6 @@
-;;; conjure-rust.el --- Rust configuration
+;;; conjure-rust.el --- Configurations for Rust in Conjure
 ;;; Commentary:
 ;;; Code:
-(require 'conjure-programming)
-
-(use-package rustic)
 
 (provide 'conjure-rust)
 ;;; conjure-rust.el ends here

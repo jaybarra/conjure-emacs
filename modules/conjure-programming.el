@@ -2,33 +2,44 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'eglot)
-
-(with-eval-after-load 'eglot
-  (setq eglot-events-buffer-size 0
-        eglot-ignored-server-capabilities '(:hoverProvider
-                                            :documentHighlightProvider)
-        eglot-autoshutdown t))
+(use-package eglot
+  :ensure nil
+  :commands eglot eglot-ensure
+  :init
+  (setq eglot-sync-connect 1
+        eglot-autoreconnect t
+        eglot-auto-display-help-buffer nil)
+  :config
+  (setq eglot-events-buffer-size 0))
 
 (set-language-environment 'utf-8)
-
-(use-package rainbow-mode
-  :delight
-  :hook (web-mode css-mode css-ts-mode))
 
 ;; show the current function def in the modeline
 (require 'which-func)
 (setq which-func-unknown "⊥")
-(add-hook 'prog-mode-hook (lambda () (which-function-mode +1)))
+
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+(use-package apheleia
+  :ensure t
+  :delight
+  :hook (prog-mode html-mode))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode text-mode))
 
 ;; font-lock annotations like TODO
 (use-package hl-todo
+  :ensure t
   :config
   (global-hl-todo-mode +1))
-
-;; make parens visually different
-(use-package rainbow-delimiters
-  :hook (prog-mode text-mode))
 
 ;; flycheck style commands for flymake
 (define-key prog-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
@@ -39,32 +50,33 @@
 (define-key text-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
 (define-key text-mode-map (kbd "C-c ! c") 'flymake-start)
 
-(use-package pulsar
-  :config
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error))
-
-;; formatting
-(use-package apheleia
-  :delight
-  :hook prog-mode)
-
 (defun conjure-prog-mode-defaults ()
   "Sensible defaults for `prog-mode'."
+  (hl-line-mode +1)
+  (which-function-mode +1)
+  (whitespace-mode -1)
+
   (setq-local display-line-numbers 'relative))
 
 (add-hook 'prog-mode-hook #'conjure-prog-mode-defaults)
 
-;; bug references
-(add-hook 'prog-mode-hook #'bug-reference-prog-mode)
+(use-package smartrep :ensure t)
+(use-package operate-on-number :ensure t)
 
-(use-package markdown-mode)
+(smartrep-define-key global-map "C-c ."
+  '(("+" . apply-operation-to-number-at-point)
+    ("-" . apply-operation-to-number-at-point)
+    ("*" . apply-operation-to-number-at-point)
+    ("/" . apply-operation-to-number-at-point)
+    ("\\" . apply-operation-to-number-at-point)
+    ("^" . apply-operation-to-number-at-point)
+    ("<" . apply-operation-to-number-at-point)
+    (">" . apply-operation-to-number-at-point)
+    ("#" . apply-operation-to-number-at-point)
+    ("%" . apply-operation-to-number-at-point)
+    ("'" . operate-on-number-at-point)))
 
-(use-package tempel)
-
-;; disable liagures when merging
-(add-hook 'smerge-mode-hook (lambda () (ligature-mode -1)))
+(define-key prog-mode-map (kbd "<f7>") 'compile)
 
 (provide 'conjure-programming)
-
 ;;; conjure-programming.el ends here

@@ -1,16 +1,13 @@
-;;; conjure-terraform.el --- Terraform Settings
+;;; conjure-terraform.el --- Configurations for Terraform in Conjure
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-programming)
-
 (use-package terraform-mode
+  :ensure t
+  :defer t
   :config
   (when (executable-find "terraform-ls")
-    (add-to-list 'eglot-server-programs '(terraform-mode "terraform-ls" "serve"))
-    (add-hook 'terraform-mode-hook 'eglot-ensure)))
-
-;; TODO add terragrunt support in here as well
+    (add-to-list 'eglot-server-programs '(terraform-mode "terraform-ls" "serve"))))
 
 (provide 'conjure-terraform)
 ;;; conjure-terraform.el ends here

@@ -1,25 +1,13 @@
-;;; -*- mode: lisp-data -*-
+;; ~/.config/emacs/templates
 
-prog-mode
+php-mode
 
-(fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
-(todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
-(bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
-(hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
+(php "<?php" n> "?>")
 
-typescript-ts-mode tsx-ts-mode js-ts-mode jsx-ts-mode
+emacs-lisp-mode
 
-(rafce "import React from 'react'" n 
-       n
-       "const " (s componentName) " = () => {" n>
-       "return (" n>
-       "<>" n> r n> "</>" n>
-       ")" n "}" n
-       "export default " componentName ";" n)
-
-(rfce "import React from 'react'" n 
-      n
-      "export default function() {" n>
-      "return (" n>
-      "<>" n> r n> "</>" n>
-      ")" n "}" n)
+(module ";;; conjure-" (s module) ".el --- Configurations for " (capitalize (or module "")) " in Conjure -*- lexical-binding: t -*-" n
+        ";;; Commentary:" n
+        ";;; Code:" n q n
+        "(provide 'conjure-" module ")" n
+        ";;; conjure-" module ".el ends here")

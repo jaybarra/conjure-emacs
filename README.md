@@ -27,7 +27,7 @@ _Conjure_ was originally only my personal configuration. Interest on my teams ha
 
 ## License
 
-Copyright © 2023 Jay Barra
+Copyright © 2024 Jay Barra
 
 Distributed under the GNU General Public License, version 3
 

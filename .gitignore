@@ -8,7 +8,7 @@ elpa
 .cache
 history
 .lsp-session-v1
-custom-vars.el
+custom.el
 org-roam.db
 transient
 projectile.cache
@@ -42,3 +42,6 @@ recentf
 /tree-sitter/
 
 /straight/
+/lsp-cache/
+/elpy/
+session.*

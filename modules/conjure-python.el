@@ -2,30 +2,29 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-programming)
+(use-package exec-path-from-shell :ensure t)
 
-(use-package exec-path-from-shell)
-(use-package pyvenv-auto)
+(use-package python
+  :ensure nil
+  :config
+  (when (and (executable-find "python3")
+             (string= python-shell-interpreter "python"))
+    (setq python-shell-interpreter "python3")))
 
-(when (fboundp 'exec-path-from-shell-copy-env)
-  (exec-path-from-shell-copy-env "PYTHONPATH"))
+(use-package pyvenv
+  :ensure t
+  :after python
+  :config
+  (add-to-list 'global-mode-string
+               '(pyvenv-virtual-env-name (" venv:" pyvenv-virtual-env-name " "))
+               'append))
 
-(defun conjure-python-mode-defaults ()
-  "Sensible defaults for Python."
-  (subword-mode +1)
-  )
-
-(setq python-interpreter "ipython")
-
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
-(add-hook 'python-ts-mode-hook #'eglot-ensure)
-
-(with-eval-after-load 'projectile
-  (projectile-register-project-type 'poetry '("pyproject.toml")
-                                    :project-file "pyproject.toml"
-				    :compile "poetry install"
-				    :test "poetry run pytest"
-				    :test-prefix "test_"))
+(use-package poetry
+  :ensure t
+  :after python
+  :init
+  (setq poetry-tracking-strategy 'switch-buffer)
+  (add-hook 'python-mode-hook #'poetry-tracking-mode))
 
 (provide 'conjure-python)
 ;;; conjure-python.el ends here
