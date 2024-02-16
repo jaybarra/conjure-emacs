@@ -5,6 +5,7 @@
 (require 'conjure-programming)
 
 (use-package svelte-mode)
+(use-package apheleia)
 
 (provide 'conjure-svelte)
 ;;; conjure-svelte.el ends here
