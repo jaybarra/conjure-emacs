@@ -34,24 +34,6 @@
 (unless (file-exists-p conjure-savefile-dir)
   (make-directory conjure-savefile-dir))
 
-
-(defun conjure/load-directory (dir)
-  "Recursively load all `.el' files in DIR."
-  (let ((load-it (lambda (f)
-                   (load-file (concat (file-name-as-directory dir) f)))))
-    (dolist (file (directory-files dir nil "\\.el$"))
-      (funcall load-it file))
-    ;; Recurse on directories
-    (dolist (subdir (directory-files dir t "\\w+"))
-      (when (file-directory-p subdir)
-        (unless (or (string-suffix-p "/." subdir) (string-suffix-p "/.." subdir))
-          (conjure/load-directory subdir))))))
-
-;; Load all .el files under core, modules, and vendor directories
-(conjure/load-directory conjure-core-dir)
-(conjure/load-directory conjure-modules-dir)
-(conjure/load-directory conjure-vendor-dir)
-
 ;; Add MELPA repository for Emacs 29+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -70,6 +52,23 @@
 
 ;; Enable verbose loading
 (setq use-package-verbose t)
+
+(defun conjure-add-subfolders-to-load-path (parent-dir)
+  "Add all level PARENT-DIR subdirs to the `load-path'."
+  (dolist (f (directory-files parent-dir))
+    (let ((name (expand-file-name f parent-dir)))
+      (when (and (file-directory-p name)
+                 (not (string-prefix-p "." f)))
+        (add-to-list 'load-path name)
+        (conjure-add-subfolders-to-load-path name)))))
+
+;; Use newer byte-code automatically
+(setq load-prefer-newer t)
+
+(add-to-list 'load-path conjure-core-dir)
+(add-to-list 'load-path conjure-modules-dir)
+(add-to-list 'load-path conjure-vendor-dir)
+(conjure-add-subfolders-to-load-path conjure-vendor-dir)
 
 (use-package ef-themes
   :ensure t
