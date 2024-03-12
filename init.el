@@ -6,20 +6,13 @@
 
 (message "[Conjure] Emacs is coming online...")
 
-;; Profile Emacs startup
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "[Conjure] Emacs loaded in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
-
 (defvar conjure-user
   "Current system username."
   (getenv (if (equal system-type 'windows-nt) "USERNAME" "USER")))
 
 (defvar conjure-dir (file-name-directory user-init-file)
+  "The root dir of the Emacs Conjure distribution.")
+(defvar conjure-custom-file (expand-file-name "custom.el" conjure-dir)
   "The root dir of the Emacs Conjure distribution.")
 (defvar conjure-core-dir (expand-file-name "core" conjure-dir)
   "The home of Conjure's core functionality.")
@@ -36,76 +29,198 @@
 (defvar conjure-modules-file (expand-file-name "conjure-modules.el" conjure-personal-dir)
   "File containing a list of modules that will be loaded by Conjure.")
 
+(setq custom-file conjure-custom-file)
+
 (unless (file-exists-p conjure-savefile-dir)
   (make-directory conjure-savefile-dir))
 
-(defun conjure-add-subfolders-to-load-path (parent-dir)
-  "Add all level PARENT-DIR subdirs to the `load-path'."
-  (dolist (f (directory-files parent-dir))
-    (let ((name (expand-file-name f parent-dir)))
-      (when (and (file-directory-p name)
-                 (not (string-prefix-p "." f)))
-        (add-to-list 'load-path name)
-        (conjure-add-subfolders-to-load-path name)))))
 
-;; Use newer byte-code automatically
-(setq load-prefer-newer t)
+(defun conjure/load-directory (dir)
+  "Recursively load all `.el' files in DIR."
+  (let ((load-it (lambda (f)
+                   (load-file (concat (file-name-as-directory dir) f)))))
+    (dolist (file (directory-files dir nil "\\.el$"))
+      (funcall load-it file))
+    ;; Recurse on directories
+    (dolist (subdir (directory-files dir t "\\w+"))
+      (when (file-directory-p subdir)
+        (unless (or (string-suffix-p "/." subdir) (string-suffix-p "/.." subdir))
+          (conjure/load-directory subdir))))))
 
-(add-to-list 'load-path conjure-core-dir)
-(add-to-list 'load-path conjure-modules-dir)
-(add-to-list 'load-path conjure-vendor-dir)
-(conjure-add-subfolders-to-load-path conjure-vendor-dir)
+;; Load all .el files under core, modules, and vendor directories
+(conjure/load-directory conjure-core-dir)
+(conjure/load-directory conjure-modules-dir)
+(conjure/load-directory conjure-vendor-dir)
 
-;; reduce the frequency of garbage collection events
-;; allocate 50MB intead of the default 0.8MB
-(setq gc-cons-threshold (* 50 1000 1000))
+;; Add MELPA repository for Emacs 29+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-;; warn on large files (50MB or more)
-(setq large-file-warning-threshold (* 50 1000 1000))
+;; Initialize the package system if not already initialized
+(unless (bound-and-true-p package--initialized) ; Avoid initializing twice
+  (package-initialize))
 
-;; preload personal settings from `conjure-personal-preload-dir'
-(when (file-exists-p conjure-personal-dir)
-  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-preload-dir)
-  (mapc 'load (directory-files conjure-personal-preload-dir 't "^[^#\.].*el$")))
+;; Ensure use-package is installed
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-(message "[Conjure] Loading Conjure's core modules...")
-(require 'conjure-custom) ;; Load this first
-(require 'conjure-core)
-(require 'conjure-ui)
-(require 'conjure-mode)
-(require 'conjure-editor)
-(require 'conjure-global-keybindings)
+(eval-when-compile
+  (require 'use-package))
 
-(when (eq system-type 'gnu/linux)
-  (require 'conjure-linux))
+;; Enable verbose loading
+(setq use-package-verbose t)
 
-(when (eq system-type 'darwin)
-  (require 'conjure-macos))
+(use-package ef-themes
+  :ensure t
+  :config
+  (load-theme 'ef-day :no-confirm))
 
-;; WSL (windows subsystem for linux) specific setting
-(when (and (eq system-type 'gnu/linux) (getenv "WSLENV"))
-  (require 'conjure-wsl))
 
-(when (eq system-type 'windows-nt)
-  (require 'conjure-windows))
+;; Vertico
+(use-package vertico
+  :ensure t
+  :config
+  (vertico-mode))
 
-(message "[Conjure] Loading Conjure's additional modules...")
+;; Prefix the current candidate with “» ”. From
+;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
+(advice-add #'vertico--format-candidate :around
+            (lambda (orig cand prefix suffix index _start)
+              (setq cand (funcall orig cand prefix suffix index _start))
+              (concat
+               (if (= vertico--index index)
+                   (propertize "» " 'face 'vertico-current)
+                 "  ")
+               cand)))
 
-;; Conjure's modules
-(if (file-exists-p conjure-modules-file)
-    (load conjure-modules-file)
-  (message "[Conjure] Missing personal modules file %s" conjure-modules-file)
-  (message "[Conjure] Falling back to the default example file sample/conjure-modules.el")
-  (message "[Conjure] Copy the sample to your personal configuration folder [%s] to change behaviors" conjure-personal-dir)
-  (load (expand-file-name "sample/conjure-modules.el" conjure-dir)))
+;; Consult
+(use-package consult
+  :ensure t
+  ;; Replace bindings with Consult commands
 
-(setq custom-file (expand-file-name "custom.el" conjure-personal-dir))
+  :bind (
+	     ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;; M-g bindings (goto-map)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flycheck)
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings (search-map)
+         ("M-s f" . consult-find)
+         ("M-s F" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines))
+  :config
+  ;; Use consult-xref to display xref results with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
 
-;; load personal settings
-(when (file-exists-p conjure-personal-dir)
-  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-dir)
-  (mapc 'load (delete
-               conjure-modules-file
-               (directory-files conjure-personal-dir 't "^[^#\.].*\\.el$"))))
+  (add-hook 'xref-after-jump-hook (lambda() (run-hooks 'consult-after-jump-hook))))
 
-(message "[Conjure] Conjure is primed and ready...")
+
+(use-package consult-dir
+  :ensure t
+  :bind (("C-x C-d" . 'consult-dir)
+         :map minibuffer-local-completion-map
+         ("C-x C-d" . 'consult-dir)
+         ("C-x C-j" . 'consult-dir-jump-file)))
+
+(use-package consult-eglot
+  :ensure t)
+
+(use-package consult-flycheck
+  :ensure t)
+
+(use-package xref
+  :ensure nil
+  :init
+  (setq xref-search-program (cond
+			                 ((executable-find "ugrep") 'ugrep)
+			                 ((executable-find "rg") 'ripgrep)
+			                 (t 'grep))))
+
+;; Corfu - completion
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-cycle t) ;; Enables cycling for `corfu-next/previous`
+  (corfu-auto t) ;; Enable auto completion
+  :init
+  (global-corfu-mode))
+
+;; Marginalia
+(use-package marginalia
+  :ensure t
+  :after corfu
+  :init
+  (marginalia-mode))
+
+;; Orderless
+(use-package orderless
+  :ensure t
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion))))))
+
+;; Optionally, enable richer annotations using the Marginalia package
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `desc
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package embark-consult
+  :ensure t
+  :after (embark consult)
+  :demand t ; only necessary if you have embark-consult installed
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default) ; Use the default face for kind icons
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(use-package projectile
+  :ensure t
+  :config
+  (setq projectile-cache-file (expand-file-name  "projectile.cache" conjure-savefile-dir))
+  (setq projectile-completion-system 'auto) ;; Use default completion system
+  (setq projectile-project-search-path '(("~/workspace/" . 3))) ;; Directories to search for projects
+  (setq projectile-enable-caching t) ;; Enable caching for faster project switching
+  
+  (projectile-mode +1)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :bind (("s-p" . projectile-command-map) ;; Bind to super-p for macOS, replace s with C or M for other OS
+         ("C-c p" . projectile-find-file)))

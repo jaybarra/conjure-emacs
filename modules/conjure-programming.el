@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'eglot)
-
 (with-eval-after-load 'eglot
   (setq eglot-events-buffer-size 0
         eglot-ignored-server-capabilities '(:hoverProvider
@@ -12,23 +11,33 @@
 
 (set-language-environment 'utf-8)
 
-(use-package rainbow-mode
-  :delight
-  :hook (web-mode css-mode css-ts-mode))
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 ;; show the current function def in the modeline
 (require 'which-func)
 (setq which-func-unknown "⊥")
 (add-hook 'prog-mode-hook (lambda () (which-function-mode +1)))
 
+(use-package apheleia
+  :ensure t
+  :hook prog-mode)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode text-mode))
+
 ;; font-lock annotations like TODO
 (use-package hl-todo
+  :ensure t
   :config
   (global-hl-todo-mode +1))
 
-;; make parens visually different
-(use-package rainbow-delimiters
-  :hook (prog-mode text-mode))
 
 ;; flycheck style commands for flymake
 (define-key prog-mode-map (kbd "C-c ! n") 'flymake-goto-next-error)
@@ -39,31 +48,45 @@
 (define-key text-mode-map (kbd "C-c ! p") 'flymake-goto-prev-error)
 (define-key text-mode-map (kbd "C-c ! c") 'flymake-start)
 
-(use-package pulsar
-  :config
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error))
-
-;; formatting
-(use-package apheleia
-  :delight
-  :hook prog-mode)
 
 (defun conjure-prog-mode-defaults ()
   "Sensible defaults for `prog-mode'."
+  (hl-line-mode +1)
   (setq-local display-line-numbers 'relative))
 
 (add-hook 'prog-mode-hook #'conjure-prog-mode-defaults)
 
-;; bug references
-(add-hook 'prog-mode-hook #'bug-reference-prog-mode)
 
-(use-package markdown-mode)
+(use-package groovy-mode
+  :ensure t
+  :mode (("\\.groovy\\'" . groovy-mode)
+         ("Jenkinsfile\\'" . groovy-mode))
+  :config
+  ;; Custom configurations for Groovy mode can go here.
+  ;; For example, to set specific indentation preferences:
+  (setq groovy-indent-offset 2))
 
-(use-package tempel)
+(define-derived-mode nextflow-mode groovy-mode "Nextflow"
+  "A mode for Nextflow workflow scripts.")
 
-;; disable liagures when merging
-(add-hook 'smerge-mode-hook (lambda () (ligature-mode -1)))
+(add-to-list 'auto-mode-alist '("\\.nf\\'" . nextflow-mode))
+
+(defun run-nextflow-pipeline ()
+  "Run a Nextflow pipeline in the current directory."
+  (interactive)
+  (compile "nextflow run main.nf"))
+
+(use-package clojure-mode :ensure t)
+(use-package cider
+  :ensure t
+  :after clojure-mode
+  :config
+  (setq cider-print-fn 'fipp
+        cider-repl-display-help-banner nil
+        cider-repl-result-prefix ";; =>"
+        cider-print-options '(("print-length" 100))))
+
+(use-package svelte-mode :ensure t)
 
 (provide 'conjure-programming)
 

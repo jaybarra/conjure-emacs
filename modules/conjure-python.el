@@ -2,30 +2,24 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'conjure-programming)
+(use-package exec-path-from-shell
+  :ensure t)
 
-(use-package exec-path-from-shell)
-(use-package pyvenv-auto)
+(setq python-shell-interpreter "python3")
 
-(when (fboundp 'exec-path-from-shell-copy-env)
-  (exec-path-from-shell-copy-env "PYTHONPATH"))
+(use-package pyvenv
+  :ensure t
+  :config
+  (defun conjure/pyvenv-autoload()
+    "Automatically activate pyvenv if a .venv folder exists."
+    (let ((venv-dir (locate-dominating-file (buffer-file-name) ".venv")))
+      (when venv-dir
+	    (pyvenv-activate (concat venv-dir ".venv")))))
+  
+  (add-hook 'python-mode-hook 'conjure/pyvenv-autoload))
 
-(defun conjure-python-mode-defaults ()
-  "Sensible defaults for Python."
-  (subword-mode +1)
-  )
-
-(setq python-interpreter "ipython")
-
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
-(add-hook 'python-ts-mode-hook #'eglot-ensure)
-
-(with-eval-after-load 'projectile
-  (projectile-register-project-type 'poetry '("pyproject.toml")
-                                    :project-file "pyproject.toml"
-				    :compile "poetry install"
-				    :test "poetry run pytest"
-				    :test-prefix "test_"))
+(add-hook 'python-mode-hook #'eglot-ensure)
 
 (provide 'conjure-python)
+
 ;;; conjure-python.el ends here
