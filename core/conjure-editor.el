@@ -31,7 +31,7 @@
                ("Dired" (mode . dired-mode))
                ("Emacs" (or (name . "^\\*scratch\\*$")
                             (name . "^\\*Messages\\*$")))
-               ("Source" (derived-mode . prod-mode))
+               ("Source" (derived-mode . prog-mode))
                ("Markdown" (mode . markdown-mode))
                ("Org" (mode . org-mode))
                ("Magit" (name . "^magit"))

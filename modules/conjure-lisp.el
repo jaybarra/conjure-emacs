@@ -4,6 +4,9 @@
 
 (setq debugger-bury-or-kill 'kill)
 
+(use-package slime :ensure t)
+(setq inferior-lisp-program "sbcl")
+
 (require 'smartparens-config)
 (sp-local-pair '(emacs-lisp-mode lisp-data-mode) "'" nil :actions nil)
 (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-string-p))

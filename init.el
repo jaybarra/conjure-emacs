@@ -70,10 +70,23 @@
 (add-to-list 'load-path conjure-vendor-dir)
 (conjure-add-subfolders-to-load-path conjure-vendor-dir)
 
-(use-package ef-themes
-  :ensure t
-  :config
-  (load-theme 'ef-day :no-confirm))
+
+;; preload personal settings from `conjure-personal-preload-dir'
+(when (file-exists-p conjure-personal-dir)
+  (message "[Conjure] Loading personal configuration files in %s..." conjure-personal-preload-dir)
+  (mapc 'load (directory-files conjure-personal-preload-dir 't "^[^#\.].*el$")))
+
+(message "[Conjure] Loading Conjure's core modules...")
+(require 'conjure-ui)
+(require 'conjure-editor)
+(require 'conjure-global-keybindings)
+
+
+(require 'conjure-programming)
+(require 'conjure-lisp)
+(require 'conjure-python)
+(require 'conjure-org)
+
 
 
 ;; Vertico
@@ -218,8 +231,15 @@
   (setq projectile-project-search-path '(("~/workspace/" . 3))) ;; Directories to search for projects
   (setq projectile-enable-caching t) ;; Enable caching for faster project switching
   
-  (projectile-mode +1)
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  :bind (("s-p" . projectile-command-map) ;; Bind to super-p for macOS, replace s with C or M for other OS
-         ("C-c p" . projectile-find-file)))
+  (projectile-mode +1))
+
+(use-package consult-projectile
+  :ensure t
+  :after (consult projectile)
+  :bind (("C-x p p" . consult-projectile)
+         ("C-x p s" . consult-projectile-switch-project)
+         ("s-f" . consult-projectile-find-file)
+         ;;("s-g d" . consult-projectile-find-file)
+         ("s-e" . consult-projectile-recentf)
+         ("s-b" . consult-projectile-switch-to-buffer)))
+

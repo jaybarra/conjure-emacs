@@ -19,6 +19,7 @@
   (add-hook 'python-mode-hook 'conjure/pyvenv-autoload))
 
 (add-hook 'python-mode-hook #'eglot-ensure)
+(add-hook 'python-ts-mode-hook #'eglot-ensure)
 
 (provide 'conjure-python)
 

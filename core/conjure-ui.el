@@ -13,8 +13,18 @@
 ;; disable cursor blink
 (blink-cursor-mode -1)
 
+(setq frame-title-format
+      '("" invocation-name " Conjure - " (:eval (if (buffer-file-name)
+                                                    (abbreviate-file-name (buffer-file-name))
+                                                  "%b"))))
+
 ;; disable the bell
 (setq ring-bell-function 'ignore)
+
+(use-package ef-themes
+  :ensure t
+  :config
+  (ef-themes-load-random 'dark))
 
 (use-package delight :ensure t)
 
@@ -28,7 +38,6 @@
 (use-package nerd-icons-ibuffer
   :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
-
 
 (provide 'conjure-ui)
 
