@@ -128,6 +128,9 @@
     (add-to-list 'eglot-server-programs '(terraform-mode "terraform-ls" "serve"))
     (add-hook 'terraform-mode-hook #'eglot-ensure)))
 
+;; R support - emacs speaks statistics
+(use-package ess :ensure t)
+
 (provide 'conjure-programming)
 
 ;;; conjure-programming.el ends here
