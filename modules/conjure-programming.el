@@ -62,28 +62,25 @@
   :mode (("\\.groovy\\'" . groovy-mode)
          ("Jenkinsfile\\'" . groovy-mode))
   :config
-  ;; Custom configurations for Groovy mode can go here.
-  ;; For example, to set specific indentation preferences:
-  (setq groovy-indent-offset 2))
-
-(defvar nextflow-mode-font-lock-keywords
-  (let ((nextflow-keywords `(
-                             ;; Highlight `process` and `workflow` keywords and following names
-                             ("\\<\\(process\\|workflow\\)\\>\\s-+\\(\\sw+\\)"
-                              (1 font-lock-keyword-face)
-                              (2 font-lock-type-face))
-
-                             ;; Highlight built-in Nextflow keywords with a colon
-                             ("\\<\\(input\\|output\\|script\\):"
-                              . font-lock-builtin-face)
-                             )))
-    ;; Combine Nextflow keywords with groovy-mode's font-lock keywords
-    (append groovy-font-lock-keywords nextflow-keywords))
-  "Additional font-lock keywords for Nextflow mode.")
-
+  (setq groovy-indent-offset 4))
 
 (define-derived-mode nextflow-mode groovy-mode "Nextflow"
   "A mode for Nextflow workflow scripts."
+  (defvar nextflow-mode-font-lock-keywords
+    (let ((nextflow-keywords `(
+                               ;; Highlight `process` and `workflow` keywords and following names
+                               ("\\<\\(process\\|workflow\\)\\>\\s-+\\(\\sw+\\)"
+                                (1 font-lock-keyword-face)
+                                (2 font-lock-type-face))
+
+                               ;; Highlight built-in Nextflow keywords with a colon
+                               ("\\<\\(input\\|output\\|script\\):"
+                                . font-lock-builtin-face)
+                               )))
+      ;; Combine Nextflow keywords with groovy-mode's font-lock keywords
+      (append groovy-font-lock-keywords nextflow-keywords))
+    "Additional font-lock keywords for Nextflow mode.")
+  
   (set (make-local-variable 'font-lock-defaults) '(nextflow-mode-font-lock-keywords)))
 
 (add-to-list 'auto-mode-alist '("\\.nf\\'" . nextflow-mode))
@@ -106,8 +103,6 @@
 
 (define-key nextflow-mode-map [f7] 'run-nextflow-pipeline)
 (define-key nextflow-mode-map [f8] 'run-nextflow-pipeline-resume)
-
-
 
 (use-package clojure-mode
   :ensure t
