@@ -66,6 +66,11 @@
 
 (define-derived-mode nextflow-mode groovy-mode "Nextflow"
   "A mode for Nextflow workflow scripts."
+
+  (when '(fboundp 'nerd-icons-extension-icon-alist)
+    (add-to-list 'nerd-icons-extension-icon-alist
+                 '("nf" nerd-icons-octicon "nf-oct-workflow" :face nerd-icons-green)))
+
   (defvar nextflow-mode-font-lock-keywords
     (let ((nextflow-keywords `(
                                ;; Highlight `process` and `workflow` keywords and following names
@@ -85,12 +90,21 @@
 
 (add-to-list 'auto-mode-alist '("\\.nf\\'" . nextflow-mode))
 
-(defun run-nextflow-pipeline (params)
-  "Run a Nextflow pipeline in the current directory."
-  (interactive "P")
-  (let* ((arg-list (when params (split-string params)))
-         (nextflow-command (format "nextflow run main.nf %s" (mapconcat 'identity params " "))))
-    (compile nextflow-command)))
+(defvar nextflow-default-command "nextflow run main.nf")
+
+(defun run-nextflow-pipeline (update-args)
+  "Run the Nextflow pipeline with optional arguments.
+With a prefix argument (C-u), prompt for new arguments to update."
+  (interactive "P") ;; "P" makes the function receive the raw prefix argument.
+  (let ((default-args (if (boundp 'nextflow-pipeline-args) nextflow-pipeline-args "")))
+    ;; Check if called with C-u and prompt for new args if so
+    (when update-args
+      (setq default-args (read-string "Enter Nextflow arguments: " default-args))
+      ;; Optionally update the local variable if you want the new args to persist for the session
+      (when (boundp 'my-nextflow-args)
+        (setq nextflow-pipline-args default-args)))
+    ;; Run the compile command with the args
+    (compile (format "%s %s" nextflow-default-command default-args))))
 
 (defun run-nextflow-pipeline-resume (params)
   "Resume a Nextflow pipeline in the current directory."
