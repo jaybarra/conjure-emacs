@@ -225,21 +225,22 @@
 
 (use-package projectile
   :ensure t
+  :defer 3
+  :bind-keymap
+  ("s-p" . projectile-command-map)
+  ("C-c p" . projectile-command-map)
   :config
-  (setq projectile-cache-file (expand-file-name  "projectile.cache" conjure-savefile-dir))
-  (setq projectile-completion-system 'auto) ;; Use default completion system
-  (setq projectile-project-search-path '(("~/workspace/" . 3))) ;; Directories to search for projects
-  (setq projectile-enable-caching t) ;; Enable caching for faster project switching
+  (setq projectile-cache-file (expand-file-name  "projectile.cache" conjure-savefile-dir)
+        projectile-completion-system 'auto
+        projectile-ignored-projects '("~/" "/opt/homebrew" "~/roam" "~/org")
+        projectile-enable-caching t)
   
   (projectile-mode +1))
 
 (use-package consult-projectile
   :ensure t
   :after (consult projectile)
-  :bind (("C-x p p" . consult-projectile)
-         ("C-x p s" . consult-projectile-switch-project)
-         ("s-f" . consult-projectile-find-file)
-         ;;("s-g d" . consult-projectile-find-file)
-         ("s-e" . consult-projectile-recentf)
-         ("s-b" . consult-projectile-switch-to-buffer)))
-
+  :bind
+  (:map projectile-command-map
+        ("p" . 'consult-projectile-switch-project)
+        ("f" . 'consult-projectile)))

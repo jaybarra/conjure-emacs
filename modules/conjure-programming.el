@@ -66,15 +66,48 @@
   ;; For example, to set specific indentation preferences:
   (setq groovy-indent-offset 2))
 
+(defvar nextflow-mode-font-lock-keywords
+  (let ((nextflow-keywords `(
+                             ;; Highlight `process` and `workflow` keywords and following names
+                             ("\\<\\(process\\|workflow\\)\\>\\s-+\\(\\sw+\\)"
+                              (1 font-lock-keyword-face)
+                              (2 font-lock-type-face))
+
+                             ;; Highlight built-in Nextflow keywords with a colon
+                             ("\\<\\(input\\|output\\|script\\):"
+                              . font-lock-builtin-face)
+                             )))
+    ;; Combine Nextflow keywords with groovy-mode's font-lock keywords
+    (append groovy-font-lock-keywords nextflow-keywords))
+  "Additional font-lock keywords for Nextflow mode.")
+
+
 (define-derived-mode nextflow-mode groovy-mode "Nextflow"
-  "A mode for Nextflow workflow scripts.")
+  "A mode for Nextflow workflow scripts."
+  (set (make-local-variable 'font-lock-defaults) '(nextflow-mode-font-lock-keywords)))
 
 (add-to-list 'auto-mode-alist '("\\.nf\\'" . nextflow-mode))
 
-(defun run-nextflow-pipeline ()
+(defun run-nextflow-pipeline (params)
   "Run a Nextflow pipeline in the current directory."
-  (interactive)
-  (compile "nextflow run main.nf"))
+  (interactive "P")
+  (let* ((arg-list (when params (split-string params)))
+         (nextflow-command (format "nextflow run main.nf %s" (mapconcat 'identity params " "))))
+    (compile nextflow-command)))
+
+(defun run-nextflow-pipeline-resume (params)
+  "Resume a Nextflow pipeline in the current directory."
+  (interactive "P")
+  (let* ((arg-list (if params
+                       (split-string params)
+                     '("")))
+         (nextflow-command (format "nextflow run main.nf -resume %s" (mapconcat 'identity params " "))))
+    (compile nextflow-command)))
+
+(define-key nextflow-mode-map [f7] 'run-nextflow-pipeline)
+(define-key nextflow-mode-map [f8] 'run-nextflow-pipeline-resume)
+
+
 
 (use-package clojure-mode
   :ensure t

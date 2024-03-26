@@ -277,6 +277,8 @@
 
 (use-package browse-kill-ring :ensure t)
 
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+
 (provide 'conjure-editor)
 
 ;;; conjure-editor.el ends here
