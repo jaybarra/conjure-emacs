@@ -275,9 +275,37 @@
 
 (set-default 'imenu-auto-rescan t)
 
+(add-hook 'text-mode-hook 'abbrev-mode)
+
+;; make a shell script executable automatically on save
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+;; .zsh file is shell script too
+(add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
+
+(setq reb-re-syntax 'string)
+
 (use-package browse-kill-ring :ensure t)
 
-(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+;; Compilation from Emacs
+(defun conjure-colorize-compilation-buffer ()
+  "Colorize a compilation mode buffer."
+  (interactive)
+  ;; we don't want to mess with child modes such as grep-mode, ack, ag, etc
+  (when (eq major-mode 'compilation-mode)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max)))))
+
+(require 'compile)
+(setq compilation-ask-about-save nil
+      compilation-always-kill t
+      compilation-scroll-output 'first-error)
+
+;; Colorize output of Compilation Mode, see
+;; http://stackoverflow.com/a/3072831/355252
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook #'conjure-colorize-compilation-buffer)
 
 (provide 'conjure-editor)
 
