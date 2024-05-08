@@ -77,23 +77,6 @@
 (add-hook 'window-setup-hook #'conjure-setup-fonts)
 (add-hook 'server-after-make-frame-hook #'conjure-setup-fonts)
 
-(defvar monolisa-v2-ligatures
-  '(;; coding ligatures
-    "<!---" "--->" "|||>" "<!--" "<|||" "<==>" "-->" "->>" "-<<" "..=" "!=="
-    "#_(" "/==" "||>" "||=" "|->" "===" "==>" "=>>" "=<<" "=/=" ">->" ">=>"
-    ">>-" ">>=" "<--" "<->" "<-<" "<||" "<|>" "<=" "<==" "<=>" "<=<" "<<-"
-    "<<=" "<~>" "<~~" "~~>" ">&-" "<&-" "&>>" "&>" "->" "-<" "-~" ".=" "!="
-    "#_" "/=" "|=" "|>" "==" "=>" ">-" ">=" "<-" "<|" "<~" "~-" "~@" "~="
-    "~>" "~~"
-
-    ;; whitespace ligatures
-    "---" "'''" "\"\"\"" "..." "..<" "{|" "[|" ".?" "::" ":::" "::=" ":="
-    ":>" ":<" "\;\;" "!!" "!!." "!!!"  "?." "?:" "??" "?=" "**" "***" "*>"
-    "*/" "--" "#:" "#!" "#?" "##" "###" "####" "#=" "/*" "/>" "//" "/**"
-    "///" "$(" ">&" "<&" "&&" "|}" "|]" "$>" ".." "++" "+++" "+>" "=:="
-    "=!=" ">:" ">>" ">>>" "<:" "<*" "<*>" "<$" "<$>" "<+" "<+>" "<>" "<<"
-    "<<<" "</" "</>" "^=" "%%"))
-
 (defvar fira-code-cascadia-ligatures
   '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
     ;; =:= =!=
@@ -158,7 +141,7 @@
   :config
   ;; Enable the "www" ligature in every possible major mode
   (ligature-set-ligatures 't '("www"))
-  (ligature-set-ligatures 'prog-mode monolisa-v2-ligatures)
+  (ligature-set-ligatures 'prog-mode fira-code-cascadia-ligatures)
 
   (global-ligature-mode conjure-ligatures))
 
