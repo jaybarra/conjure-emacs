@@ -25,7 +25,7 @@
                 (relative-path (when (and buffer-file-name project)
                                  (file-relative-name buffer-file-name project-root))))
            (if (and project-name project-root)
-               (format "(%s)[%s] - %s" system-name project-name relative-path)
+               (format "(%s) [%s] - %s" system-name project-name relative-path)
              (format "(%s) %s" system-name buffer-name))))))
 
 ;; disable the bell

@@ -17,7 +17,7 @@
 
 (use-package mix
   :ensure t
-  :hook (elixir-ts-mode)
+  :hook (elixir-ts-mode . mix-minor-mode)
   :init
   (define-prefix-command 'mix-test-prefix nil "Mix Test Command Prefix")
   :bind (:map elixir-ts-mode-map
