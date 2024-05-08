@@ -36,7 +36,7 @@
 (use-package ef-themes
   :ensure t
   :config
-  (when conjure-theme (ef-themes-select 'zenburn)))
+  (when conjure-theme (ef-themes-select conjure-theme)))
 
 (use-package delight :ensure t)
 
@@ -55,7 +55,6 @@
 (defun font-installed-p (font-name)
   "Check if font with FONT-NAME is available."
   (find-font (font-spec :name font-name)))
-
 
 (defvar conjure-default-fonts
   '("MonoLisa" "Cascadia Code" "Fira Code"
@@ -76,6 +75,23 @@
 (conjure-setup-fonts)
 (add-hook 'window-setup-hook #'conjure-setup-fonts)
 (add-hook 'server-after-make-frame-hook #'conjure-setup-fonts)
+
+(defvar monolisa-v2-ligatures
+  '(;; coding ligatures
+    "<!---" "--->" "|||>" "<!--" "<|||" "<==>" "-->" "->>" "-<<" "..=" "!=="
+    "#_(" "/==" "||>" "||=" "|->" "===" "==>" "=>>" "=<<" "=/=" ">->" ">=>"
+    ">>-" ">>=" "<--" "<->" "<-<" "<||" "<|>" "<=" "<==" "<=>" "<=<" "<<-"
+    "<<=" "<~>" "<~~" "~~>" ">&-" "<&-" "&>>" "&>" "->" "-<" "-~" ".=" "!="
+    "#_" "/=" "|=" "|>" "==" "=>" ">-" ">=" "<-" "<|" "<~" "~-" "~@" "~="
+    "~>" "~~"
+
+    ;; whitespace ligatures
+    "---" "'''" "\"\"\"" "..." "..<" "{|" "[|" ".?" "::" ":::" "::=" ":="
+    ":>" ":<" "\;\;" "!!" "!!." "!!!"  "?." "?:" "??" "?=" "**" "***" "*>"
+    "*/" "--" "#:" "#!" "#?" "##" "###" "####" "#=" "/*" "/>" "//" "/**"
+    "///" "$(" ">&" "<&" "&&" "|}" "|]" "$>" ".." "++" "+++" "+>" "=:="
+    "=!=" ">:" ">>" ">>>" "<:" "<*" "<*>" "<$" "<$>" "<+" "<+>" "<>" "<<"
+    "<<<" "</" "</>" "^=" "%%"))
 
 (defvar fira-code-cascadia-ligatures
   '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~

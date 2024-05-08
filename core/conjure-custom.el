@@ -25,7 +25,7 @@
   :type 'boolean
   :group 'conjure)
 
-(defcustom conjure-theme 'zenburn ;; 'ef-elea-dark
+(defcustom conjure-theme 'ef-dream
   "The default color theme."
   :type 'symbol
   :group 'conjure)
