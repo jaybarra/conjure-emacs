@@ -81,6 +81,7 @@
 (require 'conjure-svelte)
 (require 'conjure-terraform)
 (require 'conjure-vue)
+(require 'conjure-zig)
 
 ;; ;; Specialty and derived modes
 (require 'conjure-data-science)
