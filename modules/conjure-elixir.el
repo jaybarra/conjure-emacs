@@ -18,15 +18,8 @@
 (use-package mix
   :ensure t
   :hook (elixir-ts-mode . mix-minor-mode)
-  :init
-  (define-prefix-command 'mix-test-prefix nil "Mix Test Command Prefix")
   :bind (:map elixir-ts-mode-map
-              ("C-c C-t" . mix-test-prefix)
-              ("<f7>" . mix-execute-task)
-              :map mix-test-prefix
-              ("t" . mix-test-current-test)
-              ("b" . mix-test-current-buffer)
-              ("p" . mix-test)))
+              ("<f7>" . mix-execute-task)))
 
 (provide 'conjure-elixir)
 ;;; conjure-elixir.el ends here
