@@ -78,5 +78,9 @@
 
 (define-key prog-mode-map (kbd "<f7>") 'compile)
 
+(use-package logview
+  :ensure t
+  :defer t)
+
 (provide 'conjure-programming)
 ;;; conjure-programming.el ends here

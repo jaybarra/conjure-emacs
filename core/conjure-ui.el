@@ -70,7 +70,10 @@
       ;; Set default font
       (cl-loop for font in fonts-list
                when (font-installed-p font)
-               return(set-frame-font (concat font (format "-%d" conjure-font-size) ) nil t)))))
+               return (set-face-attribute 'default nil
+                                          :font font
+                                          :height conjure-font-size
+                                          :weight 'regular)))))
 
 (conjure-setup-fonts)
 (add-hook 'window-setup-hook #'conjure-setup-fonts)

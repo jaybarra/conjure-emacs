@@ -11,11 +11,11 @@
 ;; Appearance
 ;; ===========================================================================
 (defcustom conjure-fonts '("MonoLisa" "Fira Code" "Cascadia Code")
-  "Preferred Fonts in order of prefernce to use."
+  "Preferred Fonts in order of preference to use."
   :type 'list
   :group 'conjure)
 
-(defcustom conjure-font-size 12
+(defcustom conjure-font-size 120
   "Controls default-font-size."
   :type 'number
   :group 'conjure)
