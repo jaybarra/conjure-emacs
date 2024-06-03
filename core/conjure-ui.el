@@ -43,6 +43,7 @@
 (use-package nerd-icons :ensure t)
 (use-package nerd-icons-dired
   :ensure t
+  :delight
   :hook (dired-mode . nerd-icons-dired-mode))
 (use-package nerd-icons-ibuffer
   :ensure t

@@ -11,3 +11,7 @@ emacs-lisp-mode
         ";;; Code:" n q n
         "(provide 'conjure-" module ")" n
         ";;; conjure-" module ".el ends here")
+
+clojure-mode
+
+(ns "(ns " (clojure-expected-ns) ")")

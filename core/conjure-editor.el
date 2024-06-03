@@ -129,14 +129,10 @@
   (setq dired-recursive-deletes 'always)
   (setq dired-recursive-copies 'always)
 
-  ;; humanize as much as possible
-  ;; -a include dot files
-  ;; -l long format, required for dired
-  ;; -G colorize output
-  ;; -F display entry type with ending e.g / *, @, % |
-  (setq dired-listing-switches (if (eq system-type 'darwin)
-                                   "-alhFG"
-                                 "-alhFG --group-directories-first"))
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired t
+          insert-directory-program "/opt/homebrew/bin/gls"
+          dired-listing-switches "-aBhl --group-directories-first"))
 
   ;; easier copying/moving between dired panels
   (setq dired-dwim-target t)
@@ -210,6 +206,7 @@
 
 (use-package which-key
   :ensure t
+  :delight
   :config
   (which-key-mode)
   (setq which-key-idle-delay 0.5)
