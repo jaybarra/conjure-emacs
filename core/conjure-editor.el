@@ -289,10 +289,8 @@
   :bind
   (;; Buffer switching
    ("C-x b" . consult-buffer)
-   ;; ("C-x C-b" . consult-buffer) ;; defer to ibuffer
    ("C-x 4 b" . consult-buffer-other-window)
    ("C-x 5 b" . consult-buffer-other-frame)
-
    ("M-y" . consult-yank-pop)
 
    ;; File finding
@@ -309,10 +307,12 @@
    ;; Search
    ("C-s" . consult-line)
    ("C-r" . consult-line)
-   ;; ("M-s f" . consult-find)
-   ;; ("M-s g" . consult-grep)
-   ;; ("M-s s" . consult-ripgrep)
-   ;; ("M-s l" . consult-line)
+   ("C-c s f" . consult-find)
+   ("C-c s g" . consult-grep)
+   ("C-c s r" . consult-ripgrep)
+   ("C-c s l" . consult-line)
+
+   ;; Imenu
    ("M-g i" . consult-imenu)
    ("M-g I" . consult-imenu-multi)
 
@@ -322,7 +322,6 @@
    ;; Command execution
    ;;("M-x" . consult-M-x)
    ("C-x M-:" . consult-complex-command)
-   ("C-x b" . consult-buffer)
 
    ;; Flymake/check
    ("M-g e" . consult-flymake)
@@ -331,7 +330,24 @@
    ;; Register
    ("C-x r i" . consult-register-load)
    ("C-x r s" . consult-register-store)
-   ("C-x r x" . consult-register)))
+   ("C-x r x" . consult-register))
+
+  :config
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+  (advice-add #'register-preview :override #'consult-register-window)
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+  (setq consult-narrow-key "<"))
 
 (use-package consult-eglot)
 

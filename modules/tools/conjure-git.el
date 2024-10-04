@@ -1,4 +1,4 @@
-;;; conjure-magit.el --- Configurations for Magit in Conjure -*- lexical-binding: t -*-
+;;; conjure-git.el --- Configurations for git in Conjure -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -10,5 +10,7 @@
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
         git-commit-summary-max-length 50))
 
-(provide 'conjure-magit)
-;;; conjure-magit.el ends here
+(use-package git-timemachine)
+
+(provide 'conjure-git)
+;;; conjure-git.el ends here
