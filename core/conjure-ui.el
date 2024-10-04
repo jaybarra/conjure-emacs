@@ -1,4 +1,4 @@
-;;; conjure-ui.el --- Conjure UI settings
+;;; conjure-ui.el --- Configurations for the UI in Conjure -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -13,45 +13,7 @@
 ;; disable cursor blink
 (blink-cursor-mode -1)
 
-(setq frame-title-format
-      '(""
-        (:eval
-         (let* ((system-name (or (file-remote-p default-directory 'host) system-name))
-                (project (project-current))
-                (project-name (when project (project-name project)))
-                (project-root (when project (project-root project)))
-                (buffer-name (buffer-name))
-                (buffer-file-name (buffer-file-name))
-                (relative-path (when (and buffer-file-name project)
-                                 (file-relative-name buffer-file-name project-root))))
-           (if (and project-name project-root)
-               (format "(%s) [%s] - %s" system-name project-name relative-path)
-             (format "(%s) %s" system-name buffer-name))))))
-
-;; disable the bell
 (setq ring-bell-function 'ignore)
-
-;; Themes
-(use-package zenburn-theme :ensure t)
-(use-package ef-themes
-  :ensure t
-  :config
-  (when conjure-theme (ef-themes-select conjure-theme)))
-
-(use-package delight :ensure t)
-
-(use-package nerd-icons :ensure t)
-(use-package nerd-icons-dired
-  :ensure t
-  :delight
-  :hook (dired-mode . nerd-icons-dired-mode))
-(use-package nerd-icons-ibuffer
-  :ensure t
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
-
-(use-package ace-window
-  :ensure t
-  :bind (("M-o" . 'ace-window)))
 
 (defun font-installed-p (font-name)
   "Check if font with FONT-NAME is available."
@@ -62,18 +24,18 @@
     "Jetbrains Mono" "SF Mono" "Hack" "Source Code Pro"
     "Menlo" "Monaco" "DejaVu Sans Mono" "Consolas"
     "Hasklig" "Monoid")
-  "List of default fonts to use.")
+  "Ordered list of default fonts to use.")
 
 (defun conjure-setup-fonts ()
   "Setup fonts."
-  (let ((fonts-list (delete-dups (append conjure-fonts conjure-default-fonts))))
+  (let ((fonts-list (delete-dups (append '() conjure-default-fonts))))
     (when (display-graphic-p)
       ;; Set default font
       (cl-loop for font in fonts-list
                when (font-installed-p font)
                return (set-face-attribute 'default nil
                                           :font font
-                                          :height conjure-font-size
+                                          :height 130
                                           :weight 'regular)))))
 
 (conjure-setup-fonts)
@@ -157,13 +119,28 @@
     "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^="))
 
 (use-package ligature
-  :ensure t
   :config
   ;; Enable the "www" ligature in every possible major mode
   (ligature-set-ligatures 't '("www"))
   (ligature-set-ligatures 'prog-mode fira-code-cascadia-ligatures)
 
-  (global-ligature-mode conjure-ligatures))
+  (global-ligature-mode 't))
+
+(elpaca ef-themes
+  ;;(ef-themes-select 'ef-owl)
+  )
+(elpaca modus-themes
+  (modus-themes-select 'modus-vivendi-tinted)
+  )
+(elpaca zenburn-theme)
+(elpaca catppuccin-theme
+  ;; (load-theme 'catppuccin :no-confirm)
+  ;;(setq catppuccin-flavor 'latte)     ;; - light
+  ;;(setq catppuccin-flavor 'frappe)    ;; - dark(er)
+  ;;(setq catppuccin-flavor 'macchiato) ;; - dark(erer)
+  ;;(setq catppuccin-flavor 'mocha)     ;; - darkest - default
+  ;;(catppuccin-reload))
+  )
 
 (provide 'conjure-ui)
 ;;; conjure-ui.el ends here

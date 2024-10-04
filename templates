@@ -12,6 +12,14 @@ emacs-lisp-mode
         "(provide 'conjure-" module ")" n
         ";;; conjure-" module ".el ends here")
 
-clojure-mode
+clojure-ts-mode clojure-mode
 
 (ns "(ns " (clojure-expected-ns) ")")
+(ifl "(if-let [" p " " p "]" n> p n> r>")")
+(whenl "(when-let [" p p "]" n> r> ")")
+(fn "(fn [" p "]" n> r> ")")
+(let "(let [" p "]" n> r> ")")
+(fun "(defn " p  n> "\"" p "\"" n> "[" p "]" n> r ")")
+(doc "^{:doc \"" p "\"}" q)
+(priv "^:private")
+(req "(:require [" q "])")
