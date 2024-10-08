@@ -1,11 +1,8 @@
 ;; ~/.config/emacs/templates
-
 php-mode
-
 (php "<?php" n> "?>")
 
 emacs-lisp-mode
-
 (module ";;; conjure-" (s module) ".el --- Configurations for " (capitalize (or module "")) " in Conjure -*- lexical-binding: t -*-" n
         ";;; Commentary:" n
         ";;; Code:" n q n
@@ -13,13 +10,17 @@ emacs-lisp-mode
         ";;; conjure-" module ".el ends here")
 
 clojure-ts-mode clojure-mode
-
 (ns "(ns " (clojure-expected-ns) ")")
 (ifl "(if-let [" p " " p "]" n> p n> r>")")
 (whenl "(when-let [" p p "]" n> r> ")")
 (fn "(fn [" p "]" n> r> ")")
 (let "(let [" p "]" n> r> ")")
 (fun "(defn " p  n> "\"" p "\"" n> "[" p "]" n> r ")")
+(defn "(defn " p  n> "\"" p "\"" n> "[" p "]" n> r ")")
 (doc "^{:doc \"" p "\"}" q)
 (priv "^:private")
 (req "(:require [" q "])")
+
+java-mode java-ts-mode
+(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+(psvm "public static void main(String[] args)" n> "{"  n> "}")
