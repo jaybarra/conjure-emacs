@@ -47,6 +47,9 @@
   (elpaca-use-package-mode)
   (setq elpaca-use-package-by-default t))
 
+;; Block until current queue processed.
+(elpaca-wait)
+
 (use-package delight
   :delight eldoc-mode
   :delight subword-mode)

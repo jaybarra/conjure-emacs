@@ -11,9 +11,9 @@
 (add-hook 'elixir--mode-hook #'conjure--setup-elixir-defaults)
 
 (require 'eglot)
-(add-to-list 'eglot-server-programs '(elixir-mode "~/.local/elixir-ls/language_server.sh"))
-(add-to-list 'eglot-server-programs '(elixir-ts-mode "~/.local/elixir-ls/language_server.sh"))
-(add-to-list 'eglot-server-programs '(heex-ts-mode "~/.local/elixir-ls/language_server.sh"))
+(add-to-list 'eglot-server-programs '(elixir-mode "~/workspace/elixir-ls/out/language_server.sh"))
+(add-to-list 'eglot-server-programs '(elixir-ts-mode "~/workspace/elixir-ls/out/language_server.sh"))
+(add-to-list 'eglot-server-programs '(heex-ts-mode "~/workspace/elixir-ls/out/language_server.sh"))
 
 (add-hook 'elixir-ts-mode-hook #'eglot-ensure)
 (add-hook 'elixir-mode-hook #'eglot-ensure)

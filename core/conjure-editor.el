@@ -230,15 +230,25 @@
   :init
   (global-corfu-mode)
   :bind (:map corfu-map
+              ("<escape>" . corfu-quit)
 	            ("TAB" . nil)
               ([tab] . nil)
-	            ("C-y" . corfu-insert))
+	            ("C-y" . corfu-insert)
+              ("M-d" . corfu-info-documentation)
+              ("M-l" . corfu-info-location))
   :custom
+  (corfu-auto nil)
+  (corfu-auto-prefix 2)
   (corfu-auto-delay 0.2)
+  (corfu-quit-no-match 'separator)
   (corfu-popupinfo-delay '(2.0 . 1.0))
+  (tab-always-indent 'complete)
+  (completion-cycle-threshold nil)
+  (corfu-separator ?\s)
+  (corfu-quit-no-match 'separator)
+  (corfu-preview-current 'insert)
+  (lsp-completion-provider :none)
   :config
-  (setq corfu-auto t
-        corfu-quit-no-match 'separator)
   (defun corfu-enable-in-minibuffer ()
     "Enable Corfu in the minibuffer if `completion-at-point' is bound."
     (when (where-is-internal #'completion-at-point (list (current-local-map)))
@@ -252,18 +262,112 @@
 
 (use-package cape
   :init
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block))
 
 (use-package kind-icon
   :after corfu
+  :custom
+  (kind-icon-use-icons t)
+  (kind-icon-default-face 'corfu-default)
+  (kind-icon-blend-background nil)
+  (kind-icon-blend-frac 0.08)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
+(use-package embark)
+(use-package embark-consult)
+
 (use-package vertico
+  :demand t                             ; Otherwise won't get loaded immediately
+  :bind (:map vertico-map
+              ("<tab>" . vertico-insert)
+              ("<escape>" . minibuffer-keyboard-quit)
+              ("?" . minibuffer-completion-help)
+              ("C-M-n" . vertico-next-group)
+              ("C-M-p" . vertico-previous-group)
+              ;; Multiform toggles
+              ("<backspace>" . vertico-directory-delete-char)
+              ("C-w" . vertico-directory-delete-word)
+              ("C-<backspace>" . vertico-directory-delete-word)
+              ("RET" . vertico-directory-enter)
+              ("C-i" . vertico-quick-insert)
+              ("C-o" . vertico-quick-exit)
+              ("M-o" . kb/vertico-quick-embark)
+              ("M-G" . vertico-multiform-grid)
+              ("M-F" . vertico-multiform-flat)
+              ("M-R" . vertico-multiform-reverse)
+              ("M-U" . vertico-multiform-unobtrusive)
+              ("C-l" . kb/vertico-multiform-flat-toggle)
+              )
+  :hook ((rfn-eshadow-update-overlay . vertico-directory-tidy) ; Clean up file path when typing
+         (minibuffer-setup . vertico-repeat-save) ; Make sure vertico state is saved
+         )
+  :custom
+  (vertico-count 13)
+  (vertico-resize t)
+  (vertico-cycle nil)
+  ;; Extensions
+  (vertico-grid-separator "       ")
+  (vertico-grid-lookahead 50)
+  (vertico-buffer-display-action '(display-buffer-reuse-window))
+  (vertico-multiform-categories
+   '((file reverse)
+     (consult-grep buffer)
+     (consult-location)
+     (imenu buffer)
+     (library reverse indexed)
+     (org-roam-node reverse indexed)
+     (t reverse)
+     ))
+  (vertico-multiform-commands
+   '(("flyspell-correct-*" grid reverse)
+     (org-refile grid reverse indexed)
+     (consult-yank-pop indexed)
+     (consult-flycheck)
+     (consult-lsp-diagnostics)
+     ))
   :init
-  (vertico-mode))
+  (defun kb/vertico-multiform-flat-toggle ()
+    "Toggle between flat and reverse."
+    (interactive)
+    (vertico-multiform--display-toggle 'vertico-flat-mode)
+    (if vertico-flat-mode
+        (vertico-multiform--temporary-mode 'vertico-reverse-mode -1)
+      (vertico-multiform--temporary-mode 'vertico-reverse-mode 1)))
+  (defun kb/vertico-quick-embark (&optional arg)
+    "Embark on candidate using quick keys."
+    (interactive)
+    (when (vertico-quick-jump)
+      (embark-act arg)))
+
+  ;; Workaround for problem with `tramp' hostname completions. This overrides
+  ;; the completion style specifically for remote files! See
+  ;; https://github.com/minad/vertico#tramp-hostname-completion
+  (defun kb/basic-remote-try-completion (string table pred point)
+    (and (vertico--remote-p string)
+         (completion-basic-try-completion string table pred point)))
+  (defun kb/basic-remote-all-completions (string table pred point)
+    (and (vertico--remote-p string)
+         (completion-basic-all-completions string table pred point)))
+  (add-to-list 'completion-styles-alist
+               '(basic-remote           ; Name of `completion-style'
+                 kb/basic-remote-try-completion kb/basic-remote-all-completions nil))
+  :config
+  (vertico-mode)
+  ;; Extensions
+  (vertico-multiform-mode)
+
+  ;; Prefix the current candidate with “» ”. From
+  ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
+  (advice-add #'vertico--format-candidate :around
+              (lambda (orig cand prefix suffix index _start)
+                (setq cand (funcall orig cand prefix suffix index _start))
+                (concat
+                 (if (= vertico--index index)
+                     (propertize "» " 'face 'vertico-current)
+                   "  ")
+                 cand))))
 
 ;; Enable rich annotations using the Marginalia package
 (use-package marginalia
@@ -279,11 +383,80 @@
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package orderless
+  :custom
+  (completion-styles '(orderless))
+  (completion-category-defaults nil)    ; I want to be in control!
+  (completion-category-overrides
+   '((file (styles basic-remote ; For `tramp' hostname completion with `vertico'
+                   orderless
+                   ))
+     ))
+
+  (orderless-component-separator 'orderless-escapable-split-on-space)
+  (orderless-matching-styles
+   '(orderless-literal
+     orderless-prefixes
+     orderless-initialism
+     orderless-regexp
+     ;; orderless-flex
+     ;; orderless-strict-leading-initialism
+     ;; orderless-strict-initialism
+     ;; orderless-strict-full-initialism
+     ;; orderless-without-literal          ; Recommended for dispatches instead
+     ))
+  (orderless-style-dispatchers
+   '(prot-orderless-literal-dispatcher
+     prot-orderless-strict-initialism-dispatcher
+     prot-orderless-flex-dispatcher
+     ))
   :init
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion))
-                                        (eglot (styles orderless)))))
+  (defun orderless--strict-*-initialism (component &optional anchored)
+    "Match a COMPONENT as a strict initialism, optionally ANCHORED.
+The characters in COMPONENT must occur in the candidate in that
+order at the beginning of subsequent words comprised of letters.
+Only non-letters can be in between the words that start with the
+initials.
+
+If ANCHORED is `start' require that the first initial appear in
+the first word of the candidate.  If ANCHORED is `both' require
+that the first and last initials appear in the first and last
+words of the candidate, respectively."
+    (orderless--separated-by
+        '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)))
+      (cl-loop for char across component collect `(seq word-start ,char))
+      (when anchored '(seq (group buffer-start) (zero-or-more (not alpha))))
+      (when (eq anchored 'both)
+        '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)) eol))))
+
+  (defun orderless-strict-initialism (component)
+    "Match a COMPONENT as a strict initialism.
+This means the characters in COMPONENT must occur in the
+candidate in that order at the beginning of subsequent words
+comprised of letters.  Only non-letters can be in between the
+words that start with the initials."
+    (orderless--strict-*-initialism component))
+
+  (defun prot-orderless-literal-dispatcher (pattern _index _total)
+    "Literal style dispatcher using the equals sign as a suffix.
+It matches PATTERN _INDEX and _TOTAL according to how Orderless
+parses its input."
+    (when (string-suffix-p "=" pattern)
+      `(orderless-literal . ,(substring pattern 0 -1))))
+
+  (defun prot-orderless-strict-initialism-dispatcher (pattern _index _total)
+    "Leading initialism  dispatcher using the comma suffix.
+It matches PATTERN _INDEX and _TOTAL according to how Orderless
+parses its input."
+    (when (string-suffix-p "," pattern)
+      `(orderless-strict-initialism . ,(substring pattern 0 -1))))
+
+  (defun prot-orderless-flex-dispatcher (pattern _index _total)
+    "Flex  dispatcher using the tilde suffix.
+It matches PATTERN _INDEX and _TOTAL according to how Orderless
+parses its input."
+    (when (string-suffix-p "." pattern)
+      `(orderless-flex . ,(substring pattern 0 -1))))
+  )
 
 (use-package consult
   :bind
@@ -388,20 +561,31 @@
 (global-set-key (kbd "s-y") 'browse-kill-ring)
 
 (setq ibuffer-saved-filter-groups
-	    (quote (("default"
-		           ("dired" (mode . dired-mode))
-		           ("org" (mode . org-mode))
-		           ("magit" (name . "^magit"))
-		           ("planner" (or
-				                   (name . "^\\*Calendar\\*$")
-				                   (name . "^\\*Org Agenda\\*")))
-		           ("emacs" (or
-			                   (name . "^\\*scratch\\*$")
-			                   (name . "^\\*Messages\\*$")))))))
+      '(("default"
+         ("Dired" (mode . dired-mode))
+         ("Org" (mode . org-mode))
+         ("Magit" (name . "^magit"))
+         ("Shell" (or (mode . eshell-mode)
+                      (mode . shell-mode)
+                      (mode . term-mode)
+                      (mode . vterm-mode)))
+         ("Programming" (or (derived-mode . prog-mode)
+                            (mode . python-mode)
+                            (mode . c-mode)
+                            (mode . elixir-mode)
+                            (mode . java-mode)
+                            (mode . js-mode)))
+         ("Comint" (mode . comint-mode))
+         ("Emacs" (or (name . "^\\*scratch\\*$")
+                      (name . "^\\*Messages\\*$")
+                      (name . "^\\*Help\\*$")
+                      (name . "^\\*Warnings\\*$")))
+         ("Planner" (or (name . "^\\*Calendar\\*$")
+                        (name . "^\\*Org Agenda\\*"))))))
 
 (add-hook 'ibuffer-mode-hook
-	        (lambda ()
-	          (ibuffer-switch-to-saved-filter-groups "default")))
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
 
 (use-package lin
   :config
