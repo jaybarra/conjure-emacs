@@ -2,11 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; NOTE: `alchemist' is outdated and relies on `company'
-
-(use-package elixir-ts-mode)
-(use-package heex-ts-mode)
-
 (use-package mix
   :hook ((elixir-mode elixir-ts-mode) . mix-minor-mode))
 
@@ -33,27 +28,6 @@
 (add-hook 'elixir-ts-mode-hook #'eglot-ensure)
 (add-hook 'elixir-mode-hook #'eglot-ensure)
 (add-hook 'heex-ts-mode-hook #'eglot-ensure)
-
-
-;; Make specific Elixir keywords appear in italics
-(defface elixir-script-face
-  '((t (:inherit font-lock-keyword-face :slant italic)))
-  "Face for Elixir keywords that should appear in script/italics.")
-
-;; Define different faces for different types of keywords
-(defface elixir-module-face
-  '((t (:inherit font-lock-keyword-face :slant italic)))
-  "Face for module-related keywords like defmodule, import, alias")
-
-(defface elixir-definition-face
-  '((t (:inherit font-lock-keyword-face :slant italic)))
-  "Face for definition keywords like def, defp")
-
-;; Apply different faces to different keyword groups
-(font-lock-add-keywords
- 'elixir-ts-mode
- '(("\\<\\(import\\|alias\\|use\\|require\\|defmodule\\)\\>" 1 'elixir-module-face)
-   ("\\<\\(def\\|defp\\|defmacro\\|defmacrop\\)\\>" 1 'elixir-definition-face)))
 
 (provide 'conjure-elixir)
 ;;; conjure-elixir.el ends here

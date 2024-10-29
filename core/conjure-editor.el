@@ -1,17 +1,25 @@
-;;; conjure-editor.el --- Configurations for Editor Configuration in Conjure -*- lexical-binding: t -*-
+;;; conjure-editor.el --- Enhanced Editor Configuration -*- lexical-binding: t -*-
 ;;; Commentary:
+;;; A comprehensive editor configuration organized into logical sections
+;;; with optimized settings for modern Emacs usage.
 ;;; Code:
 
-(setq inhibit-startup-message t)
-(setq initial-scratch-message nil)
+;; Basic Editor Settings
+;; -------------------------------------------------------------------------
+(setq inhibit-startup-message t
+      initial-scratch-message nil
+      require-final-newline t)
 
+;; Indentation and Line Settings
 (setq-default indent-tabs-mode nil
-              tab-width 2
-              tab-always-indent nil)
+              tab-width 8
+              tab-always-indent nil
+              fill-column 80
+              word-wrap t
+              truncate-lines t)
 
-(setq tabify-regexp "^\t* [ \t]+")
-
-(setq reb-re-syntax 'string)
+(setq tabify-regexp "^\t* [ \t]+"
+      reb-re-syntax 'string)
 
 (setq-default fill-column 80)
 (setq-default word-wrap t)
@@ -23,9 +31,6 @@
 
 ;; prefer y-n vs yes-no responses
 (setopt use-short-answers t)
-
-;; newlines at the end of files
-(setq require-final-newline t)
 
 ;; allow overwrite of active region by typing
 (delete-selection-mode t)
