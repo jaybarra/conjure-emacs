@@ -189,6 +189,10 @@
 
 (use-package eglot
   :ensure nil
+  :preface
+  (defun conjure--eglot-eldoc ()
+    (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
+  :hook ((eglot-managed-mode . conjure--eglot-eldoc))
   :config
   (setq eglot-autoshutdown t
         ;; Allow server-initiated edits
@@ -216,8 +220,7 @@
 
   (sp-use-paredit-bindings)
 
-  (add-hook 'minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
-  (add-hook 'prog-mode-hook #'turn-on-smartparens-strict-mode))
+  (add-hook 'minibuffer-setup-hook 'turn-on-smartparens-strict-mode))
 
 (use-package undo-tree
   :delight
@@ -237,9 +240,9 @@
               ("M-d" . corfu-info-documentation)
               ("M-l" . corfu-info-location))
   :custom
-  (corfu-auto nil)
+  (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.2)
+  (corfu-auto-delay 0.15)
   (corfu-quit-no-match 'separator)
   (corfu-popupinfo-delay '(2.0 . 1.0))
   (tab-always-indent 'complete)
@@ -275,31 +278,44 @@
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-(use-package embark)
-(use-package embark-consult)
+(use-package embark
+  :bind
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode))
+
+(use-package embark-consult
+  :after (embark consult)
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode)
+  :demand t)
 
 (use-package vertico
-  :demand t                             ; Otherwise won't get loaded immediately
-  :bind (:map vertico-map
-              ("<tab>" . vertico-insert)
-              ("<escape>" . minibuffer-keyboard-quit)
-              ("?" . minibuffer-completion-help)
-              ("C-M-n" . vertico-next-group)
-              ("C-M-p" . vertico-previous-group)
-              ;; Multiform toggles
-              ("<backspace>" . vertico-directory-delete-char)
-              ("C-w" . vertico-directory-delete-word)
-              ("C-<backspace>" . vertico-directory-delete-word)
-              ("RET" . vertico-directory-enter)
-              ("C-i" . vertico-quick-insert)
-              ("C-o" . vertico-quick-exit)
-              ("M-o" . kb/vertico-quick-embark)
-              ("M-G" . vertico-multiform-grid)
-              ("M-F" . vertico-multiform-flat)
-              ("M-R" . vertico-multiform-reverse)
-              ("M-U" . vertico-multiform-unobtrusive)
-              ("C-l" . kb/vertico-multiform-flat-toggle)
-              )
+  :demand t
+  :bind
+  (:map vertico-map
+        ("<tab>" . vertico-insert)
+        ("<escape>" . minibuffer-keyboard-quit)
+        ("?" . minibuffer-completion-help)
+        ("C-M-n" . vertico-next-group)
+        ("C-M-p" . vertico-previous-group)
+        ;; Multiform toggles
+        ("<backspace>" . vertico-directory-delete-char)
+        ("C-w" . vertico-directory-delete-word)
+        ("C-<backspace>" . vertico-directory-delete-word)
+        ("RET" . vertico-directory-enter)
+        ("C-i" . vertico-quick-insert)
+        ("C-o" . vertico-quick-exit)
+        ("M-o" . kb/vertico-quick-embark)
+        ("M-G" . vertico-multiform-grid)
+        ("M-F" . vertico-multiform-flat)
+        ("M-R" . vertico-multiform-reverse)
+        ("M-U" . vertico-multiform-unobtrusive)
+        )
   :hook ((rfn-eshadow-update-overlay . vertico-directory-tidy) ; Clean up file path when typing
          (minibuffer-setup . vertico-repeat-save) ; Make sure vertico state is saved
          )
@@ -326,15 +342,9 @@
      (consult-yank-pop indexed)
      (consult-flycheck)
      (consult-lsp-diagnostics)
+     (consult-flymake)
      ))
   :init
-  (defun kb/vertico-multiform-flat-toggle ()
-    "Toggle between flat and reverse."
-    (interactive)
-    (vertico-multiform--display-toggle 'vertico-flat-mode)
-    (if vertico-flat-mode
-        (vertico-multiform--temporary-mode 'vertico-reverse-mode -1)
-      (vertico-multiform--temporary-mode 'vertico-reverse-mode 1)))
   (defun kb/vertico-quick-embark (&optional arg)
     "Embark on candidate using quick keys."
     (interactive)
@@ -651,6 +661,15 @@ parses its input."
 
 (setq-default ispell-program-name "aspell")
 (setq-default ispell-extra-args '("--reverse"))
+
+(use-package rg
+  :defer t)
+
+(use-package wgrep
+  :after rg
+  :config
+  (autoload 'wgrep-rg-setup "wgrep-rg")
+  (add-hook 'rg-mode-hook 'wgrep-rg-setup))
 
 (provide 'conjure-editor)
 ;;; conjure-editor.el ends here
