@@ -22,6 +22,10 @@
 
 (message "[Conjure] Emacs is coming online...")
 
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
 ;; Core variables
 (defgroup conjure nil
   "Conjure Emacs distribution customization."
@@ -35,64 +39,492 @@
   (file-name-directory (or load-file-name buffer-file-name))
   "The root directory of the Emacs Conjure distribution.")
 
-(dolist (dir '(("core"      . "conjure-core-dir")
-               ("modules"   . "conjure-modules-dir")
-               ("personal"  . "conjure-personal-dir")
-               ("vendor"    . "conjure-vendor-dir")))
-  (eval `(defvar ,(intern (cdr dir))
-           (expand-file-name ,(car dir) conjure-dir)
-           ,(format "Directory for %s files." (car dir)))))
+(set-face-attribute 'default nil
+                    :family "MonoLisa"
+                    :height 120
+                    :weight 'normal)
 
-(defvar conjure-savefile-dir
-  (expand-file-name "savefile" user-emacs-directory)
-  "Directory for storing generated files.")
+;; prefer y-n vs yes-no responses
+(setopt use-short-answers t)
 
-(defvar conjure-custom-file
-  (expand-file-name "custom.el" conjure-savefile-dir)
-  "File for storing customizations.")
+;; allow overwrite of active region by typing
+(delete-selection-mode t)
 
-;; Ensure directories exist
-(dolist (dir (list conjure-savefile-dir
-                   conjure-personal-dir
-                   (expand-file-name "preload" conjure-personal-dir)))
-  (unless (file-exists-p dir)
-    (make-directory dir t)))
+(setq inhibit-startup-message t
+      initial-scratch-message nil
+      require-final-newline t)
 
-;; Safe load function
-(defun conjure-load-file (file)
-  "Safely load FILE, showing any errors."
-  (condition-case err
-      (load file)
-    (error
-     (message "[Conjure] Error loading %s: %s" file (error-message-string err)))))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
-;; Load core components
-(dolist (core-file '("conjure-custom.el"
-                     "conjure-core.el"
-                     "conjure-ui.el"
-                     "conjure-editor.el"))
-  (conjure-load-file (expand-file-name core-file conjure-core-dir)))
+(use-package exec-path-from-shell
+  :ensure t
+  :demand t)
 
-;; Enhanced directory loader
-(defun conjure-load-directory (dir &optional recursive)
-  "Load all Emacs Lisp files in DIR.
-If RECURSIVE is non-nil, load files in subdirectories as well."
-  (dolist (file (directory-files-recursively
-                 dir "\\.el$"
-                 recursive
-                 (lambda (dir) (not (string-match-p "^\\.+" (file-name-nondirectory dir))))))
-    (conjure-load-file file)))
+(use-package undo-tree
+  :ensure t
+  :delight
+  :config
+  (setq undo-tree-history-directory-alist `((".*" . ,temporary-file-directory))
+        undo-tree-auto-save-history t)
+  (global-undo-tree-mode))
 
-;; Load modules
-(dolist (module '("os" "tools" "language"))
-  (let ((module-dir (expand-file-name module conjure-modules-dir)))
-    (when (file-directory-p module-dir)
-      (conjure-load-directory module-dir t))))
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
-;; Set and load custom file
-(setq custom-file conjure-custom-file)
-(when (file-exists-p custom-file)
-  (conjure-load-file custom-file))
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
-(provide 'init)
+(use-package ef-themes
+  :ensure t)
+
+(use-package consult
+  :bind(;; C-c bindings in `mode-specific-map'
+        ("C-c M-x" . consult-mode-command)
+        ("C-c h" . consult-history)
+        ("C-c k" . consult-kmacro)
+        ("C-c m" . consult-man)
+        ("C-c i" . consult-info)
+        ([remap Info-search] . consult-info)
+        ;; C-x bindings in `ctl-x-map'
+        ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+        ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+        ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+        ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+        ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+        ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+        ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+        ;; Custom M-# bindings for fast register access
+        ("M-#" . consult-register-load)
+        ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+        ("C-M-#" . consult-register)
+        ;; Other custom bindings
+        ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+        ;; M-g bindings in `goto-map'
+        ("M-g e" . consult-compile-error)
+        ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+        ("M-g g" . consult-goto-line)             ;; orig. goto-line
+        ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+        ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+        ("M-g m" . consult-mark)
+        ("M-g k" . consult-global-mark)
+        ("M-g i" . consult-imenu)
+        ("M-g I" . consult-imenu-multi)
+        ;; M-s bindings in `search-map'
+        ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+        ("M-s c" . consult-locate)
+        ("M-s g" . consult-grep)
+        ("M-s G" . consult-git-grep)
+        ("M-s r" . consult-ripgrep)
+        ("M-s l" . consult-line)
+        ("M-s L" . consult-line-multi)
+        ("M-s k" . consult-keep-lines)
+        ("M-s u" . consult-focus-lines)
+        ;; Isearch integration
+        ("M-s e" . consult-isearch-history)
+        :map isearch-mode-map
+        ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+        ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+        ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+        ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+        ;; Minibuffer history
+        :map minibuffer-local-map
+        ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+        ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+  
+  :init
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+  :config
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+  (setq consult-narrow-key "<"))
+
+(use-package consult-project-extra
+  :ensure t
+  :bind
+  (("C-c p f" . consult-project-extra-find)
+   ("C-c p o" . consult-project-extra-find-other-window)))
+
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode)
+  :config
+  (vertico-multiform-mode)
+
+  ;; Different display modes for different commands
+  (setq vertico-multiform-commands
+        '((consult-line buffer)
+          (consult-imenu buffer)
+          (consult-ripgrep buffer)
+	  (consult-yank-pop indexed)
+          (consult-line-multi reverse)
+          (consult-history reverse)))
+  
+  ;; Different display modes for different categories
+  (setq vertico-multiform-categories
+        '((file flat)
+          (imenu flat)
+          (symbol flat)
+          (consult-grep buffer))))
+
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+(use-package which-key
+  :ensure t
+  :delight
+  :config
+  (which-key-mode +1))
+
+(use-package delight
+  :ensure t)
+
+(use-package smartparens
+  :ensure t
+  :hook (prog-mode text-mode markdown-mode)
+  :bind (:map smartparens-mode-map
+	      
+              ;; Navigation
+              ("C-M-f" . sp-forward-sexp)
+              ("C-M-b" . sp-backward-sexp)
+              ("C-M-n" . sp-next-sexp)
+              ("C-M-p" . sp-previous-sexp)
+              ("C-M-a" . sp-beginning-of-sexp)
+              ("C-M-e" . sp-end-of-sexp)
+
+	      ;; Slurping & Barfing (extending/contracting pairs)
+              ("C-)" . sp-forward-slurp-sexp)
+              ("C-}" . sp-forward-barf-sexp)
+              ("C-(" . sp-backward-slurp-sexp)
+              ("C-{" . sp-backward-barf-sexp)
+	      
+	      ;; Wrapping
+              ("C-M-(" . sp-wrap-round)        ; wrap with ()
+              ("C-M-[" . sp-wrap-square)       ; wrap with []
+              ("C-M-{" . sp-wrap-curly)        ; wrap with {}
+              
+              ;; Unwrapping & Splitting
+              ("C-M-k" . sp-kill-sexp)
+              ("C-M-w" . sp-copy-sexp)
+              ("M-[" . sp-unwrap-sexp)
+              ("M-]" . sp-split-sexp)
+              
+              ;; Depth-related commands
+              ("C-M-d" . sp-down-sexp)
+              ("C-M-u" . sp-up-sexp)
+              
+              ;; Movement by sexp
+              ("C-M-<left>" . sp-backward-slurp-sexp)
+              ("C-M-<right>" . sp-forward-slurp-sexp)
+              ("C-M-t" . sp-transpose-sexp))
+  :config
+  (require 'smartparens-config))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode text-mode markdown-mode))
+
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+
+(use-package catppuccin-theme
+  :ensure t
+  :config
+  (load-theme 'catppuccin :no-prompt))
+
+(use-package eglot
+  :hook ((( clojure-mode clojure-ts-mode clojurec-mode clojurescript-mode
+            java-mode scala-mode clojure-ts-mode elixir-ts-mode elixir-mode)
+          . eglot-ensure)
+         ((cider-mode eglot-managed-mode) . eglot-disable-in-cider))
+  :preface
+  (defun eglot-disable-in-cider ()
+    (when (eglot-managed-p)
+      (if (bound-and-true-p cider-mode)
+          (progn
+            (remove-hook 'completion-at-point-functions 'eglot-completion-at-point t)
+            (remove-hook 'xref-backend-functions 'eglot-xref-backend t))
+        (add-hook 'completion-at-point-functions 'eglot-completion-at-point nil t)
+        (add-hook 'xref-backend-functions 'eglot-xref-backend nil t))))
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0) ; set to 10k when debugging
+  (eglot-extend-to-xref nil)
+  (eglot-ignored-server-capabilities
+   '(:hoverProvider
+     :documentHighlightProvider
+     :documentFormattingProvider
+     :documentRangeFormattingProvider
+     :documentOnTypeFormattingProvider
+     :colorProvider
+     :foldingRangeProvider))
+  ;; (eglot-stay-out-of '(yasnippet))
+  )
+
+(use-package goggles
+  :ensure t
+  :delight
+  :hook ((prog-mode text-mode markdown-mode) . goggles-mode))
+
+(add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
+
+(use-package tempel
+  :ensure t)
+
+(use-package elixir-ts-mode
+  :ensure t)
+
+(use-package clojure-ts-mode
+  :ensure t)
+
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)
+         ("C-x M-g" . magit-dispatch)
+         ("C-c g b" . magit-blame)
+         ("C-c g c" . magit-checkout)
+         ("C-c g f" . magit-find-file))
+  :config
+  (setq magit-status-sections-hook
+        '(magit-insert-status-headers
+          magit-insert-merge-log
+          magit-insert-rebase-sequence
+          magit-insert-am-sequence
+          magit-insert-sequencer-sequence
+          magit-insert-bisect-output
+          magit-insert-bisect-rest
+          magit-insert-bisect-log
+          magit-insert-untracked-files
+          magit-insert-unstaged-changes
+          magit-insert-staged-changes
+          magit-insert-stashes
+          magit-insert-unpulled-from-upstream
+          magit-insert-unpulled-from-pushremote
+          magit-insert-unpushed-to-upstream
+          magit-insert-unpushed-to-pushremote))
+
+  ;; Performance optimizations
+  (setq magit-refresh-status-buffer nil) ; only refresh status buffer when necessary
+  (setq magit-diff-highlight-indentation nil)
+  (setq magit-diff-highlight-trailing nil)
+  (setq magit-diff-paint-whitespace nil)
+  
+  ;; Display settings
+  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (setq magit-repository-directories '(("~/workspace" . 2)))
+  (setq magit-save-repository-buffers 'dontask))
+
+(use-package git-timemachine
+  :ensure t
+  :bind ("C-c g t" . git-timemachine))
+
+(use-package git-modes
+  :ensure t)
+
+(use-package diff-hl
+  :ensure t
+  :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+         (magit-post-refresh . diff-hl-magit-post-refresh))
+  :init
+  (global-diff-hl-mode)
+  (diff-hl-margin-mode)
+  (diff-hl-flydiff-mode)
+  :config
+  (setq diff-hl-draw-borders nil)
+  (diff-hl-margin-mode))
+
+(use-package magit-todos
+  :ensure t
+  :after magit
+  :hook (magit-mode . magit-todos-mode))
+
+(use-package blamer
+  :ensure t
+  :hook (prog-mode)
+  :bind (("C-c g l" . blamer-show-commit-info))
+  :custom
+  (blamer-idle-time 0.8)
+  (blamer-min-offset 70)
+  :custom-face
+  (blamer-face ((t :foreground "#7a88cf"
+                   :background nil
+                   :height 120
+                   :italic t)))
+  :config
+  (setq blamer-author-formatter " ✎ %s ")
+  (setq blamer-datetime-formatter "[%s]")
+  (setq blamer-commit-formatter " ● %s")
+  (setq blamer-prettify-time-p t))
+
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-auto t)
+  :config
+  (global-corfu-mode))
+
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(use-package hl-todo
+  :ensure t
+  :config
+  (global-hl-todo-mode))
+
+(use-package browse-kill-ring
+  :ensure t)
+
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :config
+  (setq dired-recursive-copies 'always
+	dired-recursive-deletes 'always
+	dired-dwim-target t)
+
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired t
+          insert-directory-program "/opt/homebrew/bin/gls"
+          dired-listing-switches "-aBhl --group-directories-first"))
+  
+  (add-hook 'dired-mode-hook 'auto-revert-mode))
+
 ;;; init.el ends here
+
+
+
+
+;; (dolist (dir '(("core"      . "conjure-core-dir")
+;;                ("modules"   . "conjure-modules-dir")
+;;                ("personal"  . "conjure-personal-dir")
+;;                ("vendor"    . "conjure-vendor-dir")))
+;;   (eval `(defvar ,(intern (cdr dir))
+;;            (expand-file-name ,(car dir) conjure-dir)
+;;            ,(format "Directory for %s files." (car dir)))))
+
+;; (defvar conjure-savefile-dir
+;;   (expand-file-name "savefile" user-emacs-directory)
+;;   "Directory for storing generated files.")
+
+;; (defvar conjure-custom-file
+;;   (expand-file-name "custom.el" conjure-savefile-dir)
+;;   "File for storing customizations.")
+
+;; ;; Ensure directories exist
+;; (dolist (dir (list conjure-savefile-dir
+;;                    conjure-personal-dir
+;;                    (expand-file-name "preload" conjure-personal-dir)))
+;;   (unless (file-exists-p dir)
+;;     (make-directory dir t)))
+
+;; ;; Safe load function
+;; (defun conjure-load-file (file)
+;;   "Safely load FILE, showing any errors."
+;;   (condition-case err
+;;       (load file)
+;;     (error
+;;      (message "[Conjure] Error loading %s: %s" file (error-message-string err)))))
+
+;; ;; Load core components
+;; (dolist (core-file '("conjure-custom.el"
+;;                      "conjure-core.el"
+;;                      "conjure-ui.el"
+;;                      "conjure-editor.el"))
+;;   (conjure-load-file (expand-file-name core-file conjure-core-dir)))
+
+;; ;; Enhanced directory loader
+;; (defun conjure-load-directory (dir &optional recursive)
+;;   "Load all Emacs Lisp files in DIR.
+;; If RECURSIVE is non-nil, load files in subdirectories as well."
+;;   (dolist (file (directory-files-recursively
+;;                  dir "\\.el$"
+;;                  recursive
+;;                  (lambda (dir) (not (string-match-p "^\\.+" (file-name-nondirectory dir))))))
+;;     (conjure-load-file file)))
+
+;; ;; Load modules
+;; (dolist (module '("os" "tools" "language"))
+;;   (let ((module-dir (expand-file-name module conjure-modules-dir)))
+;;     (when (file-directory-p module-dir)
+;;       (conjure-load-directory module-dir t))))
+
+;; ;; Set and load custom file
+;; (setq custom-file conjure-custom-file)
+;; (when (file-exists-p custom-file)
+;;   (conjure-load-file custom-file))
+
+;; ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(undo-tree browse-kill-ring cider highlight-todo kind-icon zenburn-theme modus-themes ligature blamer magit-todos diff-hl git-modes git-timemachine clojure-ts-mode tempel goggles highlight-numbers catppuccin-theme rainbow-delimiters smartparens delight which-key whick-key consult-project-extra ef-themes consult marginalia orderless mix exunit vertico corfu magit exec-path-from-shell elixir-ts-mode elixir-mode))
+ '(safe-local-variable-values
+   '((eval define-clojure-indent
+	   (defroutes 'defun)
+	   (routes 0)
+	   (GET 0)
+	   (POST 0)
+	   (PUT 0)
+	   (DELETE 0)
+	   (HEAD 0)
+	   (ANY 0)
+	   (OPTIONS 0)
+	   (PATCH 0)
+	   (rfn 2)
+	   (let-routes 1)
+	   (context 2)
+	   (are3
+	    '(1
+	      (1)))
+	   (are2
+	    '(1
+	      (2))))
+     (cider-format-code-options
+      ("indents"
+       (("are3"
+	 (("block" 1))
+	 "are2"
+	 (("block" 1))))))
+     (cider-lein-parameters . "with-profile +dev repl :headless :host localhost")
+     (whitespace-line-column . 118)
+     (sqlformat-args quote
+		     ("--dialect" "oracle")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

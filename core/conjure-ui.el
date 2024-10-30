@@ -69,6 +69,7 @@
 
 ;; Ligature setup
 (use-package ligature
+  :ensure t
   :config
   ;; Enable ligatures in programming modes
   (ligature-set-ligatures 'prog-mode monolisa-ligatures)
@@ -86,9 +87,12 @@
   (load-theme 'catppuccin :no-confirm))
 
 ;; Additional themes available
-(elpaca modus-themes)
-(elpaca ef-themes)
-(elpaca zenburn-theme)
+(use-package modus-themes
+  :ensure t)
+(use-package ef-themes
+  :ensure t)
+(use-package zenburn-theme
+  :ensure t)
 
 (provide 'conjure-ui)
 ;;; conjure-ui.el ends here

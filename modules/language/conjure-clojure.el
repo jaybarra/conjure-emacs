@@ -2,7 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
-(elpaca cider)
+(use-package cider
+  :ensure t)
 
 (require 'eglot)
 
@@ -44,6 +45,7 @@
   (add-hook 'cider-mode-hook 'conjure--cider-format-on-save))
 
 (use-package clojure-ts-mode
+  :ensure t
   :config
   (let ((clojure-ls-path (executable-find "clojure-lsp")))
     (when clojure-ls-path
