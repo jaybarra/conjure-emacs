@@ -50,6 +50,8 @@
 ;; Block until current queue processed.
 (elpaca-wait)
 
+(setq use-package-always-ensure t)
+
 (use-package delight
   :delight eldoc-mode
   :delight subword-mode)

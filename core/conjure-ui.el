@@ -25,8 +25,8 @@
   "The preferred font for Conjure.")
 
 (defvar conjure-fallback-fonts
-  '("Cascadia Code" "JetBrains Mono" "Fira Code" "SF Mono"
-    "Hack" "Source Code Pro" "Menlo" "Monaco")
+  '("Hack Nerd Font" "Cascadia Code" "JetBrains Mono" "Fira Code"
+    "SF Mono" "Source Code Pro" "Menlo" "Monaco")
   "Ordered list of fallback fonts.")
 
 (defun conjure-setup-fonts ()
@@ -79,14 +79,16 @@
   (global-ligature-mode t))
 
 ;; Theme configuration
-(use-package modus-themes
+(use-package catppuccin-theme
+  :custom
+  (catppuccin-flavor 'mocha)
   :config
-  (modus-themes-select 'modus-vivendi-tinted))
+  (load-theme 'catppuccin :no-confirm))
 
 ;; Additional themes available
+(elpaca modus-themes)
 (elpaca ef-themes)
 (elpaca zenburn-theme)
-(elpaca catppuccin-theme)
 
 (provide 'conjure-ui)
 ;;; conjure-ui.el ends here

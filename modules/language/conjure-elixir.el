@@ -2,6 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
+(use-package elixir-ts-mode)
+(use-package heex-ts-mode)
+
 (use-package mix
   :hook ((elixir-mode elixir-ts-mode) . mix-minor-mode))
 

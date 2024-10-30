@@ -664,8 +664,7 @@ parses its input."
 (add-hook 'prog-mode-hook (lambda () (setq truncate-lines t)))
 (add-hook 'text-mode-hook #'visual-line-mode)
 
-(setq-default ispell-program-name "aspell")
-(setq-default ispell-extra-args '("--reverse"))
+(setq-default ispell-program-name "hunspell")
 
 (use-package rg
   :defer t)
@@ -675,6 +674,11 @@ parses its input."
   :config
   (autoload 'wgrep-rg-setup "wgrep-rg")
   (add-hook 'rg-mode-hook 'wgrep-rg-setup))
+
+(use-package highlight-numbers
+  :hook prog-mode)
+
+(add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
 
 (provide 'conjure-editor)
 ;;; conjure-editor.el ends here
