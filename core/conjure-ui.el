@@ -3,57 +3,62 @@
 ;;; Optimized UI configuration with MonoLisa font and ligatures
 ;;; Code:
 
-;; Disable unnecessary UI elements
-(when (display-graphic-p)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1))
+(set-face-attribute 'default nil
+                    :family "MonoLisa"
+                    :height 120
+                    :weight 'normal)
 
-(unless (eq system-type 'darwin)
-  (menu-bar-mode -1))
+;; ;; Disable unnecessary UI elements
+;; (when (display-graphic-p)
+;;   (tool-bar-mode -1)
+;;   (scroll-bar-mode -1))
 
-;; UI preferences
-(blink-cursor-mode -1)
-(setq ring-bell-function 'ignore)
-(setq use-dialog-box nil)
+;; (unless (eq system-type 'darwin)
+;;   (menu-bar-mode -1))
 
-;; Font configuration
-(defun font-installed-p (font-name)
-  "Check if font with FONT-NAME is available."
-  (find-font (font-spec :name font-name)))
+;; ;; UI preferences
+;; (blink-cursor-mode -1)
+;; (setq ring-bell-function 'ignore)
+;; (setq use-dialog-box nil)
 
-(defvar conjure-preferred-font "MonoLisa"
-  "The preferred font for Conjure.")
+;; ;; Font configuration
+;; (defun font-installed-p (font-name)
+;;   "Check if font with FONT-NAME is available."
+;;   (find-font (font-spec :name font-name)))
 
-(defvar conjure-fallback-fonts
-  '("Hack Nerd Font" "Cascadia Code" "JetBrains Mono" "Fira Code"
-    "SF Mono" "Source Code Pro" "Menlo" "Monaco")
-  "Ordered list of fallback fonts.")
+;; (defvar conjure-preferred-font "MonoLisa"
+;;   "The preferred font for Conjure.")
 
-(defun conjure-setup-fonts ()
-  "Setup fonts with `conjure-preferred-font' as primary choice."
-  (when (display-graphic-p)
-    (let ((font (if (font-installed-p conjure-preferred-font)
-                    (format "%s-13" conjure-preferred-font)
-                  (cl-loop for font in conjure-fallback-fonts
-                           when (font-installed-p font)
-                           return (format "%s-13" font)))))
-      (when font
-        (set-face-attribute 'default nil
-                            :font font
-                            :height 130
-                            :weight 'normal)))))
+;; (defvar conjure-fallback-fonts
+;;   '("Hack Nerd Font" "Cascadia Code" "JetBrains Mono" "Fira Code"
+;;     "SF Mono" "Source Code Pro" "Menlo" "Monaco")
+;;   "Ordered list of fallback fonts.")
 
-(require 'cl-lib)
-;; Set up fonts when Emacs starts and for new frames
-(conjure-setup-fonts)
-(add-to-list 'default-frame-alist
-             `(font . ,(format "%s-13"
-                               (or (car (cl-remove-if-not #'font-installed-p
-                                                       (cons conjure-preferred-font conjure-fallback-fonts)))
-                                   conjure-preferred-font))))
+;; (defun conjure-setup-fonts ()
+;;   "Setup fonts with `conjure-preferred-font' as primary choice."
+;;   (when (display-graphic-p)
+;;     (let ((font (if (font-installed-p conjure-preferred-font)
+;;                     (format "%s-13" conjure-preferred-font)
+;;                   (cl-loop for font in conjure-fallback-fonts
+;;                            when (font-installed-p font)
+;;                            return (format "%s-13" font)))))
+;;       (when font
+;;         (set-face-attribute 'default nil
+;;                             :font font
+;;                             :height 130
+;;                             :weight 'normal)))))
 
-(add-hook 'window-setup-hook #'conjure-setup-fonts)
-(add-hook 'server-after-make-frame-hook #'conjure-setup-fonts)
+;; (require 'cl-lib)
+;; ;; Set up fonts when Emacs starts and for new frames
+;; (conjure-setup-fonts)
+;; (add-to-list 'default-frame-alist
+;;              `(font . ,(format "%s-13"
+;;                                (or (car (cl-remove-if-not #'font-installed-p
+;;                                                        (cons conjure-preferred-font conjure-fallback-fonts)))
+;;                                    conjure-preferred-font))))
+
+;; (add-hook 'window-setup-hook #'conjure-setup-fonts)
+;; (add-hook 'server-after-make-frame-hook #'conjure-setup-fonts)
 
 ;; MonoLisa-specific ligatures
 (defvar monolisa-ligatures
@@ -79,20 +84,20 @@
 
   (global-ligature-mode t))
 
-;; Theme configuration
-(use-package catppuccin-theme
-  :custom
-  (catppuccin-flavor 'mocha)
-  :config
-  (load-theme 'catppuccin :no-confirm))
+;; ;; Theme configuration
+;; (use-package catppuccin-theme
+;;   :custom
+;;   (catppuccin-flavor 'mocha)
+;;   :config
+;;   (load-theme 'catppuccin :no-confirm))
 
-;; Additional themes available
-(use-package modus-themes
-  :ensure t)
-(use-package ef-themes
-  :ensure t)
-(use-package zenburn-theme
-  :ensure t)
+;; ;; Additional themes available
+;; (use-package modus-themes
+;;   :ensure t)
+;; (use-package ef-themes
+;;   :ensure t)
+;; (use-package zenburn-theme
+;;   :ensure t)
 
 (provide 'conjure-ui)
 ;;; conjure-ui.el ends here

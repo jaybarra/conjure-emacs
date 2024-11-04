@@ -3,7 +3,10 @@
 ;;; Code:
 
 (use-package cider
-  :ensure t)
+  :ensure t
+  :defer t
+  
+  )
 
 (require 'eglot)
 
@@ -28,6 +31,8 @@
         cider-repl-history-size 100
         cider-repl-history-display-duplicates nil
         cider-repl-history-display-style 'one-line
+	cider-repl-display-in-current-window t
+	cider-font-lock-dynamically '(macro core function var)
         cider-print-options '(("print-length" 100))
         cider-repl-pop-to-buffer-on-connect 'display-only)
 

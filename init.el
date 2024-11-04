@@ -39,13 +39,74 @@
   (file-name-directory (or load-file-name buffer-file-name))
   "The root directory of the Emacs Conjure distribution.")
 
-(set-face-attribute 'default nil
-                    :family "MonoLisa"
-                    :height 120
-                    :weight 'normal)
+(dolist (dir '(("core"      . "conjure-core-dir")
+               ("modules"   . "conjure-modules-dir")
+               ("personal"  . "conjure-personal-dir")
+               ("vendor"    . "conjure-vendor-dir")))
+  (eval `(defvar ,(intern (cdr dir))
+           (expand-file-name ,(car dir) conjure-dir)
+           ,(format "Directory for %s files." (car dir)))))
 
-;; prefer y-n vs yes-no responses
-(setopt use-short-answers t)
+(defvar conjure-savefile-dir
+  (expand-file-name "savefile" user-emacs-directory)
+  "Directory for storing generated files.")
+
+(defvar conjure-custom-file
+  (expand-file-name "custom.el" conjure-savefile-dir)
+  "File for storing customizations.")
+
+;; Ensure directories exist
+(dolist (dir (list conjure-savefile-dir
+                   conjure-personal-dir
+                   (expand-file-name "preload" conjure-personal-dir)))
+  (unless (file-exists-p dir)
+    (make-directory dir t)))
+
+;; Safe load function
+(defun conjure-load-file (file)
+  "Safely load FILE, showing any errors."
+  (condition-case err
+      (load file)
+    (error
+     (message "[Conjure] Error loading %s: %s" file (error-message-string err)))))
+
+;; Load core components
+(dolist (core-file '("conjure-custom.el"
+                     "conjure-core.el"
+                     "conjure-ui.el"
+                     "conjure-editor.el"))
+  (conjure-load-file (expand-file-name core-file conjure-core-dir)))
+
+;; Enhanced directory loader
+(defun conjure-load-directory (dir &optional recursive)
+  "Load all Emacs Lisp files in DIR.
+If RECURSIVE is non-nil, load files in subdirectories as well."
+  (dolist (file (directory-files-recursively
+                 dir "\\.el$"
+                 recursive
+                 (lambda (dir) (not (string-match-p "^\\.+" (file-name-nondirectory dir))))))
+    (conjure-load-file file)))
+
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
+
+;; TODO restore this
+;; ;; Load modules
+;; (dolist (module '("os" "tools" "language"))
+;;   (let ((module-dir (expand-file-name module conjure-modules-dir)))
+;;     (when (file-directory-p module-dir)
+;;       (conjure-load-directory module-dir t))))
+
+;; Set and load custom file
+(setq custom-file conjure-custom-file)
+(when (file-exists-p custom-file)
+  (conjure-load-file custom-file))
+
+
+
+
 
 ;; allow overwrite of active region by typing
 (delete-selection-mode t)
@@ -173,8 +234,7 @@
           (consult-imenu buffer)
           (consult-ripgrep buffer)
 	  (consult-yank-pop indexed)
-          (consult-line-multi reverse)
-          (consult-history reverse)))
+          (t reverse)))
   
   ;; Different display modes for different categories
   (setq vertico-multiform-categories
@@ -205,7 +265,8 @@
 
 (use-package smartparens
   :ensure t
-  :hook (prog-mode text-mode markdown-mode)
+  :hook ((prog-mode . smartparens-strict-mode)
+	 (prog-mode . show-smartparens-mode))
   :bind (:map smartparens-mode-map
 	      
               ;; Navigation
@@ -259,19 +320,7 @@
   (load-theme 'catppuccin :no-prompt))
 
 (use-package eglot
-  :hook ((( clojure-mode clojure-ts-mode clojurec-mode clojurescript-mode
-            java-mode scala-mode clojure-ts-mode elixir-ts-mode elixir-mode)
-          . eglot-ensure)
-         ((cider-mode eglot-managed-mode) . eglot-disable-in-cider))
-  :preface
-  (defun eglot-disable-in-cider ()
-    (when (eglot-managed-p)
-      (if (bound-and-true-p cider-mode)
-          (progn
-            (remove-hook 'completion-at-point-functions 'eglot-completion-at-point t)
-            (remove-hook 'xref-backend-functions 'eglot-xref-backend t))
-        (add-hook 'completion-at-point-functions 'eglot-completion-at-point nil t)
-        (add-hook 'xref-backend-functions 'eglot-xref-backend nil t))))
+  :defer t
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0) ; set to 10k when debugging
@@ -291,8 +340,6 @@
   :ensure t
   :delight
   :hook ((prog-mode text-mode markdown-mode) . goggles-mode))
-
-(add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
 
 (use-package tempel
   :ensure t)
@@ -361,19 +408,20 @@
 
 (use-package magit-todos
   :ensure t
+  :defer t
   :after magit
   :hook (magit-mode . magit-todos-mode))
 
 (use-package blamer
   :ensure t
-  :hook (prog-mode)
+  :defer t
   :bind (("C-c g l" . blamer-show-commit-info))
   :custom
-  (blamer-idle-time 0.8)
+  (blamer-idle-time 0.3)
   (blamer-min-offset 70)
   :custom-face
   (blamer-face ((t :foreground "#7a88cf"
-                   :background nil
+                   :background unspecified
                    :height 120
                    :italic t)))
   :config
@@ -395,13 +443,9 @@
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-(use-package hl-todo
-  :ensure t
-  :config
-  (global-hl-todo-mode))
-
 (use-package browse-kill-ring
-  :ensure t)
+  :ensure t
+  :bind (("s-y" . browse-kill-ring)))
 
 (use-package dired
   :ensure nil
@@ -419,112 +463,91 @@
   
   (add-hook 'dired-mode-hook 'auto-revert-mode))
 
+(use-package consult-eglot
+  :ensure t)
+
+(use-package hl-todo
+  :ensure t
+  :config
+  (global-hl-todo-mode))
+
+(use-package colorful-mode
+  :ensure t
+  :hook ((prog-mode text-mode) . colorful-mode)
+  :config
+  (setq colorful-use-prefix t))
+
+(use-package avy
+  :ensure t
+  :bind (("C-:" . avy-goto-char)
+         ("C-'" . avy-goto-char-2)
+         ;;("M-g f" . avy-goto-line) ;; conflicts with consult-flymake
+         ("M-g w" . avy-goto-word-1)))
+
+(use-package zop-to-char
+  :ensure t
+  :bind (("M-z" . zop-up-to-char)
+         ("M-Z" . zop-to-char)))
+
+(use-package easy-kill
+  :ensure t
+  :bind (([remap mark-sexp] . easy-mark)
+	 ([remap kill-ring-save] . easy-kill)))
+
+(use-package anzu
+  :ensure t
+  :bind (("M-%" . anzu-query-replace)
+	 ("C-M-%" . anzu-query-replace-regexp)))
+
+(use-package olivetti
+  :ensure t)
+
+(use-package adoc-mode
+  :ensure t)
+
+(use-package writeroom-mode
+  :ensure t)
+
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+(use-package nerd-icons
+  :ensure t)
+
+(use-package nerd-icons-ibuffer
+  :ensure t
+  :defer t
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+(use-package nerd-icons-dired
+  :ensure t
+  :defer t
+  :hook (dired-mode . nerd-icons-dired-mode))
+
+(use-package rust-mode
+  :ensure t)
+
+(use-package zig-mode
+  :ensure t)
+
+(use-package ace-window
+  :ensure t
+  :init
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)) ; Use home row keys
+  (setq aw-background nil)                      ; Don't dim other windows
+  (setq aw-dispatch-always t)                   ; Enable action menu
+  (setq aw-dispatch-alist
+        '((?x aw-delete-window "Delete Window")
+          (?m aw-swap-window "Swap Windows")
+          (?M aw-move-window "Move Window")
+          (?c aw-copy-window "Copy Window")
+          (?j aw-switch-buffer-in-window "Select Buffer")
+          (?n aw-flip-window)
+          (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+          (?e aw-execute-command-other-window "Execute Command Other Window")))
+  :bind
+  (("M-o" . ace-window)
+   ("C-x o" . ace-window)))
+
 ;;; init.el ends here
-
-
-
-
-;; (dolist (dir '(("core"      . "conjure-core-dir")
-;;                ("modules"   . "conjure-modules-dir")
-;;                ("personal"  . "conjure-personal-dir")
-;;                ("vendor"    . "conjure-vendor-dir")))
-;;   (eval `(defvar ,(intern (cdr dir))
-;;            (expand-file-name ,(car dir) conjure-dir)
-;;            ,(format "Directory for %s files." (car dir)))))
-
-;; (defvar conjure-savefile-dir
-;;   (expand-file-name "savefile" user-emacs-directory)
-;;   "Directory for storing generated files.")
-
-;; (defvar conjure-custom-file
-;;   (expand-file-name "custom.el" conjure-savefile-dir)
-;;   "File for storing customizations.")
-
-;; ;; Ensure directories exist
-;; (dolist (dir (list conjure-savefile-dir
-;;                    conjure-personal-dir
-;;                    (expand-file-name "preload" conjure-personal-dir)))
-;;   (unless (file-exists-p dir)
-;;     (make-directory dir t)))
-
-;; ;; Safe load function
-;; (defun conjure-load-file (file)
-;;   "Safely load FILE, showing any errors."
-;;   (condition-case err
-;;       (load file)
-;;     (error
-;;      (message "[Conjure] Error loading %s: %s" file (error-message-string err)))))
-
-;; ;; Load core components
-;; (dolist (core-file '("conjure-custom.el"
-;;                      "conjure-core.el"
-;;                      "conjure-ui.el"
-;;                      "conjure-editor.el"))
-;;   (conjure-load-file (expand-file-name core-file conjure-core-dir)))
-
-;; ;; Enhanced directory loader
-;; (defun conjure-load-directory (dir &optional recursive)
-;;   "Load all Emacs Lisp files in DIR.
-;; If RECURSIVE is non-nil, load files in subdirectories as well."
-;;   (dolist (file (directory-files-recursively
-;;                  dir "\\.el$"
-;;                  recursive
-;;                  (lambda (dir) (not (string-match-p "^\\.+" (file-name-nondirectory dir))))))
-;;     (conjure-load-file file)))
-
-;; ;; Load modules
-;; (dolist (module '("os" "tools" "language"))
-;;   (let ((module-dir (expand-file-name module conjure-modules-dir)))
-;;     (when (file-directory-p module-dir)
-;;       (conjure-load-directory module-dir t))))
-
-;; ;; Set and load custom file
-;; (setq custom-file conjure-custom-file)
-;; (when (file-exists-p custom-file)
-;;   (conjure-load-file custom-file))
-
-;; ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(undo-tree browse-kill-ring cider highlight-todo kind-icon zenburn-theme modus-themes ligature blamer magit-todos diff-hl git-modes git-timemachine clojure-ts-mode tempel goggles highlight-numbers catppuccin-theme rainbow-delimiters smartparens delight which-key whick-key consult-project-extra ef-themes consult marginalia orderless mix exunit vertico corfu magit exec-path-from-shell elixir-ts-mode elixir-mode))
- '(safe-local-variable-values
-   '((eval define-clojure-indent
-	   (defroutes 'defun)
-	   (routes 0)
-	   (GET 0)
-	   (POST 0)
-	   (PUT 0)
-	   (DELETE 0)
-	   (HEAD 0)
-	   (ANY 0)
-	   (OPTIONS 0)
-	   (PATCH 0)
-	   (rfn 2)
-	   (let-routes 1)
-	   (context 2)
-	   (are3
-	    '(1
-	      (1)))
-	   (are2
-	    '(1
-	      (2))))
-     (cider-format-code-options
-      ("indents"
-       (("are3"
-	 (("block" 1))
-	 "are2"
-	 (("block" 1))))))
-     (cider-lein-parameters . "with-profile +dev repl :headless :host localhost")
-     (whitespace-line-column . 118)
-     (sqlformat-args quote
-		     ("--dialect" "oracle")))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
