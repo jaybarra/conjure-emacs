@@ -533,21 +533,8 @@ If RECURSIVE is non-nil, load files in subdirectories as well."
 
 (use-package ace-window
   :ensure t
-  :init
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)) ; Use home row keys
-  (setq aw-background nil)                      ; Don't dim other windows
-  (setq aw-dispatch-always t)                   ; Enable action menu
-  (setq aw-dispatch-alist
-        '((?x aw-delete-window "Delete Window")
-          (?m aw-swap-window "Swap Windows")
-          (?M aw-move-window "Move Window")
-          (?c aw-copy-window "Copy Window")
-          (?j aw-switch-buffer-in-window "Select Buffer")
-          (?n aw-flip-window)
-          (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
-          (?e aw-execute-command-other-window "Execute Command Other Window")))
-  :bind
-  (("M-o" . ace-window)
-   ("C-x o" . ace-window)))
+  :bind (("M-o" . 'ace-window))
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 ;;; init.el ends here
