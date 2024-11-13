@@ -92,21 +92,16 @@ If RECURSIVE is non-nil, load files in subdirectories as well."
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "multimarkdown"))
 
-;; TODO restore this
-;; ;; Load modules
-;; (dolist (module '("os" "tools" "language"))
-;;   (let ((module-dir (expand-file-name module conjure-modules-dir)))
-;;     (when (file-directory-p module-dir)
-;;       (conjure-load-directory module-dir t))))
+;; Load modules
+(dolist (module '("os" "tools" "language"))
+  (let ((module-dir (expand-file-name module conjure-modules-dir)))
+    (when (file-directory-p module-dir)
+      (conjure-load-directory module-dir t))))
 
 ;; Set and load custom file
 (setq custom-file conjure-custom-file)
 (when (file-exists-p custom-file)
   (conjure-load-file custom-file))
-
-
-
-
 
 ;; allow overwrite of active region by typing
 (delete-selection-mode t)

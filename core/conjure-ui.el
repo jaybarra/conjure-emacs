@@ -17,9 +17,9 @@
 ;;   (menu-bar-mode -1))
 
 ;; ;; UI preferences
-;; (blink-cursor-mode -1)
-;; (setq ring-bell-function 'ignore)
-;; (setq use-dialog-box nil)
+(blink-cursor-mode -1)
+(setq ring-bell-function 'ignore)
+(setq use-dialog-box nil)
 
 ;; ;; Font configuration
 ;; (defun font-installed-p (font-name)

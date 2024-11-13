@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package pyvenv)
+(use-package pyvenv :ensure t)
 
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --simple-prompt")

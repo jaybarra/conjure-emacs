@@ -3,6 +3,7 @@
 ;;; Code:
 
 (use-package web-mode
+  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.cshtml?\\'" . web-mode))
   (setq web-mode-engines-alist '(("razor" . "\\.cshtml\\'"))))

@@ -18,7 +18,6 @@
       js2-highlight-level 3
       js2-idle-timer-delay 0.15)
 
-
 (add-to-list 'auto-mode-alist '("\\.ts$"  . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.cts$" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.mts$" . typescript-ts-mode))
